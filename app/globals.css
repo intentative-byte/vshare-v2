@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050505;
+  --surface: #101010;
+  --surface-strong: #17130a;
+  --foreground: #f8f2de;
+  --muted: #a99f87;
+  --gold: #f5c451;
+  --gold-strong: #d7a72d;
+  --border: rgba(245, 196, 81, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(245, 196, 81, 0.18), transparent 28rem),
+    linear-gradient(180deg, #050505 0%, #0c0a05 55%, #050505 100%);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(245, 196, 81, 0.35);
+}
+
+.gold-ring {
+  box-shadow: 0 0 0 1px rgba(245, 196, 81, 0.22), 0 18px 70px rgba(0, 0, 0, 0.35);
+}

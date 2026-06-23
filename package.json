@@ -1,0 +1,48 @@
+{
+  "name": "vshare-v2",
+  "version": "1.0.0",
+  "description": "VShare v2 - a topic-aware knowledge feed built on Next.js, Supabase Auth, and PostgreSQL.",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intentative-byte/vshare-v2.git"
+  },
+  "keywords": [
+    "vshare",
+    "nextjs",
+    "supabase",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/intentative-byte/vshare-v2/issues"
+  },
+  "homepage": "https://github.com/intentative-byte/vshare-v2#readme",
+  "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "lucide-react": "^1.21.0",
+    "next": "^16.2.9",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
+    "@types/node": "^26.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.9",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3"
+  }
+}
