@@ -31,7 +31,7 @@ async function getTopicState(supabase: Awaited<ReturnType<typeof requireUser>>["
 
   return {
     topics: (topicsResult.data ?? []) as Topic[],
-    preferences: (preferencesResult.data ?? []) as UserTopicPreference[],
+    preferences: (preferencesResult.data ?? []) as unknown as UserTopicPreference[],
     selectedTopicId: profileResult.data?.selected_topic_id ?? null
   };
 }

@@ -32,7 +32,7 @@ async function getProfileState(supabase: Awaited<ReturnType<typeof requireUser>>
   return {
     profile: profileResult.data as Profile,
     topics: (topicsResult.data ?? []) as Topic[],
-    preferences: (preferencesResult.data ?? []) as UserTopicPreference[]
+    preferences: (preferencesResult.data ?? []) as unknown as UserTopicPreference[]
   };
 }
 
