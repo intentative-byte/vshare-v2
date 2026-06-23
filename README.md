@@ -77,7 +77,29 @@ npm run build
 
 ## Deployment
 
-`render.yaml` defines a Render web service. Set the three environment variables from `.env.example` in Render before deploying.
+`render.yaml` defines a Render web service for the Next.js app.
+
+### Render setup
+
+1. In Render, create a new Blueprint from this repository and select `render.yaml`.
+2. Confirm the web service uses these commands:
+
+   ```bash
+   npm run build
+   npm start
+   ```
+
+3. Set the required environment variables:
+
+   ```bash
+   NEXT_PUBLIC_SITE_URL=https://your-render-service.onrender.com
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+4. Deploy the service. Render provides the `PORT` environment variable at runtime, and `npm start` binds Next.js to that port.
+
+The Render blueprint also sets `NODE_VERSION=22`. Keep `NEXT_PUBLIC_SITE_URL` aligned with the final Render URL so generated absolute links use the deployed origin.
 
 ## Notes
 
