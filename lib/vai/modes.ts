@@ -4,7 +4,6 @@ import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
 import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
-import { getTrajectoryEngine } from "@/lib/trajectory/trajectory-engine";
 import { getStrategicPlanningEngine } from "@/lib/strategy/strategic-planning";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
@@ -24,7 +23,6 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const goalOS = getGoalOperatingSystem(state);
   const economy = getPersonalEconomy(state);
   const simulation = getSimulationEngine(state);
-  const trajectory = getTrajectoryEngine(state);
   const strategy = getStrategicPlanningEngine(state);
 
   if (state.vaiMode === "silent") {

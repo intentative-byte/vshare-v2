@@ -19,7 +19,7 @@ export function getStrategicConstraints(state: LearningState): StrategicConstrai
   const economy = getPersonalEconomy(state);
   const capability = getCapabilityScore(state);
 
-  return [
+  const constraints: StrategicConstraint[] = [
     {
       type: "knowledge",
       label: "Knowledge constraint",
@@ -44,5 +44,7 @@ export function getStrategicConstraints(state: LearningState): StrategicConstrai
       severity: clampScore(100 - economy.resources.money),
       reason: "Financial slack and revenue outcomes affect strategic options.",
     },
-  ].sort((a, b) => b.severity - a.severity);
+  ];
+
+  return constraints.sort((a, b) => b.severity - a.severity);
 }
