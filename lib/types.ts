@@ -51,6 +51,24 @@ export type Interest =
 
 export type LearningFormat = "article" | "video" | "audio" | "challenge" | "brief";
 
+export type ContentType =
+  | "article"
+  | "video"
+  | "podcast"
+  | "thread"
+  | "post"
+  | "framework"
+  | "research_paper"
+  | "tutorial";
+
+export type ContentQualityScore = {
+  relevanceScore: number;
+  engagementScore: number;
+  freshnessScore: number;
+  authorityScore: number;
+  overallContentScore: number;
+};
+
 export type LearningContent = {
   id: string;
   title: string;
@@ -67,6 +85,20 @@ export type LearningContent = {
   };
 };
 
+export type NormalizedContent = LearningContent & {
+  contentType: ContentType;
+  source: {
+    id: string;
+    name: string;
+    authorityScore: number;
+  };
+  url: string | null;
+  publishedAt: string;
+  ingestedAt: string;
+  tags: string[];
+  quality: ContentQualityScore;
+};
+
 export type UserSignalType =
   | "topic_selected"
   | "content_viewed"
@@ -78,7 +110,8 @@ export type UserSignalType =
   | "content_shared"
   | "search"
   | "explore_activity"
-  | "profile_activity";
+  | "profile_activity"
+  | "path_followed";
 
 export type UserSignal = {
   id: string;
@@ -112,6 +145,14 @@ export type SessionMemory = {
   lastProfileVisitAt: string | null;
 };
 
+export type LearningPath = {
+  id: string;
+  title: string;
+  description: string;
+  primaryInterest: Interest;
+  contentIds: string[];
+};
+
 export type LearningState = {
   interests: Interest[];
   interestScores: Record<Interest, number>;
@@ -119,6 +160,7 @@ export type LearningState = {
   savedContentIds: string[];
   completedContentIds: string[];
   skippedContentIds: string[];
+  followedPathIds: string[];
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];

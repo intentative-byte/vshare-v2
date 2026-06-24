@@ -3,11 +3,11 @@
 import { useEffect, useRef } from "react";
 import { Bookmark, BookmarkCheck, CheckCircle2, Clock, PlayCircle, Send, XCircle } from "lucide-react";
 import { Button } from "@/components/Button";
-import type { LearningContent } from "@/lib/types";
+import type { NormalizedContent } from "@/lib/types";
 import { cn, formatMinutes } from "@/lib/utils";
 
 type LearningCardProps = {
-  content: LearningContent;
+  content: NormalizedContent;
   isSaved: boolean;
   isViewed: boolean;
   isCompleted: boolean;
@@ -113,7 +113,7 @@ export function LearningCard({
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em]">
-              {content.format}
+              {content.contentType.replace("_", " ")}
             </span>
             {lane ? (
               <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em]">
@@ -128,7 +128,9 @@ export function LearningCard({
             ) : null}
           </div>
           <div>
-            <p className="text-sm font-semibold text-violet-100">{content.sourceLabel}</p>
+            <p className="text-sm font-semibold text-violet-100">
+              {content.source.name} · {content.quality.overallContentScore} score
+            </p>
             <h2 className="mt-2 line-clamp-2 text-2xl font-black tracking-tight">{content.title}</h2>
           </div>
         </div>

@@ -1,8 +1,9 @@
-import { learningContent } from "@/lib/data";
-import type { Interest, LearningContent, LearningState } from "@/lib/types";
+import { applyFeedDiversity } from "@/lib/content/diversity";
+import { ingestContentCatalog } from "@/lib/content/ingestion";
+import type { Interest, LearningState, NormalizedContent } from "@/lib/types";
 
 export type RankedContent = {
-  content: LearningContent;
+  content: NormalizedContent;
   score: number;
   lane: "personalized" | "discovery";
   reasons: string[];
@@ -30,7 +31,7 @@ function getInterestScore(state: LearningState, interest: Interest) {
   return state.interestScores[interest] ?? 0;
 }
 
-function getTopicMatchScore(state: LearningState, content: LearningContent) {
+function getTopicMatchScore(state: LearningState, content: NormalizedContent) {
   if (!content.interests.length) {
     return 0;
   }
@@ -42,7 +43,7 @@ function getTopicMatchScore(state: LearningState, content: LearningContent) {
   return averageInterestScore * 0.72 + directSelectionBoost;
 }
 
-function getRecentInterestScore(state: LearningState, content: LearningContent) {
+function getRecentInterestScore(state: LearningState, content: NormalizedContent) {
   if (!state.memory.lastActiveTopic || !content.interests.includes(state.memory.lastActiveTopic)) {
     return 0;
   }
@@ -50,7 +51,7 @@ function getRecentInterestScore(state: LearningState, content: LearningContent) 
   return 18;
 }
 
-function getRotationScore(state: LearningState, content: LearningContent) {
+function getRotationScore(state: LearningState, content: NormalizedContent) {
   const engagement = state.contentEngagement[content.id];
   const viewedPenalty = state.viewedContentIds.includes(content.id) ? -35 : 0;
   const completedPenalty = state.completedContentIds.includes(content.id) ? -90 : 0;
@@ -61,7 +62,7 @@ function getRotationScore(state: LearningState, content: LearningContent) {
   return viewedPenalty + completedPenalty + skippedPenalty + repeatedViewPenalty + newContentBoost;
 }
 
-function scoreContent(state: LearningState, content: LearningContent) {
+function scoreContent(state: LearningState, content: NormalizedContent) {
   const engagement = state.contentEngagement[content.id];
   const topicMatch = getTopicMatchScore(state, content);
   const watchHistory = Math.min(20, (engagement?.watchSeconds ?? 0) / 12);
@@ -69,18 +70,19 @@ function scoreContent(state: LearningState, content: LearningContent) {
   const completionRate = getContentCompletionRate(state, content.id) * 22;
   const recentInterest = getRecentInterestScore(state, content);
   const rotation = getRotationScore(state, content);
+  const contentQuality = content.quality.overallContentScore;
 
-  return topicMatch + watchHistory + saveActivity + completionRate + recentInterest + rotation;
+  return topicMatch + watchHistory + saveActivity + completionRate + recentInterest + contentQuality * 0.65 + rotation;
 }
 
-function isPersonalized(state: LearningState, content: LearningContent) {
+function isPersonalized(state: LearningState, content: NormalizedContent) {
   const selectedMatch = content.interests.some((interest) => state.interests.includes(interest));
   const calibratedMatch = content.interests.some((interest) => getInterestScore(state, interest) >= 58);
 
   return selectedMatch || calibratedMatch;
 }
 
-function buildReasons(state: LearningState, content: LearningContent, lane: RankedContent["lane"]) {
+function buildReasons(state: LearningState, content: NormalizedContent, lane: RankedContent["lane"]) {
   const reasons: string[] = [];
   const matchingInterest = content.interests.find((interest) => state.interests.includes(interest));
 
@@ -100,10 +102,12 @@ function buildReasons(state: LearningState, content: LearningContent, lane: Rank
     reasons.push("discovery");
   }
 
+  reasons.push(`${content.quality.overallContentScore} quality`);
+
   return reasons.slice(0, 3);
 }
 
-function sortRankedContent(state: LearningState, content: LearningContent[], lane: RankedContent["lane"]) {
+function sortRankedContent(state: LearningState, content: NormalizedContent[], lane: RankedContent["lane"]) {
   return content
     .map((item) => ({
       content: item,
@@ -135,12 +139,15 @@ function mixDiscovery(personalized: RankedContent[], discovery: RankedContent[])
 }
 
 export function rankFeedContent(state: LearningState) {
-  const personalized = learningContent.filter((content) => isPersonalized(state, content));
-  const discovery = learningContent.filter((content) => !isPersonalized(state, content));
+  const normalizedContent = ingestContentCatalog(state);
+  const personalized = normalizedContent.filter((content) => isPersonalized(state, content));
+  const discovery = normalizedContent.filter((content) => !isPersonalized(state, content));
 
   if (!state.interests.length) {
-    return sortRankedContent(state, learningContent, "discovery");
+    return applyFeedDiversity(sortRankedContent(state, normalizedContent, "discovery"));
   }
 
-  return mixDiscovery(sortRankedContent(state, personalized, "personalized"), sortRankedContent(state, discovery, "discovery"));
+  return applyFeedDiversity(
+    mixDiscovery(sortRankedContent(state, personalized, "personalized"), sortRankedContent(state, discovery, "discovery")),
+  );
 }

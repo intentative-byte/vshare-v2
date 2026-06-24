@@ -5,7 +5,7 @@ import { Bookmark, Search } from "lucide-react";
 import { Button } from "@/components/Button";
 import { LearningCard } from "@/components/LearningCard";
 import {
-  getSavedContent,
+  getGroupedSavedLibrary,
   markContentCompleted,
   markContentShared,
   markContentSkipped,
@@ -17,7 +17,8 @@ import {
 
 export function SavedExperience() {
   const learningState = useLearningState();
-  const savedContent = getSavedContent(learningState);
+  const savedLibrary = getGroupedSavedLibrary(learningState);
+  const savedCount = savedLibrary.reduce((total, group) => total + group.items.length, 0);
 
   return (
     <div className="grid gap-6">
@@ -36,22 +37,34 @@ export function SavedExperience() {
         </div>
       </section>
 
-      {savedContent.length ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {savedContent.map((content) => (
-            <LearningCard
-              key={content.id}
-              content={content}
-              isSaved={learningState.savedContentIds.includes(content.id)}
-              isViewed={learningState.viewedContentIds.includes(content.id)}
-              isCompleted={learningState.completedContentIds.includes(content.id)}
-              onToggleSaved={toggleSavedContent}
-              onViewed={markContentViewed}
-              onWatchTime={recordWatchTime}
-              onComplete={markContentCompleted}
-              onSkip={markContentSkipped}
-              onShare={markContentShared}
-            />
+      {savedCount ? (
+        <div className="grid gap-6">
+          {savedLibrary.map((group) => (
+            <section key={group.topic} className="grid gap-4">
+              <div className="flex items-center justify-between rounded-[1.5rem] bg-white px-5 py-4 shadow-soft">
+                <h2 className="text-2xl font-black tracking-tight">{group.topic}</h2>
+                <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-black text-violet-700">
+                  {group.items.length}
+                </span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {group.items.map((content) => (
+                  <LearningCard
+                    key={content.id}
+                    content={content}
+                    isSaved={learningState.savedContentIds.includes(content.id)}
+                    isViewed={learningState.viewedContentIds.includes(content.id)}
+                    isCompleted={learningState.completedContentIds.includes(content.id)}
+                    onToggleSaved={toggleSavedContent}
+                    onViewed={markContentViewed}
+                    onWatchTime={recordWatchTime}
+                    onComplete={markContentCompleted}
+                    onSkip={markContentSkipped}
+                    onShare={markContentShared}
+                  />
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       ) : (

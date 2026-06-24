@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { BarChart3, Bookmark, Compass, Flame, Gauge, Target } from "lucide-react";
+import { BarChart3, Bell, Bookmark, Compass, Flame, Gauge, Map, Target } from "lucide-react";
 import { Button } from "@/components/Button";
-import { getProgressStats, recordProfileActivity, useLearningState } from "@/lib/learning";
+import { getProgressStats, recordProfileActivity, toggleFollowPath, useLearningState } from "@/lib/learning";
 import { formatMinutes } from "@/lib/utils";
 
 export function ProfileDashboard() {
@@ -60,6 +60,90 @@ export function ProfileDashboard() {
             <MetricRow label="Weekly learning score" value={stats.retention.weeklyLearningScore} />
             <MetricRow label="Knowledge consistency score" value={stats.retention.knowledgeConsistencyScore} />
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <div className="flex items-center gap-3">
+          <Map className="size-6 text-violet-700" />
+          <h2 className="text-2xl font-black tracking-tight">Learning paths</h2>
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {stats.learningPaths.map((path) => (
+            <div key={path.id} className="rounded-3xl bg-mist p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">{path.primaryInterest}</p>
+                  <h3 className="mt-1 text-xl font-black tracking-tight">{path.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{path.description}</p>
+                </div>
+                <Button type="button" variant={path.isFollowed ? "primary" : "secondary"} onClick={() => toggleFollowPath(path.id)}>
+                  {path.isFollowed ? "Following" : "Follow"}
+                </Button>
+              </div>
+              <div className="mt-4">
+                <div className="flex items-center justify-between text-sm font-black">
+                  <span>
+                    {path.completedCount}/{path.totalCount} complete
+                  </span>
+                  <span className="text-violet-700">{path.completionPercentage}%</span>
+                </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                  <div className="h-full rounded-full bg-violet-600" style={{ width: `${path.completionPercentage}%` }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Weekly recap</h2>
+          <div className="mt-5 grid gap-3">
+            <RecapRow label="Resources viewed" value={String(stats.weeklyRecap.resourcesViewed)} />
+            <RecapRow label="Resources saved" value={String(stats.weeklyRecap.resourcesSaved)} />
+            <RecapRow label="Topics learned" value={stats.weeklyRecap.topicsLearned.join(", ") || "None yet"} />
+            <RecapRow label="Streak progress" value={`${stats.weeklyRecap.streakProgress} days`} />
+          </div>
+          <p className="mt-4 rounded-2xl bg-mist p-4 text-sm font-semibold leading-6 text-slate-600">
+            {stats.weeklyRecap.growthSummary}
+          </p>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <div className="flex items-center gap-3">
+            <Bell className="size-6 text-violet-700" />
+            <h2 className="text-2xl font-black tracking-tight">Notification framework</h2>
+          </div>
+          <div className="mt-5 grid gap-3">
+            {stats.notifications.length ? (
+              stats.notifications.map((intent) => (
+                <div key={intent.id} className="rounded-2xl bg-mist p-4">
+                  <p className="font-black">{intent.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{intent.body}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm font-semibold text-slate-500">No notification intents pending.</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <h2 className="text-2xl font-black tracking-tight">Product analytics</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <StatCard icon={Target} label="DAU" value={String(stats.productAnalytics.dau)} />
+          <StatCard icon={Target} label="WAU" value={String(stats.productAnalytics.wau)} />
+          <StatCard icon={Target} label="Content views" value={String(stats.productAnalytics.contentViews)} />
+          <StatCard icon={Target} label="Save rate" value={`${stats.productAnalytics.saveRate}%`} />
+          <StatCard icon={Target} label="Return rate" value={`${stats.productAnalytics.returnRate}%`} />
+          <StatCard
+            icon={Target}
+            label="Avg session"
+            value={formatMinutes(Math.round(stats.productAnalytics.averageSessionLengthSeconds / 60))}
+          />
         </div>
       </section>
 
@@ -124,6 +208,20 @@ function MetricRow({ label, value }: MetricRowProps) {
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-mist">
         <div className="h-full rounded-full bg-violet-600" style={{ width: `${value}%` }} />
       </div>
+    </div>
+  );
+}
+
+type RecapRowProps = {
+  label: string;
+  value: string;
+};
+
+function RecapRow({ label, value }: RecapRowProps) {
+  return (
+    <div className="flex items-start justify-between gap-4 rounded-2xl bg-mist p-4">
+      <span className="text-sm font-bold text-slate-600">{label}</span>
+      <span className="text-right text-sm font-black">{value}</span>
     </div>
   );
 }

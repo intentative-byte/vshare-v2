@@ -1,7 +1,9 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { interestOptions, learningContent } from "@/lib/data";
 import { getContentHealthMetrics } from "@/lib/analytics/content-health";
+import { getProductAnalytics } from "@/lib/analytics/product-analytics";
 import { getRetentionMetrics } from "@/lib/analytics/retention";
+import { getSavedLibrary } from "@/lib/content/saved-library";
 import {
   createDefaultInterestScores,
   normalizeInterestScores,
@@ -9,6 +11,7 @@ import {
   updateInterestScoresForSignal,
 } from "@/lib/calibration/interest-scores";
 import { rankFeedContent } from "@/lib/feed-ranking/rank-content";
+import { getDailyMission } from "@/lib/missions/daily-mission";
 import {
   defaultSessionMemory,
   normalizeSessionMemory,
@@ -17,6 +20,9 @@ import {
   rememberSearchQuery,
   rememberViewedContent,
 } from "@/lib/memory/session-memory";
+import { getNotificationIntents } from "@/lib/notifications/framework";
+import { getRecommendedLearningPaths } from "@/lib/paths/learning-paths";
+import { getWeeklyRecap } from "@/lib/retention/weekly-recap";
 import type { ContentEngagement, Interest, LearningState, UserSignal } from "@/lib/types";
 
 const learningStateKey = "vshare:learning-state";
@@ -30,6 +36,7 @@ function createDefaultLearningState(): LearningState {
     savedContentIds: [],
     completedContentIds: [],
     skippedContentIds: [],
+    followedPathIds: [],
     viewedAtById: {},
     contentEngagement: {},
     signals: [],
@@ -112,6 +119,7 @@ function parseLearningState(value: string | null): LearningState {
       savedContentIds: uniqueValues(parsed.savedContentIds ?? []),
       completedContentIds: uniqueValues(parsed.completedContentIds ?? []),
       skippedContentIds: uniqueValues(parsed.skippedContentIds ?? []),
+      followedPathIds: uniqueValues(parsed.followedPathIds ?? []),
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
@@ -374,6 +382,25 @@ export function markContentShared(contentId: string) {
   return recordUserSignal({ type: "content_shared", contentId });
 }
 
+export function toggleFollowPath(pathId: string) {
+  return updateLearningState((state) => {
+    const isFollowed = state.followedPathIds.includes(pathId);
+    const nextState = {
+      ...state,
+      followedPathIds: isFollowed ? state.followedPathIds.filter((id) => id !== pathId) : [...state.followedPathIds, pathId],
+    };
+
+    return isFollowed
+      ? nextState
+      : applySignal(
+          nextState,
+          createSignal({
+            type: "path_followed",
+          }),
+        );
+  });
+}
+
 export function toggleSavedContent(contentId: string) {
   const state = getLearningState();
   const isSaved = state.savedContentIds.includes(contentId);
@@ -409,6 +436,10 @@ export function getSavedContent(state: LearningState) {
   return learningContent.filter((content) => savedIds.has(content.id));
 }
 
+export function getGroupedSavedLibrary(state: LearningState) {
+  return getSavedLibrary(state);
+}
+
 export function getProgressStats(state: LearningState) {
   const viewedIds = new Set(state.viewedContentIds);
   const completedIds = new Set(state.completedContentIds);
@@ -416,6 +447,11 @@ export function getProgressStats(state: LearningState) {
   const totalMinutes = completedContent.reduce((total, content) => total + content.durationMinutes, 0);
   const health = getContentHealthMetrics(state);
   const retention = getRetentionMetrics(state);
+  const mission = getDailyMission(state);
+  const weeklyRecap = getWeeklyRecap(state);
+  const learningPaths = getRecommendedLearningPaths(state);
+  const notifications = getNotificationIntents(state);
+  const productAnalytics = getProductAnalytics(state);
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -427,5 +463,10 @@ export function getProgressStats(state: LearningState) {
     unseenCount: Math.max(0, getRecommendedContent(state).filter((content) => !viewedIds.has(content.id)).length),
     health,
     retention,
+    mission,
+    weeklyRecap,
+    learningPaths,
+    notifications,
+    productAnalytics,
   };
 }

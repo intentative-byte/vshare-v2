@@ -112,6 +112,28 @@ export function FeedExperience() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">{stats.mission.title}</p>
+            <h2 className="mt-1 text-2xl font-black tracking-tight">{stats.mission.completionPercentage}% complete</h2>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-mist sm:w-48">
+            <div className="h-full rounded-full bg-violet-600" style={{ width: `${stats.mission.completionPercentage}%` }} />
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-4">
+          {stats.mission.tasks.map((task) => (
+            <div key={task.id} className="rounded-2xl bg-mist p-3">
+              <p className="text-sm font-black">{task.label}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500">
+                {task.current}/{task.target} {task.completed ? "done" : "left"}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {visibleContent.map((content) => (
           <LearningCard
