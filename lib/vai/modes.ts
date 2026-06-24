@@ -35,7 +35,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "coach",
       headline: "VAI Coach",
-      suggestion: `Challenge assumption: is ${vaiDecision.topConstraint.toLowerCase()} really the blocker? Focus ${goalOS.currentGoal?.title ?? "your top goal"}: ${goalOS.nextMilestone?.label ?? vaiDecision.recommendedNextStep}.`,
+      suggestion: `Outcome challenge: ${goalOS.currentGoal?.desiredOutcome ?? "pick the outcome that matters most"}. Do ${goalOS.nextMilestone?.label ?? vaiDecision.recommendedNextStep} and log proof.`,
       actionLabel: "Take action",
     };
   }
@@ -44,7 +44,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `${goalOS.currentGoal?.title ?? vaiDecision.highestLeverageAction.title}: ${vaiDecision.highestLeverageAction.title}. Confidence ${vaiDecision.confidenceScore}%. Strategic relationship: ${topPerson?.expert.name ?? "build one expert connection"}.`,
+      suggestion: `Optimize around ${goalOS.currentGoal?.desiredOutcome ?? "the highest-value outcome"}. ${vaiDecision.highestLeverageAction.title}. Outcome velocity ${outcomeScore.outcomeVelocity}%. Strategic relationship: ${topPerson?.expert.name ?? "build one expert connection"}.`,
       actionLabel: "Do next",
     };
   }
@@ -53,7 +53,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     mode: "partner",
     headline: "VAI Partner",
     suggestion: nextConcept
-      ? `Recommended: ${vaiDecision.recommendedNextStep}. Next milestone: ${goalOS.nextMilestone?.label ?? nextConcept.concept}.`
+      ? `Suggested improvement: ${vaiDecision.recommendedNextStep}. Outcome target: ${goalOS.currentGoal?.desiredOutcome ?? nextConcept.concept}.`
       : `You are progressing toward ${learningMap.targetPosition}. Outcome velocity is ${outcomeScore.outcomeVelocity}.`,
     actionLabel: "Review suggestion",
   };

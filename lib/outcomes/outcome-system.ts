@@ -17,6 +17,19 @@ export const outcomeTypes: Array<{ value: OutcomeType; label: string; executionW
   { value: "fitness", label: "Fitness", executionWeight: 24 },
   { value: "projects", label: "Projects", executionWeight: 24 },
   { value: "education", label: "Education", executionWeight: 22 },
+  { value: "salary_increase", label: "Salary Increase", executionWeight: 30 },
+  { value: "certification", label: "Certification", executionWeight: 24 },
+  { value: "first_client", label: "First Client", executionWeight: 30 },
+  { value: "product_launch", label: "Product Launch", executionWeight: 28 },
+  { value: "audience_growth", label: "Audience Growth", executionWeight: 22 },
+  { value: "skill_acquired", label: "Skill Acquired", executionWeight: 20 },
+  { value: "project_completed", label: "Project Completed", executionWeight: 24 },
+  { value: "framework_mastered", label: "Framework Mastered", executionWeight: 22 },
+  { value: "strength_gain", label: "Strength Gain", executionWeight: 24 },
+  { value: "habit_consistency", label: "Habit Consistency", executionWeight: 20 },
+  { value: "income_growth", label: "Income Growth", executionWeight: 30 },
+  { value: "savings_growth", label: "Savings Growth", executionWeight: 24 },
+  { value: "investment_milestone", label: "Investment Milestone", executionWeight: 26 },
 ];
 
 export function getOutcomeLabel(type: OutcomeType) {

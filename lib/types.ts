@@ -216,9 +216,22 @@ export type OutcomeType =
   | "skills"
   | "fitness"
   | "projects"
-  | "education";
+  | "education"
+  | "salary_increase"
+  | "certification"
+  | "first_client"
+  | "product_launch"
+  | "audience_growth"
+  | "skill_acquired"
+  | "project_completed"
+  | "framework_mastered"
+  | "strength_gain"
+  | "habit_consistency"
+  | "income_growth"
+  | "savings_growth"
+  | "investment_milestone";
 
-export type EvidenceType = "link" | "screenshot" | "document" | "video" | "note";
+export type EvidenceType = "link" | "image" | "screenshot" | "document" | "pdf" | "video" | "note";
 
 export type EvidenceAttachment = {
   id: string;
@@ -231,13 +244,16 @@ export type EvidenceAttachment = {
 export type UserOutcome = {
   id: string;
   type: OutcomeType;
+  status: "planned" | "started" | "in_progress" | "completed" | "validated";
   goal: string;
   action: string;
   title: string;
   description: string;
   topics: Interest[];
   evidenceIds: string[];
+  confidence: "low" | "medium" | "high" | "verified";
   createdAt: string;
+  updatedAt: string;
 };
 
 export type OutcomeIntelligenceScore = {
@@ -245,6 +261,18 @@ export type OutcomeIntelligenceScore = {
   outcomeScore: number;
   improvementScore: number;
   outcomeVelocity: number;
+  outcomeQuality: number;
+  outcomeFrequency: number;
+  outcomeConsistency: number;
+  combinedOutcomeScore: number;
+};
+
+export type OutcomeExecutionRecord = {
+  id: string;
+  outcomeId: string;
+  type: "attempt" | "success" | "failure" | "iteration";
+  note: string;
+  createdAt: string;
 };
 
 export type ConceptActionStage = "learned" | "attempted" | "applied" | "repeated" | "mastered";
@@ -421,6 +449,7 @@ export type LearningState = {
   followedCreatorIds: string[];
   userContributions: UserContribution[];
   outcomes: UserOutcome[];
+  outcomeExecutions: OutcomeExecutionRecord[];
   evidence: EvidenceAttachment[];
   conceptProgress: Record<string, ConceptProgress>;
   goals: UserGoal[];

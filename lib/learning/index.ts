@@ -51,6 +51,10 @@ import { getOutcomeIntelligenceScore, getOutcomeTimeline } from "@/lib/outcomes/
 import { getSuccessAnalysis } from "@/lib/outcomes/success-analysis";
 import { extractOutcomeFrameworks, extractOutcomeLessons } from "@/lib/learning/outcome-extraction";
 import { generateOutcomePlaybooks } from "@/lib/playbooks/playbook-generator";
+import { getOutcomeAttributionMap } from "@/lib/attribution/outcome-attribution";
+import { getExecutionEngine } from "@/lib/execution/execution-engine";
+import { getOutcomeVelocity } from "@/lib/velocity/outcome-velocity";
+import { getCompoundingModel } from "@/lib/compounding/compounding-model";
 import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getNormalizedContentById } from "@/lib/content/ingestion";
 import { updateConceptProgress, updateConceptProgressForOutcome } from "@/lib/progression/concept-pipeline";
@@ -93,6 +97,7 @@ function createDefaultLearningState(): LearningState {
     followedCreatorIds: [],
     userContributions: [],
     outcomes: [],
+    outcomeExecutions: [],
     evidence: [],
     conceptProgress: {},
     goals: [],
@@ -194,7 +199,15 @@ function parseLearningState(value: string | null): LearningState {
       followedPathIds: uniqueValues(parsed.followedPathIds ?? []),
       followedCreatorIds: uniqueValues(parsed.followedCreatorIds ?? []),
       userContributions: parsed.userContributions ?? [],
-      outcomes: parsed.outcomes ?? [],
+      outcomes: (parsed.outcomes ?? []).map((outcome) => ({
+        ...outcome,
+        status: outcome.status ?? (outcome.evidenceIds?.length ? "validated" : "completed"),
+        confidence: outcome.confidence ?? (outcome.evidenceIds?.length ? "verified" : "medium"),
+        goal: outcome.goal ?? outcome.title,
+        action: outcome.action ?? outcome.description,
+        updatedAt: outcome.updatedAt ?? outcome.createdAt,
+      })),
+      outcomeExecutions: parsed.outcomeExecutions ?? [],
       evidence: parsed.evidence ?? [],
       conceptProgress: parsed.conceptProgress ?? {},
       goals: (parsed.goals ?? []).map(normalizeGoal),
@@ -646,6 +659,7 @@ export type OutcomeResult =
 
 export function logOutcome(input: {
   type: OutcomeType;
+  status?: UserOutcome["status"];
   goal?: string;
   action?: string;
   title: string;
@@ -672,13 +686,30 @@ export function logOutcome(input: {
     const outcome: UserOutcome = {
       id: `outcome-${Date.now()}`,
       type: input.type,
+      status: input.status ?? (evidence ? "validated" : "completed"),
       goal: input.goal?.trim() || input.title.trim(),
       action: input.action?.trim() || input.description.trim(),
       title: input.title.trim(),
       description: input.description.trim(),
       topics: input.topics,
       evidenceIds: evidence ? [evidence.id] : [],
+      confidence: evidence ? "verified" : "medium",
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    const attempt = {
+      id: `execution-${Date.now()}-attempt`,
+      outcomeId: outcome.id,
+      type: "attempt" as const,
+      note: outcome.action,
+      createdAt: outcome.createdAt,
+    };
+    const success = {
+      id: `execution-${Date.now()}-success`,
+      outcomeId: outcome.id,
+      type: "success" as const,
+      note: outcome.title,
+      createdAt: outcome.createdAt,
     };
     const nextState = input.topics.reduce(
       (currentState, topic) => ({
@@ -688,6 +719,7 @@ export function logOutcome(input: {
       {
         ...state,
         outcomes: [outcome, ...state.outcomes].slice(0, 120),
+        outcomeExecutions: [success, attempt, ...state.outcomeExecutions].slice(0, 240),
         evidence: evidence ? [evidence, ...state.evidence].slice(0, 160) : state.evidence,
       },
     );
@@ -909,6 +941,10 @@ export function getProgressStats(state: LearningState) {
     lessons: extractOutcomeLessons(state),
     frameworks: extractOutcomeFrameworks(state),
     playbooks: generateOutcomePlaybooks(state),
+    attribution: getOutcomeAttributionMap(state),
+    execution: getExecutionEngine(state),
+    velocity: getOutcomeVelocity(state),
+    compounding: getCompoundingModel(state),
   };
 
   return {

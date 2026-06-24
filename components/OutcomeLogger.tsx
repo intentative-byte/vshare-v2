@@ -11,6 +11,7 @@ import type { EvidenceType, Interest, OutcomeType } from "@/lib/types";
 
 export function OutcomeLogger() {
   const [type, setType] = useState<OutcomeType>("learned_skill");
+  const [status, setStatus] = useState<"planned" | "started" | "in_progress" | "completed" | "validated">("completed");
   const [goal, setGoal] = useState("");
   const [action, setAction] = useState("");
   const [title, setTitle] = useState("");
@@ -24,6 +25,7 @@ export function OutcomeLogger() {
   function handleSubmit() {
     const result = logOutcome({
       type,
+      status,
       goal,
       action,
       title,
@@ -78,6 +80,17 @@ export function OutcomeLogger() {
               {outcome.label}
             </option>
           ))}
+        </select>
+        <select
+          value={status}
+          onChange={(event) => setStatus(event.target.value as typeof status)}
+          className="min-h-12 rounded-2xl border border-slate-200 px-4 font-semibold outline-none"
+        >
+          <option value="planned">Planned</option>
+          <option value="started">Started</option>
+          <option value="in_progress">In progress</option>
+          <option value="completed">Completed</option>
+          <option value="validated">Validated</option>
         </select>
         <input
           value={goal}

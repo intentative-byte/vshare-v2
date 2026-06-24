@@ -172,11 +172,17 @@ export function ProfileDashboard() {
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Outcome intelligence</p>
-        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.outcomeIntelligence.score.outcomeVelocity}% outcome velocity</h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.outcomeIntelligence.score.combinedOutcomeScore}% outcome score</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-4">
           <StatCard icon={Target} label="Execution score" value={`${stats.outcomeIntelligence.score.executionScore}%`} />
           <StatCard icon={Target} label="Outcome score" value={`${stats.outcomeIntelligence.score.outcomeScore}%`} />
           <StatCard icon={Target} label="Improvement score" value={`${stats.outcomeIntelligence.score.improvementScore}%`} />
+          <StatCard icon={Target} label="Outcome velocity" value={`${stats.outcomeIntelligence.score.outcomeVelocity}%`} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <DashboardRow label="Velocity" value={`${stats.outcomeIntelligence.velocity.resultsPerMonth}/month · ${stats.outcomeIntelligence.velocity.resultsPerQuarter}/quarter · ${stats.outcomeIntelligence.velocity.resultsPerYear}/year`} />
+          <DashboardRow label="Execution" value={`${stats.outcomeIntelligence.execution.attempts} attempts · ${stats.outcomeIntelligence.execution.successes} successes · ${stats.outcomeIntelligence.execution.iterations} iterations`} />
+          <DashboardRow label="Compounding" value={`${stats.outcomeIntelligence.compounding.compoundingScore}% · knowledge ${stats.outcomeIntelligence.compounding.knowledgeGrowth}% · capability ${stats.outcomeIntelligence.compounding.capabilityGrowth}%`} />
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-3">
           <OutcomeList title="What worked" items={stats.outcomeIntelligence.successAnalysis.worked} />
@@ -206,8 +212,16 @@ export function ProfileDashboard() {
         </div>
 
         <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
-          <h2 className="text-2xl font-black tracking-tight">Lessons and playbooks</h2>
+          <h2 className="text-2xl font-black tracking-tight">Attribution and playbooks</h2>
           <div className="mt-5 grid gap-3">
+            {stats.outcomeIntelligence.attribution.slice(0, 2).map((item) => (
+              <div key={item.outcome.id} className="rounded-2xl bg-mist p-4">
+                <p className="font-black">{item.outcome.title}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-600">
+                  {item.contributors.slice(0, 3).map((contributor) => contributor.label).join(", ") || "Attribution forming"}
+                </p>
+              </div>
+            ))}
             {stats.outcomeIntelligence.lessons.slice(0, 3).map((lesson) => (
               <div key={lesson.id} className="rounded-2xl bg-mist p-4">
                 <p className="text-sm font-semibold leading-6 text-slate-700">{lesson.lesson}</p>

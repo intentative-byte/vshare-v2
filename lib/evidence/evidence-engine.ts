@@ -2,8 +2,10 @@ import type { EvidenceAttachment, EvidenceType, UserOutcome } from "@/lib/types"
 
 export const evidenceTypes: Array<{ value: EvidenceType; label: string; score: number }> = [
   { value: "link", label: "Link", score: 12 },
+  { value: "image", label: "Image", score: 18 },
   { value: "screenshot", label: "Screenshot", score: 18 },
   { value: "document", label: "Document", score: 20 },
+  { value: "pdf", label: "PDF", score: 20 },
   { value: "video", label: "Video", score: 22 },
   { value: "note", label: "Note", score: 10 },
 ];
