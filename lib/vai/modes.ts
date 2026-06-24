@@ -4,7 +4,6 @@ import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
 import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
-import { getStrategicPlanningEngine } from "@/lib/strategy/strategic-planning";
 import { getLifeOperatingSystem } from "@/lib/life-os/life-operating-system";
 import { getCollectiveIntelligence } from "@/lib/community-intelligence/collective-intelligence";
 import { getMarketIntelligence } from "@/lib/market/market-intelligence";
@@ -26,7 +25,6 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const goalOS = getGoalOperatingSystem(state);
   const economy = getPersonalEconomy(state);
   const simulation = getSimulationEngine(state);
-  const strategy = getStrategicPlanningEngine(state);
   const lifeOS = getLifeOperatingSystem(state);
   const collective = getCollectiveIntelligence(state);
   const market = getMarketIntelligence(state);
