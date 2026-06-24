@@ -48,6 +48,26 @@ export function ProfileDashboard() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Collective intelligence</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.collective.collectiveLearningGain}% collective learning gain</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Proven path" value={stats.collective.provenPath} />
+          <DashboardRow label="Successful behavior" value={stats.collective.successfulBehavior} />
+          <DashboardRow label="Superior route" value={stats.collective.superiorRoute} />
+          <DashboardRow label="Capability network" value={`${stats.collective.capabilityNetwork.edges.length} anonymized edges`} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {stats.collective.playbooks.slice(0, 3).map((playbook) => (
+            <div key={playbook.id} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{playbook.title}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-600">{playbook.steps.join(" -> ")}</p>
+              <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-700">{playbook.confidence}% confidence</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatCard
           icon={Flame}

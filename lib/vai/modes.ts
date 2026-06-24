@@ -6,6 +6,7 @@ import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
 import { getStrategicPlanningEngine } from "@/lib/strategy/strategic-planning";
 import { getLifeOperatingSystem } from "@/lib/life-os/life-operating-system";
+import { getCollectiveIntelligence } from "@/lib/community-intelligence/collective-intelligence";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -26,6 +27,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const simulation = getSimulationEngine(state);
   const strategy = getStrategicPlanningEngine(state);
   const lifeOS = getLifeOperatingSystem(state);
+  const collective = getCollectiveIntelligence(state);
 
   if (state.vaiMode === "silent") {
     return {
@@ -40,7 +42,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "coach",
       headline: "VAI Coach",
-      suggestion: `Stop: ${economy.stopDoing} Double down: ${economy.doubleDown}. Do ${goalOS.nextMilestone?.label ?? vaiDecision.recommendedNextStep} and log proof.`,
+      suggestion: `Adopt proven behavior: ${collective.successfulBehavior}. Stop: ${economy.stopDoing} Do ${goalOS.nextMilestone?.label ?? vaiDecision.recommendedNextStep} and log proof.`,
       actionLabel: "Take action",
     };
   }
@@ -49,7 +51,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `Strategic alignment ${strategy.strategicAlignmentScore}%. Primary objective: ${strategy.objectives.primaryObjective}. Next action: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}.`,
+      suggestion: `Use statistically stronger route: ${collective.superiorRoute}. Strategic alignment ${strategy.strategicAlignmentScore}%. Next action: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}.`,
       actionLabel: "Do next",
     };
   }
@@ -67,7 +69,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     mode: "partner",
     headline: "VAI Partner",
     suggestion: nextConcept
-      ? `Suggested improvement: ${vaiDecision.recommendedNextStep}. Resource allocation: ${economy.allocation.learning}% learning, ${economy.allocation.outreach}% outreach, ${economy.allocation.product}% product.`
+      ? `Proven path: ${collective.provenPath}. Suggested improvement: ${vaiDecision.recommendedNextStep}.`
       : `You are progressing toward ${learningMap.targetPosition}. Outcome velocity is ${outcomeScore.outcomeVelocity}.`,
     actionLabel: "Review suggestion",
   };
