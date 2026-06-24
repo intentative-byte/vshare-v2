@@ -4,6 +4,7 @@ import { getOutcomeIntelligenceScore } from "@/lib/outcomes/outcome-intelligence
 import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
 import { getPersonalEconomy } from "@/lib/economy/personal-economy";
+import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -22,6 +23,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const vaiDecision = getVaiDecisionEngine(state);
   const goalOS = getGoalOperatingSystem(state);
   const economy = getPersonalEconomy(state);
+  const simulation = getSimulationEngine(state);
   const [topPerson] = network.matches.people;
 
   if (state.vaiMode === "silent") {
@@ -46,7 +48,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `Optimize around ${goalOS.currentGoal?.desiredOutcome ?? "the highest-value outcome"}. Most leverage: ${economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}. Opportunity cost: ${economy.opportunityCost.opportunityCostScore}%. Strategic relationship: ${topPerson?.expert.name ?? "build one expert connection"}.`,
+      suggestion: `Simulated best path: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}. Expected progress ${simulation.bestPath?.expectedProgress ?? 0}%. Then optimize around ${goalOS.currentGoal?.desiredOutcome ?? "the highest-value outcome"}.`,
       actionLabel: "Do next",
     };
   }

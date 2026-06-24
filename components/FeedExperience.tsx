@@ -114,6 +114,9 @@ export function FeedExperience() {
               <p className="mt-2 text-sm leading-6 text-slate-200">
                 Economy: stop {stats.economy.stopDoing.toLowerCase()} Double down on {stats.economy.doubleDown}.
               </p>
+              <p className="mt-2 text-sm leading-6 text-slate-200">
+                Simulation: {stats.simulation.bestPath?.optionLabel ?? "No path yet"} -> {stats.simulation.bestPath?.expectedProgress ?? 0}% expected progress
+              </p>
               <p className="mt-2 text-sm leading-6 text-slate-200">Decision lens: {stats.decisionIntelligence.latestRecommendation}</p>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
                 {stats.personalDashboard.recommendedNextAction.mode} · {stats.personalDashboard.recommendedNextAction.estimatedMinutes} min

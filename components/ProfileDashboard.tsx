@@ -171,6 +171,41 @@ export function ProfileDashboard() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Simulation engine</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">
+          {stats.simulation.bestPath?.optionLabel ?? "No path to simulate yet"}
+        </h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Best path expected progress" value={`${stats.simulation.bestPath?.expectedProgress ?? 0}%`} />
+          <DashboardRow label="Decision confidence" value={`${stats.simulation.decisionConfidence.before}% -> ${stats.simulation.decisionConfidence.after}%`} />
+          <DashboardRow label="Execution risk" value={`${stats.simulation.risk.executionRisk}%`} />
+          <DashboardRow label="Knowledge risk" value={`${stats.simulation.risk.knowledgeRisk}%`} />
+          <DashboardRow label="Resource risk" value={`${stats.simulation.risk.resourceRisk}%`} />
+          <DashboardRow label="Focus risk" value={`${stats.simulation.risk.focusRisk}%`} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {stats.simulation.pathComparison.map((path) => (
+            <div key={path.optionLabel} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{path.optionLabel}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-600">
+                Risk {path.risk}% - Opportunity {path.opportunity}% - Progress {path.expectedProgress}%
+              </p>
+            </div>
+          ))}
+        </div>
+        {stats.simulation.simulations[0] ? (
+          <div className="mt-5 grid gap-3">
+            {stats.simulation.simulations[0].projections.slice(0, 3).map((projection) => (
+              <div key={projection.horizon} className="rounded-2xl bg-violet-50 p-4">
+                <p className="font-black text-violet-700">{projection.horizon.replace("_", " ")}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-600">{projection.expectedCase}</p>
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </section>
+
       <DecisionLogger />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
