@@ -335,16 +335,14 @@ export function saveInterests(interests: string[]) {
         topic: interest,
       }),
     );
+    const initialState: LearningState = {
+      ...state,
+      interests: selectedInterests,
+      interestScores: recalibrateSelectedInterests(state.interestScores, selectedInterests),
+      onboardedAt: state.onboardedAt ?? now,
+    };
 
-    return selectionSignals.reduce(
-      (nextState, signal) => applySignal(nextState, signal),
-      {
-        ...state,
-        interests: selectedInterests,
-        interestScores: recalibrateSelectedInterests(state.interestScores, selectedInterests),
-        onboardedAt: state.onboardedAt ?? now,
-      },
-    );
+    return selectionSignals.reduce<LearningState>((nextState, signal) => applySignal(nextState, signal), initialState);
   });
 }
 
