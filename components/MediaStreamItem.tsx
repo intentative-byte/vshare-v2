@@ -104,16 +104,20 @@ export const MediaStreamItem = memo(function MediaStreamItem({
   async function handleShare() {
     onShare(item.content.id);
 
-    if (navigator.share) {
-      await navigator.share({
-        title: item.content.title,
-        text: item.content.summary,
-        url: window.location.href,
-      });
-      return;
-    }
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: item.content.title,
+          text: item.content.summary,
+          url: window.location.href,
+        });
+        return;
+      }
 
-    await navigator.clipboard?.writeText(`${item.content.title}\n${item.content.summary}`);
+      await navigator.clipboard?.writeText(`${item.content.title}\n${item.content.summary}`);
+    } catch {
+      // Sharing can be cancelled or unavailable; the intent is still recorded.
+    }
   }
 
   return (

@@ -87,18 +87,22 @@ export function LearningCard({
   async function handleShare() {
     onShare(content.id);
 
-    const sharePayload = {
-      title: content.title,
-      text: content.summary,
-      url: window.location.href,
-    };
+    try {
+      const sharePayload = {
+        title: content.title,
+        text: content.summary,
+        url: window.location.href,
+      };
 
-    if (navigator.share) {
-      await navigator.share(sharePayload);
-      return;
+      if (navigator.share) {
+        await navigator.share(sharePayload);
+        return;
+      }
+
+      await navigator.clipboard?.writeText(`${content.title}\n${content.summary}`);
+    } catch {
+      // Sharing can be cancelled or unavailable; the intent is still recorded.
     }
-
-    await navigator.clipboard?.writeText(`${content.title}\n${content.summary}`);
   }
 
   return (

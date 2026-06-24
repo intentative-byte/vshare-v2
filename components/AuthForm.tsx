@@ -16,7 +16,7 @@ export function AuthForm() {
 
       <div className="mt-8 space-y-4">
         <Button type="button" onClick={() => router.push("/feed")} className="w-full py-3">
-          Open feed
+          Continue in demo mode
           <ArrowRight className="ml-2 size-4" />
         </Button>
         <Button type="button" variant="secondary" onClick={() => router.push("/onboarding")} className="w-full py-3">
