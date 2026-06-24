@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowRight, Hash } from "lucide-react";
 import { ContentCard } from "@/components/ContentCard";
-import { getDemoOnboarding } from "@/lib/demo";
+import { useDemoOnboarding } from "@/lib/demo";
 import type { FeedItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -18,19 +18,9 @@ type ExploreClientProps = {
 };
 
 export function ExploreClient({ initialTopics, initialPosts }: ExploreClientProps) {
-  const [localTopics, setLocalTopics] = useState<string[]>([]);
+  const demoOnboarding = useDemoOnboarding();
+  const localTopics = useMemo(() => demoOnboarding?.topics ?? [], [demoOnboarding]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-
-  useEffect(() => {
-    const demoOnboarding = getDemoOnboarding();
-
-    if (!demoOnboarding?.topics.length) {
-      return;
-    }
-
-    setLocalTopics(demoOnboarding.topics);
-    setSelectedTopic((currentTopic) => currentTopic ?? demoOnboarding.topics[0] ?? null);
-  }, []);
 
   const topics = useMemo(() => {
     const topicCounts = new Map(initialTopics.map((item) => [item.topic, item.count]));

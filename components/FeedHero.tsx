@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getDemoOnboarding, profileFromDemoOnboarding } from "@/lib/demo";
+import { profileFromDemoOnboarding, useDemoOnboarding } from "@/lib/demo";
 import type { Profile } from "@/lib/types";
 
 type FeedHeroProps = {
@@ -9,15 +8,8 @@ type FeedHeroProps = {
 };
 
 export function FeedHero({ initialProfile }: FeedHeroProps) {
-  const [profile, setProfile] = useState(initialProfile);
-
-  useEffect(() => {
-    if (!initialProfile) {
-      return;
-    }
-
-    setProfile(profileFromDemoOnboarding(initialProfile, getDemoOnboarding()));
-  }, [initialProfile]);
+  const demoOnboarding = useDemoOnboarding();
+  const profile = initialProfile ? profileFromDemoOnboarding(initialProfile, demoOnboarding) : null;
 
   const firstName = profile?.full_name?.split(" ")[0] ?? profile?.username;
 

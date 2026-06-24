@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/Button";
-import { getDemoOnboarding, profileFromDemoOnboarding } from "@/lib/demo";
+import { profileFromDemoOnboarding, useDemoOnboarding } from "@/lib/demo";
 import type { Profile } from "@/lib/types";
 
 type ProfileHeroProps = {
@@ -12,15 +11,8 @@ type ProfileHeroProps = {
 };
 
 export function ProfileHero({ initialProfile }: ProfileHeroProps) {
-  const [profile, setProfile] = useState(initialProfile);
-
-  useEffect(() => {
-    if (!initialProfile) {
-      return;
-    }
-
-    setProfile(profileFromDemoOnboarding(initialProfile, getDemoOnboarding()));
-  }, [initialProfile]);
+  const demoOnboarding = useDemoOnboarding();
+  const profile = initialProfile ? profileFromDemoOnboarding(initialProfile, demoOnboarding) : null;
 
   const interests = profile?.interests?.length ? profile.interests : ["AI", "Product", "Engineering"];
 

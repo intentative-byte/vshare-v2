@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
 import { goalOptions, topicOptions } from "@/lib/data";
-import { getDemoOnboarding, saveDemoOnboarding } from "@/lib/demo";
+import { saveDemoOnboarding } from "@/lib/demo";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
 
@@ -20,20 +20,6 @@ export function OnboardingForm() {
   const [isPending, startTransition] = useTransition();
 
   const canSubmit = useMemo(() => topics.length > 0 && goals.length > 0 && username.trim().length >= 3, [goals, topics, username]);
-
-  useEffect(() => {
-    const demoOnboarding = getDemoOnboarding();
-
-    if (!demoOnboarding) {
-      return;
-    }
-
-    setTopics(demoOnboarding.topics);
-    setGoals(demoOnboarding.goals);
-    setDailyMinutes(demoOnboarding.daily_minutes);
-    setHeadline(demoOnboarding.headline ?? "");
-    setUsername(demoOnboarding.username);
-  }, []);
 
   function toggleValue(value: string, values: string[], setter: (next: string[]) => void) {
     setter(values.includes(value) ? values.filter((item) => item !== value) : [...values, value]);
