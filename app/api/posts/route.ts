@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getFeedPosts } from "@/lib/queries";
+import { getSupabaseConfigurationError } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import type { Post } from "@/lib/types";
 
@@ -17,7 +18,10 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
   if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    return NextResponse.json(
+      { error: getSupabaseConfigurationError() ?? "Supabase is not configured." },
+      { status: 503 },
+    );
   }
 
   const {

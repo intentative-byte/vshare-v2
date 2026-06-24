@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getSupabaseConfigurationError } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 
 type PreferencePayload = {
@@ -11,7 +12,10 @@ export async function GET() {
   const supabase = await createClient();
 
   if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    return NextResponse.json(
+      { error: getSupabaseConfigurationError() ?? "Supabase is not configured." },
+      { status: 503 },
+    );
   }
 
   const {
@@ -35,7 +39,10 @@ export async function PUT(request: NextRequest) {
   const supabase = await createClient();
 
   if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    return NextResponse.json(
+      { error: getSupabaseConfigurationError() ?? "Supabase is not configured." },
+      { status: 503 },
+    );
   }
 
   const {
