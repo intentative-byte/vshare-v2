@@ -1,4 +1,6 @@
 import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
+import { getGoalDependencies } from "@/lib/dependencies/dependency-engine";
+import { getGoalMilestones } from "@/lib/milestones/milestone-engine";
 import type { LearningState, UserGoal } from "@/lib/types";
 
 export type GoalRoadmap = {
@@ -7,23 +9,40 @@ export type GoalRoadmap = {
   skillsRequired: string[];
   knowledgeRequired: string[];
   projectsRequired: string[];
+  outcomesRequired: string[];
+  plan30Days: string[];
+  plan90Days: string[];
+  plan1Year: string[];
 };
 
 export function decomposeGoal(goal: UserGoal, state: LearningState): GoalRoadmap {
   const nextConcepts = getRecommendedNextConcepts(state).filter((concept) => goal.topics.includes(concept.topic));
   const primaryTopic = goal.topics[0] ?? "Other";
+  const dependencies = getGoalDependencies(goal);
+  const milestones = getGoalMilestones(goal, state);
 
   return {
     goalId: goal.id,
-    milestones: [
-      `Clarify success for ${goal.title}`,
-      `Build baseline knowledge in ${primaryTopic}`,
-      `Apply one skill in a real project`,
-      `Log an outcome with evidence`,
-    ],
-    skillsRequired: nextConcepts.map((concept) => concept.concept).slice(0, 4),
-    knowledgeRequired: goal.topics.map((topic) => `${topic} fundamentals`),
+    milestones: milestones.map((milestone) => milestone.label),
+    skillsRequired: Array.from(new Set([...nextConcepts.map((concept) => concept.concept), ...dependencies])).slice(0, 6),
+    knowledgeRequired: Array.from(new Set([...goal.topics.map((topic) => `${topic} fundamentals`), ...dependencies.map((item) => `${item} basics`)])).slice(0, 8),
     projectsRequired: [`Create a proof project for ${goal.desiredOutcome}`],
+    outcomesRequired: [`Evidence that ${goal.desiredOutcome}`, `A logged result tied to ${primaryTopic}`],
+    plan30Days: [
+      `Clarify success for ${goal.title}`,
+      `Learn ${dependencies[0] ?? `${primaryTopic} fundamentals`}`,
+      `Complete one practice session`,
+    ],
+    plan90Days: [
+      `Build a proof project for ${goal.desiredOutcome}`,
+      `Get feedback on the project`,
+      `Log one evidence-backed outcome`,
+    ],
+    plan1Year: [
+      `Convert ${goal.title} into a repeatable capability`,
+      `Teach the framework to someone else`,
+      `Stack multiple outcomes toward ${goal.desiredOutcome}`,
+    ],
   };
 }
 

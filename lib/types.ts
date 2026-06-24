@@ -268,12 +268,20 @@ export type CapabilityScore = {
 
 export type GoalType = "learn" | "career" | "business" | "health" | "financial" | "project";
 
+export type GoalPriority = "low" | "medium" | "high" | "critical";
+
+export type GoalDifficulty = "easy" | "moderate" | "hard" | "extreme";
+
 export type UserGoal = {
   id: string;
   type: GoalType;
   title: string;
   desiredOutcome: string;
   topics: Interest[];
+  priority: GoalPriority;
+  difficulty: GoalDifficulty;
+  category: GoalType;
+  deadline: string | null;
   createdAt: string;
   targetDate: string | null;
 };

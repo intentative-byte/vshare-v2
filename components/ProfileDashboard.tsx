@@ -57,6 +57,31 @@ export function ProfileDashboard() {
       <GrowthPlanner />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Goal engine</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">
+          {stats.goalOS.currentGoal?.title ?? "Set a destination"}
+        </h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Progress" value={`${stats.goalOS.progress}%`} />
+          <DashboardRow label="Next milestone" value={stats.goalOS.nextMilestone?.label ?? "Create a goal to generate milestones"} />
+          <DashboardRow label="Top bottleneck" value={stats.goalOS.topBottleneck.reason} />
+          <DashboardRow label="Recommended action" value={stats.goalOS.recommendedAction.title} />
+          <DashboardRow label="Goal completion rate" value={`${stats.goalOS.goalCompletionRate}%`} />
+          <DashboardRow
+            label="Conflict check"
+            value={stats.goalOS.conflicts.hasConflict ? stats.goalOS.conflicts.conflicts[0] : "No impossible schedule detected"}
+          />
+        </div>
+        {stats.goalOS.roadmaps[0] ? (
+          <div className="mt-5 grid gap-3 lg:grid-cols-3">
+            <DashboardRow label="30 day plan" value={stats.goalOS.roadmaps[0].plan30Days.join(" -> ")} />
+            <DashboardRow label="90 day plan" value={stats.goalOS.roadmaps[0].plan90Days.join(" -> ")} />
+            <DashboardRow label="1 year plan" value={stats.goalOS.roadmaps[0].plan1Year.join(" -> ")} />
+          </div>
+        ) : null}
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Decision intelligence</p>
         <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.decisionIntelligence.decisionQualityScore}% decision quality</h2>
         <div className="mt-5 grid gap-3 lg:grid-cols-2">

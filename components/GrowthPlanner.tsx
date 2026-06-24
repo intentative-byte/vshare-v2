@@ -6,10 +6,13 @@ import { Button } from "@/components/Button";
 import { InterestPicker } from "@/components/InterestPicker";
 import { addGoal, addProject } from "@/lib/learning";
 import { goalTypes } from "@/lib/goals/goal-engine";
-import type { GoalType, Interest } from "@/lib/types";
+import type { GoalDifficulty, GoalPriority, GoalType, Interest } from "@/lib/types";
 
 export function GrowthPlanner() {
   const [goalType, setGoalType] = useState<GoalType>("learn");
+  const [priority, setPriority] = useState<GoalPriority>("medium");
+  const [difficulty, setDifficulty] = useState<GoalDifficulty>("moderate");
+  const [deadline, setDeadline] = useState("");
   const [goalTitle, setGoalTitle] = useState("");
   const [desiredOutcome, setDesiredOutcome] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
@@ -24,6 +27,10 @@ export function GrowthPlanner() {
       title: goalTitle,
       desiredOutcome,
       topics,
+      priority,
+      difficulty,
+      deadline: deadline || null,
+      category: goalType,
     });
 
     if (!result.ok) {
@@ -33,6 +40,7 @@ export function GrowthPlanner() {
 
     setGoalTitle("");
     setDesiredOutcome("");
+    setDeadline("");
     setMessage("Goal added. Roadmap generated.");
   }
 
@@ -95,6 +103,34 @@ export function GrowthPlanner() {
             rows={3}
             className="rounded-2xl border border-slate-200 px-4 py-3 outline-none"
           />
+          <div className="grid gap-3 sm:grid-cols-3">
+            <select
+              value={priority}
+              onChange={(event) => setPriority(event.target.value as GoalPriority)}
+              className="min-h-12 rounded-2xl border border-slate-200 px-4 font-semibold outline-none"
+            >
+              <option value="low">Low priority</option>
+              <option value="medium">Medium priority</option>
+              <option value="high">High priority</option>
+              <option value="critical">Critical priority</option>
+            </select>
+            <select
+              value={difficulty}
+              onChange={(event) => setDifficulty(event.target.value as GoalDifficulty)}
+              className="min-h-12 rounded-2xl border border-slate-200 px-4 font-semibold outline-none"
+            >
+              <option value="easy">Easy</option>
+              <option value="moderate">Moderate</option>
+              <option value="hard">Hard</option>
+              <option value="extreme">Extreme</option>
+            </select>
+            <input
+              type="date"
+              value={deadline}
+              onChange={(event) => setDeadline(event.target.value)}
+              className="min-h-12 rounded-2xl border border-slate-200 px-4 outline-none"
+            />
+          </div>
           <Button type="button" onClick={handleGoalSubmit}>
             Add goal
           </Button>

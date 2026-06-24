@@ -34,7 +34,8 @@ import { getNotificationIntents } from "@/lib/notifications/framework";
 import { getRecommendedLearningPaths } from "@/lib/paths/learning-paths";
 import { getWeeklyRecap } from "@/lib/retention/weekly-recap";
 import { getLearningOperatingSystem } from "@/lib/intelligence/operating-system";
-import { createGoal, getGoalProgress, isValidGoal } from "@/lib/goals/goal-engine";
+import { createGoal, getGoalProgress, isValidGoal, normalizeGoal } from "@/lib/goals/goal-engine";
+import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
 import { getGoalRoadmaps } from "@/lib/roadmaps/decompose-goal";
 import { createProject, isValidProject, updateProjectStatus } from "@/lib/projects/project-system";
 import { defaultTimeAllocation, normalizeTimeAllocation, recommendTimeAllocation } from "@/lib/projects/time-allocation";
@@ -56,6 +57,8 @@ import type {
   ContentEngagement,
   ContributionType,
   EvidenceType,
+  GoalDifficulty,
+  GoalPriority,
   GoalType,
   Interest,
   LearningState,
@@ -193,7 +196,7 @@ function parseLearningState(value: string | null): LearningState {
       outcomes: parsed.outcomes ?? [],
       evidence: parsed.evidence ?? [],
       conceptProgress: parsed.conceptProgress ?? {},
-      goals: parsed.goals ?? [],
+      goals: (parsed.goals ?? []).map(normalizeGoal),
       projects: parsed.projects ?? [],
       timeAllocation: normalizeTimeAllocation(parsed.timeAllocation),
       decisions: parsed.decisions ?? [],
@@ -703,6 +706,10 @@ export function addGoal(input: {
   desiredOutcome: string;
   topics: Interest[];
   targetDate?: string | null;
+  deadline?: string | null;
+  priority?: GoalPriority;
+  difficulty?: GoalDifficulty;
+  category?: GoalType;
 }): GoalResult {
   if (!isValidGoal(input)) {
     return { ok: false, error: "invalid_goal" };
@@ -888,6 +895,7 @@ export function getProgressStats(state: LearningState) {
   const personalDashboard = getPersonalDashboard(state);
   const growth = getPersonalGrowthScore(state);
   const goalRoadmaps = getGoalRoadmaps(state);
+  const goalOS = getGoalOperatingSystem(state);
   const recommendedTimeAllocation = recommendTimeAllocation(state);
   const decisionIntelligence = getDecisionIntelligence(state);
   const networkIntelligence = getNetworkIntelligence(state);
@@ -924,6 +932,7 @@ export function getProgressStats(state: LearningState) {
     personalDashboard,
     growth,
     goalRoadmaps,
+    goalOS,
     recommendedTimeAllocation,
     decisionIntelligence,
     networkIntelligence,
