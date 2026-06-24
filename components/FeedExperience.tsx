@@ -98,46 +98,17 @@ export function FeedExperience() {
               Swipe through new, relevant, unseen lessons. The stream adapts as you watch, skip, like, and save.
             </p>
             <div className="mt-4 rounded-3xl bg-white/10 p-4">
-              <p className="text-sm font-black text-violet-100">Highest leverage action</p>
-              <p className="mt-1 text-sm leading-6 text-slate-200">
-                Goal: {stats.goalOS.currentGoal?.title ?? "Set a destination"} · Milestone:{" "}
-                {stats.goalOS.nextMilestone?.label ?? "Choose the next target"}
-              </p>
-              <p className="mt-1 text-lg font-black leading-6 text-white">{stats.personalDashboard.recommendedNextAction.title}</p>
-              <p className="mt-1 text-sm leading-6 text-slate-200">{stats.personalDashboard.recommendedNextAction.reason}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                VAI confidence: {stats.vaiDecision.confidenceScore}% · Expected: {stats.vaiDecision.expectedOutcome}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Twin: {stats.digitalTwin.momentum.momentumScore}% momentum · {stats.digitalTwin.drift.driftScore}% drift
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Economy: stop {stats.economy.stopDoing.toLowerCase()} Double down on {stats.economy.doubleDown}.
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Simulation: {stats.simulation.bestPath?.optionLabel ?? "No path yet"} {"->"} {stats.simulation.bestPath?.expectedProgress ?? 0}% expected progress
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Future: {stats.futureState.likelyFuture.label} {"->"} {stats.futureState.likelyFuture.capability}% capability
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Strategy: {stats.strategy.strategicAlignmentScore}% aligned - {stats.strategy.objectives.primaryObjective}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Life OS: {stats.lifeOS.lifeAlignmentScore}% aligned - {stats.lifeOS.operator.command}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Collective: {stats.collective.provenPath} - {stats.collective.collectiveLearningGain}% network gain
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Market: {stats.market.marketAlignmentScore}% aligned - build {stats.market.career.missingHighDemandSkills[0]?.skill ?? "market proof"}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Autonomous: {stats.autonomousGrowth.compoundedGrowthRate}% growth - {stats.autonomousGrowth.missions.daily}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">Decision lens: {stats.decisionIntelligence.latestRecommendation}</p>
+              <p className="text-sm font-black text-violet-100">{stats.vai.headline}</p>
+              <p className="mt-1 text-2xl font-black leading-8 text-white">{stats.vai.nextAction}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-200">{stats.vai.reason}</p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <ContextChip label="Goal" value={stats.vai.currentGoal} />
+                <ContextChip label="Constraint" value={stats.vai.topConstraint} />
+                <ContextChip label="Mission" value={stats.vai.dailyMission} />
+                <ContextChip label="Governor" value={stats.vai.governorState} />
+              </div>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
-                {stats.personalDashboard.recommendedNextAction.mode} · {stats.personalDashboard.recommendedNextAction.estimatedMinutes} min
+                {stats.vai.mode} mode · growth {stats.vai.growthScore}% · alignment {stats.vai.lifeAlignmentScore}%
               </p>
             </div>
             {lastViewedContent ? (
@@ -295,6 +266,20 @@ function StreamSkeleton() {
           <div className="h-20 rounded-2xl bg-slate-100" />
         </div>
       </div>
+    </div>
+  );
+}
+
+type ContextChipProps = {
+  label: string;
+  value: string;
+};
+
+function ContextChip({ label, value }: ContextChipProps) {
+  return (
+    <div className="rounded-2xl bg-white/10 p-3">
+      <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-100">{label}</p>
+      <p className="mt-1 text-sm font-bold leading-5 text-white">{value}</p>
     </div>
   );
 }
