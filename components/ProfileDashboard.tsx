@@ -68,6 +68,27 @@ export function ProfileDashboard() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Market intelligence</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.market.marketAlignmentScore}% market alignment</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Emerging skill" value={stats.market.opportunities.emergingSkills[0]?.skill ?? "No signal yet"} />
+          <DashboardRow label="Growing market" value={stats.market.opportunities.growingMarkets[0]?.industry ?? "Market signal forming"} />
+          <DashboardRow label="Capability gap" value={stats.market.career.capabilityGapReport[0] ?? "No market gap detected"} />
+          <DashboardRow label="Recommended job path" value={stats.market.career.recommendedJobs[0] ?? "Build more market evidence"} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {stats.market.skillDemand.slice(0, 3).map((skill) => (
+            <div key={skill.skill} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{skill.skill}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-600">
+                Demand {skill.demand}% - Growth {skill.growth}% - Opportunity {skill.opportunity}%
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatCard
           icon={Flame}

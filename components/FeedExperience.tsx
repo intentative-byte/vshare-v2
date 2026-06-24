@@ -129,6 +129,9 @@ export function FeedExperience() {
               <p className="mt-2 text-sm leading-6 text-slate-200">
                 Collective: {stats.collective.provenPath} - {stats.collective.collectiveLearningGain}% network gain
               </p>
+              <p className="mt-2 text-sm leading-6 text-slate-200">
+                Market: {stats.market.marketAlignmentScore}% aligned - build {stats.market.career.missingHighDemandSkills[0]?.skill ?? "market proof"}
+              </p>
               <p className="mt-2 text-sm leading-6 text-slate-200">Decision lens: {stats.decisionIntelligence.latestRecommendation}</p>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
                 {stats.personalDashboard.recommendedNextAction.mode} · {stats.personalDashboard.recommendedNextAction.estimatedMinutes} min

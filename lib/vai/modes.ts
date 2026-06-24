@@ -7,6 +7,7 @@ import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
 import { getStrategicPlanningEngine } from "@/lib/strategy/strategic-planning";
 import { getLifeOperatingSystem } from "@/lib/life-os/life-operating-system";
 import { getCollectiveIntelligence } from "@/lib/community-intelligence/collective-intelligence";
+import { getMarketIntelligence } from "@/lib/market/market-intelligence";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -28,6 +29,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const strategy = getStrategicPlanningEngine(state);
   const lifeOS = getLifeOperatingSystem(state);
   const collective = getCollectiveIntelligence(state);
+  const market = getMarketIntelligence(state);
 
   if (state.vaiMode === "silent") {
     return {
@@ -51,7 +53,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `Use statistically stronger route: ${collective.superiorRoute}. Strategic alignment ${strategy.strategicAlignmentScore}%. Next action: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}.`,
+      suggestion: `Build market-valued capability: ${market.career.missingHighDemandSkills[0]?.skill ?? collective.superiorRoute}. Market alignment ${market.marketAlignmentScore}%. Next action: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}.`,
       actionLabel: "Do next",
     };
   }
