@@ -1,5 +1,6 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { getActivationProgress } from "@/lib/activation/progress";
+import { getCapabilityOperatingSystem } from "@/lib/capability/operating-system";
 import { interestOptions, learningContent } from "@/lib/data";
 import { getContentHealthMetrics } from "@/lib/analytics/content-health";
 import { getProductAnalytics } from "@/lib/analytics/product-analytics";
@@ -33,7 +34,20 @@ import { getNotificationIntents } from "@/lib/notifications/framework";
 import { getRecommendedLearningPaths } from "@/lib/paths/learning-paths";
 import { getWeeklyRecap } from "@/lib/retention/weekly-recap";
 import { getLearningOperatingSystem } from "@/lib/intelligence/operating-system";
-import type { ContentEngagement, ContributionType, Interest, LearningState, UserContribution, UserSignal } from "@/lib/types";
+import { createEvidence, isValidEvidence } from "@/lib/evidence/evidence-engine";
+import { getNormalizedContentById } from "@/lib/content/ingestion";
+import { updateConceptProgress, updateConceptProgressForOutcome } from "@/lib/progression/concept-pipeline";
+import type {
+  ContentEngagement,
+  ContributionType,
+  EvidenceType,
+  Interest,
+  LearningState,
+  OutcomeType,
+  UserContribution,
+  UserOutcome,
+  UserSignal,
+} from "@/lib/types";
 
 const learningStateKey = "vshare:learning-state";
 const learningStoreEvent = "vshare:learning-state-change";
@@ -51,6 +65,9 @@ function createDefaultLearningState(): LearningState {
     followedPathIds: [],
     followedCreatorIds: [],
     userContributions: [],
+    outcomes: [],
+    evidence: [],
+    conceptProgress: {},
     viewedAtById: {},
     contentEngagement: {},
     signals: [],
@@ -145,6 +162,9 @@ function parseLearningState(value: string | null): LearningState {
       followedPathIds: uniqueValues(parsed.followedPathIds ?? []),
       followedCreatorIds: uniqueValues(parsed.followedCreatorIds ?? []),
       userContributions: parsed.userContributions ?? [],
+      outcomes: parsed.outcomes ?? [],
+      evidence: parsed.evidence ?? [],
+      conceptProgress: parsed.conceptProgress ?? {},
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
@@ -352,9 +372,27 @@ function applySignal(state: LearningState, signal: UserSignal): LearningState {
   const stateWithSignal = appendSignal(state, signal);
   const stateWithEngagement = updateEngagementForSignal(stateWithSignal, signal);
   const stateWithCollections = updateCollectionsForSignal(stateWithEngagement, signal);
+  const normalizedContent = signal.contentId ? getNormalizedContentById(stateWithCollections, signal.contentId) : null;
+  const stateWithProgress =
+    normalizedContent && signal.type === "content_completed"
+      ? {
+          ...stateWithCollections,
+          conceptProgress: updateConceptProgress(stateWithCollections, normalizedContent, "learned"),
+        }
+      : normalizedContent && signal.type === "replay"
+        ? {
+            ...stateWithCollections,
+            conceptProgress: updateConceptProgress(stateWithCollections, normalizedContent, "repeated"),
+          }
+        : normalizedContent && signal.type === "content_shared"
+          ? {
+              ...stateWithCollections,
+              conceptProgress: updateConceptProgress(stateWithCollections, normalizedContent, "mastered"),
+            }
+          : stateWithCollections;
   const stateWithScores = {
-    ...stateWithCollections,
-    interestScores: updateInterestScoresForSignal(stateWithCollections.interestScores, signal, content),
+    ...stateWithProgress,
+    interestScores: updateInterestScoresForSignal(stateWithProgress.interestScores, signal, content),
   };
 
   if (signal.type === "search") {
@@ -565,6 +603,61 @@ export function createContribution(input: {
   return result;
 }
 
+export type OutcomeResult =
+  | { ok: true; outcome: UserOutcome }
+  | { ok: false; error: "invalid_outcome" | "invalid_evidence" };
+
+export function logOutcome(input: {
+  type: OutcomeType;
+  title: string;
+  description: string;
+  topics: Interest[];
+  evidence?: {
+    type: EvidenceType;
+    label: string;
+    value: string;
+  };
+}): OutcomeResult {
+  if (input.title.trim().length < 4 || input.description.trim().length < 8 || input.topics.length === 0) {
+    return { ok: false, error: "invalid_outcome" };
+  }
+
+  if (input.evidence && !isValidEvidence(input.evidence)) {
+    return { ok: false, error: "invalid_evidence" };
+  }
+
+  let result: OutcomeResult = { ok: false, error: "invalid_outcome" };
+
+  updateLearningState((state) => {
+    const evidence = input.evidence ? createEvidence(input.evidence) : null;
+    const outcome: UserOutcome = {
+      id: `outcome-${Date.now()}`,
+      type: input.type,
+      title: input.title.trim(),
+      description: input.description.trim(),
+      topics: input.topics,
+      evidenceIds: evidence ? [evidence.id] : [],
+      createdAt: new Date().toISOString(),
+    };
+    const nextState = input.topics.reduce(
+      (currentState, topic) => ({
+        ...currentState,
+        conceptProgress: updateConceptProgressForOutcome(currentState, topic, outcome.title, evidence ? "mastered" : "applied"),
+      }),
+      {
+        ...state,
+        outcomes: [outcome, ...state.outcomes].slice(0, 120),
+        evidence: evidence ? [evidence, ...state.evidence].slice(0, 160) : state.evidence,
+      },
+    );
+
+    result = { ok: true, outcome };
+    return nextState;
+  });
+
+  return result;
+}
+
 export function toggleSavedContent(contentId: string) {
   const state = getLearningState();
   const isSaved = state.savedContentIds.includes(contentId);
@@ -627,6 +720,7 @@ export function getProgressStats(state: LearningState) {
   const creatorDiscovery = getCreatorDiscovery(state);
   const activation = getActivationProgress(state);
   const intelligence = getLearningOperatingSystem(state);
+  const capability = getCapabilityOperatingSystem(state);
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -647,6 +741,7 @@ export function getProgressStats(state: LearningState) {
     creatorDiscovery,
     activation,
     intelligence,
+    capability,
     resourcesShared: state.userContributions.length,
     followingCount: state.followedCreatorIds.length,
   };

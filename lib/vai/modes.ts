@@ -1,4 +1,5 @@
 import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
+import { getCapabilityScore } from "@/lib/capability/scoring";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -12,6 +13,7 @@ export type VaiGuidance = {
 export function getVaiGuidance(state: LearningState): VaiGuidance {
   const learningMap = getPersonalLearningMap(state);
   const [nextConcept] = getRecommendedNextConcepts(state);
+  const capability = getCapabilityScore(state);
 
   if (state.vaiMode === "silent") {
     return {
@@ -27,9 +29,9 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
       mode: "coach",
       headline: "VAI Coach",
       suggestion: nextConcept
-        ? `Focus next on ${nextConcept.concept} in ${nextConcept.topic}. ${nextConcept.reason}`
-        : `Push toward ${learningMap.targetPosition}.`,
-      actionLabel: "Follow route",
+        ? `Challenge: learn ${nextConcept.concept}, apply it today, then log proof. Capability delta is ${capability.capabilityDelta}.`
+        : `Build evidence toward ${learningMap.targetPosition}. Capability score is ${capability.capabilityScore}.`,
+      actionLabel: "Take action",
     };
   }
 

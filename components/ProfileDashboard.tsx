@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { BarChart3, Bell, Bookmark, Compass, Flame, Gauge, Map, Target } from "lucide-react";
 import { Button } from "@/components/Button";
+import { OutcomeLogger } from "@/components/OutcomeLogger";
 import { getProgressStats, recordProfileActivity, setVaiMode, toggleFollowPath, useLearningState } from "@/lib/learning";
 import { formatMinutes } from "@/lib/utils";
 
@@ -39,6 +40,31 @@ export function ProfileDashboard() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Capability engine</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.capability.score.capabilityScore}% capability score</h2>
+        <p className="mt-2 text-sm font-semibold text-slate-600">
+          Capability delta: {stats.capability.score.capabilityDelta}% · Can you do more than before?
+        </p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard icon={Target} label="Learning score" value={`${stats.capability.score.learningScore}%`} />
+          <StatCard icon={Target} label="Application score" value={`${stats.capability.score.applicationScore}%`} />
+          <StatCard icon={Target} label="Execution score" value={`${stats.capability.score.executionScore}%`} />
+          <StatCard icon={Target} label="Evidence score" value={`${stats.capability.score.evidenceScore}%`} />
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-5">
+          {stats.capability.graph.map((node) => (
+            <div key={node.dimension} className="rounded-2xl bg-mist p-4">
+              <p className="text-sm font-black capitalize">{node.dimension}</p>
+              <p className="mt-1 text-2xl font-black">{node.score}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500">{node.evidenceCount} evidence points</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <OutcomeLogger />
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Personal learning map</p>
@@ -62,6 +88,55 @@ export function ProfileDashboard() {
           {stats.intelligence.personalLearningMap.suggestedRoute.slice(0, 3).map((step) => (
             <div key={step} className="rounded-2xl bg-mist p-4 text-sm font-black">
               {step}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Founder dashboard</h2>
+          <div className="mt-5 grid gap-3">
+            <MetricRow label="Knowledge growth" value={stats.capability.founderDashboard.knowledgeGrowth} />
+            <MetricRow label="Capability growth" value={stats.capability.founderDashboard.capabilityGrowth} />
+            <MetricRow label="Execution growth" value={stats.capability.founderDashboard.executionGrowth} />
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Capability timeline</h2>
+          <div className="mt-5 grid gap-3">
+            {stats.capability.timeline.length ? (
+              stats.capability.timeline.slice(0, 5).map((event) => (
+                <div key={event.id} className="rounded-2xl bg-mist p-4">
+                  <p className="font-black">{event.title}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">{event.detail}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm font-semibold text-slate-500">Log outcomes or apply concepts to build your timeline.</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <h2 className="text-2xl font-black tracking-tight">Skill trees</h2>
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          {stats.capability.skillTrees.map((tree) => (
+            <div key={tree.tree} className="rounded-3xl bg-mist p-4">
+              <div className="flex items-center justify-between">
+                <p className="font-black">{tree.tree}</p>
+                <p className="text-sm font-black text-violet-700">{tree.progressPercentage}%</p>
+              </div>
+              <div className="mt-4 grid gap-2">
+                {tree.levels.map((level) => (
+                  <div key={level.level} className="rounded-2xl bg-white p-3">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">{level.level}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-600">{level.skills.join(", ")}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>

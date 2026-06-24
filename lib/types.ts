@@ -189,6 +189,57 @@ export type KnowledgeScore = {
   masteryScore: number;
 };
 
+export type CapabilityDimension = "knowledge" | "understanding" | "application" | "execution" | "teaching";
+
+export type OutcomeType =
+  | "built_project"
+  | "started_business"
+  | "got_job"
+  | "passed_exam"
+  | "lost_weight"
+  | "learned_skill"
+  | "earned_revenue"
+  | "completed_certification";
+
+export type EvidenceType = "link" | "screenshot" | "document" | "video" | "note";
+
+export type EvidenceAttachment = {
+  id: string;
+  type: EvidenceType;
+  label: string;
+  value: string;
+  addedAt: string;
+};
+
+export type UserOutcome = {
+  id: string;
+  type: OutcomeType;
+  title: string;
+  description: string;
+  topics: Interest[];
+  evidenceIds: string[];
+  createdAt: string;
+};
+
+export type ConceptActionStage = "learned" | "attempted" | "applied" | "repeated" | "mastered";
+
+export type ConceptProgress = {
+  skill: string;
+  topic: Interest;
+  stage: ConceptActionStage;
+  repetitions: number;
+  updatedAt: string;
+};
+
+export type CapabilityScore = {
+  learningScore: number;
+  applicationScore: number;
+  executionScore: number;
+  evidenceScore: number;
+  capabilityScore: number;
+  capabilityDelta: number;
+};
+
 export type LearningPath = {
   id: string;
   title: string;
@@ -229,6 +280,9 @@ export type LearningState = {
   followedPathIds: string[];
   followedCreatorIds: string[];
   userContributions: UserContribution[];
+  outcomes: UserOutcome[];
+  evidence: EvidenceAttachment[];
+  conceptProgress: Record<string, ConceptProgress>;
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];

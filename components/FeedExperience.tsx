@@ -151,6 +151,21 @@ export function FeedExperience() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Capability missions</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-4">
+          {stats.capability.missions.map((mission) => (
+            <div key={mission.id} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{mission.label}</p>
+              <p className="mt-1 text-sm leading-6 text-slate-600">{mission.target}</p>
+              <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-700">
+                {mission.completed ? "Complete" : "Next"}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Recommended next concepts</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           {stats.intelligence.recommendedNextConcepts.slice(0, 3).map((concept) => (
