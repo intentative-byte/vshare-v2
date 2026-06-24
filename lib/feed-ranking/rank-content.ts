@@ -1,5 +1,6 @@
 import { applyFeedDiversity } from "@/lib/content/diversity";
 import { ingestContentCatalog } from "@/lib/content/ingestion";
+import { getContentCommunityScore } from "@/lib/community/signals";
 import type { Interest, LearningState, NormalizedContent } from "@/lib/types";
 
 export type RankedContent = {
@@ -70,19 +71,36 @@ function scoreContent(state: LearningState, content: NormalizedContent) {
   const saveActivity = state.savedContentIds.includes(content.id) ? 18 : 0;
   const likeActivity = state.likedContentIds.includes(content.id) ? 14 : 0;
   const replayActivity = Math.min(12, (engagement?.replays ?? 0) * 4);
+  const followedCreatorBoost = state.followedCreatorIds.includes(content.creatorId) ? 28 : 0;
+  const communityScore = Math.max(-25, Math.min(35, getContentCommunityScore(state, content.id)));
+  const lowQualityPenalty = content.isUserGenerated && content.quality.overallContentScore < 55 ? -40 : 0;
   const completionRate = getContentCompletionRate(state, content.id) * 22;
   const recentInterest = getRecentInterestScore(state, content);
   const rotation = getRotationScore(state, content);
   const contentQuality = content.quality.overallContentScore;
 
-  return topicMatch + watchHistory + saveActivity + likeActivity + replayActivity + completionRate + recentInterest + contentQuality * 0.65 + rotation;
+  return (
+    topicMatch +
+    watchHistory +
+    saveActivity +
+    likeActivity +
+    replayActivity +
+    followedCreatorBoost +
+    communityScore +
+    completionRate +
+    recentInterest +
+    contentQuality * 0.65 +
+    rotation +
+    lowQualityPenalty
+  );
 }
 
 function isPersonalized(state: LearningState, content: NormalizedContent) {
   const selectedMatch = content.interests.some((interest) => state.interests.includes(interest));
   const calibratedMatch = content.interests.some((interest) => getInterestScore(state, interest) >= 58);
+  const followedCreatorMatch = state.followedCreatorIds.includes(content.creatorId);
 
-  return selectedMatch || calibratedMatch;
+  return selectedMatch || calibratedMatch || followedCreatorMatch;
 }
 
 function buildReasons(state: LearningState, content: NormalizedContent, lane: RankedContent["lane"]) {

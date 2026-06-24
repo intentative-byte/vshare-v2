@@ -25,7 +25,7 @@ export function ProfileDashboard() {
         </p>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatCard
           icon={Flame}
           label="Learning streak"
@@ -34,6 +34,38 @@ export function ProfileDashboard() {
         <StatCard icon={Bookmark} label="Saved items" value={String(stats.savedCount)} />
         <StatCard icon={Target} label="Completed items" value={String(stats.completedCount)} />
         <StatCard icon={BarChart3} label="Time completed" value={formatMinutes(stats.totalMinutes)} />
+        <StatCard icon={Target} label="Resources shared" value={String(stats.resourcesShared)} />
+        <StatCard icon={Target} label="Following" value={String(stats.followingCount)} />
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Activation loop</p>
+            <h2 className="mt-1 text-2xl font-black tracking-tight">{stats.activation.percentage}% activated</h2>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-mist sm:w-56">
+            <div className="h-full rounded-full bg-violet-600" style={{ width: `${stats.activation.percentage}%` }} />
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-4">
+          {stats.activation.steps.map((step) => (
+            <div key={step.id} className="rounded-2xl bg-mist p-3">
+              <p className="text-sm font-black">{step.label}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500">{step.completed ? "Complete" : "Next"}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <h2 className="text-2xl font-black tracking-tight">Creator profile</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard icon={Target} label="Followers" value={String(stats.creatorProfiles.find((creator) => creator.username === "you")?.followerCount ?? 0)} />
+          <StatCard icon={Target} label="Creator score" value={String(stats.creatorProfiles.find((creator) => creator.username === "you")?.learningScore ?? 0)} />
+          <StatCard icon={Target} label="Content count" value={String(stats.creatorProfiles.find((creator) => creator.username === "you")?.contentCount ?? 0)} />
+          <StatCard icon={Target} label="Learning score" value={String(stats.retention.knowledgeConsistencyScore)} />
+        </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">

@@ -69,6 +69,17 @@ export type ContentQualityScore = {
   overallContentScore: number;
 };
 
+export type CreatorProfile = {
+  id: string;
+  name: string;
+  username: string;
+  bio: string;
+  topics: Interest[];
+  followerCount: number;
+  learningScore: number;
+  contentCount: number;
+};
+
 export type LearningContent = {
   id: string;
   title: string;
@@ -97,6 +108,8 @@ export type NormalizedContent = LearningContent & {
   ingestedAt: string;
   tags: string[];
   quality: ContentQualityScore;
+  creatorId: string;
+  isUserGenerated: boolean;
 };
 
 export type UserSignalType =
@@ -117,12 +130,16 @@ export type UserSignalType =
   | "search"
   | "explore_activity"
   | "profile_activity"
-  | "path_followed";
+  | "path_followed"
+  | "creator_followed"
+  | "creator_unfollowed"
+  | "contribution_created";
 
 export type UserSignal = {
   id: string;
   type: UserSignalType;
   contentId?: string;
+  creatorId?: string;
   topic?: Interest;
   query?: string;
   value?: number;
@@ -165,6 +182,26 @@ export type LearningPath = {
   contentIds: string[];
 };
 
+export type ContributionType = "short_insight" | "framework" | "thread" | "resource_link" | "article_summary" | "learning_note";
+
+export type SubmissionQualityScore = {
+  qualityScore: number;
+  topicMatchScore: number;
+  communityScore: number;
+  overallScore: number;
+};
+
+export type UserContribution = {
+  id: string;
+  type: ContributionType;
+  title: string;
+  body: string;
+  url: string | null;
+  topics: Interest[];
+  createdAt: string;
+  quality: SubmissionQualityScore;
+};
+
 export type LearningState = {
   interests: Interest[];
   interestScores: Record<Interest, number>;
@@ -175,6 +212,8 @@ export type LearningState = {
   skippedContentIds: string[];
   notInterestedContentIds: string[];
   followedPathIds: string[];
+  followedCreatorIds: string[];
+  userContributions: UserContribution[];
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];

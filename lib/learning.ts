@@ -1,9 +1,18 @@
 import { useMemo, useSyncExternalStore } from "react";
+import { getActivationProgress } from "@/lib/activation/progress";
 import { interestOptions, learningContent } from "@/lib/data";
 import { getContentHealthMetrics } from "@/lib/analytics/content-health";
 import { getProductAnalytics } from "@/lib/analytics/product-analytics";
 import { getRetentionMetrics } from "@/lib/analytics/retention";
 import { getSavedLibrary } from "@/lib/content/saved-library";
+import { getCreatorDiscovery } from "@/lib/creators/discovery";
+import { getCreatorProfiles } from "@/lib/creators/profiles";
+import {
+  isDuplicateContribution,
+  isRateLimited,
+  passesMinimumQuality,
+  scoreSubmissionQuality,
+} from "@/lib/quality/submission-quality";
 import {
   createDefaultInterestScores,
   normalizeInterestScores,
@@ -23,7 +32,7 @@ import {
 import { getNotificationIntents } from "@/lib/notifications/framework";
 import { getRecommendedLearningPaths } from "@/lib/paths/learning-paths";
 import { getWeeklyRecap } from "@/lib/retention/weekly-recap";
-import type { ContentEngagement, Interest, LearningState, UserSignal } from "@/lib/types";
+import type { ContentEngagement, ContributionType, Interest, LearningState, UserContribution, UserSignal } from "@/lib/types";
 
 const learningStateKey = "vshare:learning-state";
 const learningStoreEvent = "vshare:learning-state-change";
@@ -39,6 +48,8 @@ function createDefaultLearningState(): LearningState {
     skippedContentIds: [],
     notInterestedContentIds: [],
     followedPathIds: [],
+    followedCreatorIds: [],
+    userContributions: [],
     viewedAtById: {},
     contentEngagement: {},
     signals: [],
@@ -130,6 +141,8 @@ function parseLearningState(value: string | null): LearningState {
       skippedContentIds: uniqueValues(parsed.skippedContentIds ?? []),
       notInterestedContentIds: uniqueValues(parsed.notInterestedContentIds ?? []),
       followedPathIds: uniqueValues(parsed.followedPathIds ?? []),
+      followedCreatorIds: uniqueValues(parsed.followedCreatorIds ?? []),
+      userContributions: parsed.userContributions ?? [],
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
@@ -466,6 +479,89 @@ export function toggleFollowPath(pathId: string) {
   });
 }
 
+export function toggleFollowCreator(creatorId: string) {
+  return updateLearningState((state) => {
+    const isFollowed = state.followedCreatorIds.includes(creatorId);
+    const nextState: LearningState = {
+      ...state,
+      followedCreatorIds: isFollowed
+        ? state.followedCreatorIds.filter((id) => id !== creatorId)
+        : [...state.followedCreatorIds, creatorId],
+    };
+
+    return applySignal(
+      nextState,
+      createSignal({
+        type: isFollowed ? "creator_unfollowed" : "creator_followed",
+        creatorId,
+      }),
+    );
+  });
+}
+
+export type ContributionResult =
+  | { ok: true; contribution: UserContribution }
+  | { ok: false; error: "rate_limited" | "duplicate" | "low_quality" };
+
+export function createContribution(input: {
+  type: ContributionType;
+  title: string;
+  body: string;
+  url: string | null;
+  topics: Interest[];
+}): ContributionResult {
+  let result: ContributionResult = { ok: false, error: "low_quality" };
+
+  updateLearningState((state) => {
+    if (isRateLimited(state)) {
+      result = { ok: false, error: "rate_limited" };
+      return state;
+    }
+
+    if (isDuplicateContribution(state, input.title, input.url)) {
+      result = { ok: false, error: "duplicate" };
+      return state;
+    }
+
+    const quality = scoreSubmissionQuality({
+      title: input.title,
+      body: input.body,
+      topics: input.topics,
+      state,
+    });
+
+    if (!passesMinimumQuality(quality)) {
+      result = { ok: false, error: "low_quality" };
+      return state;
+    }
+
+    const contribution: UserContribution = {
+      id: `contribution-${Date.now()}`,
+      type: input.type,
+      title: input.title.trim(),
+      body: input.body.trim(),
+      url: input.url?.trim() || null,
+      topics: input.topics,
+      createdAt: new Date().toISOString(),
+      quality,
+    };
+    result = { ok: true, contribution };
+
+    return applySignal(
+      {
+        ...state,
+        userContributions: [contribution, ...state.userContributions].slice(0, 120),
+      },
+      createSignal({
+        type: "contribution_created",
+        topic: input.topics[0],
+      }),
+    );
+  });
+
+  return result;
+}
+
 export function toggleSavedContent(contentId: string) {
   const state = getLearningState();
   const isSaved = state.savedContentIds.includes(contentId);
@@ -517,6 +613,9 @@ export function getProgressStats(state: LearningState) {
   const learningPaths = getRecommendedLearningPaths(state);
   const notifications = getNotificationIntents(state);
   const productAnalytics = getProductAnalytics(state);
+  const creatorProfiles = getCreatorProfiles(state);
+  const creatorDiscovery = getCreatorDiscovery(state);
+  const activation = getActivationProgress(state);
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -533,5 +632,10 @@ export function getProgressStats(state: LearningState) {
     learningPaths,
     notifications,
     productAnalytics,
+    creatorProfiles,
+    creatorDiscovery,
+    activation,
+    resourcesShared: state.userContributions.length,
+    followingCount: state.followedCreatorIds.length,
   };
 }

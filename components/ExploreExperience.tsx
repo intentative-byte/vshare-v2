@@ -2,15 +2,16 @@
 
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Search, SlidersHorizontal, UserPlus } from "lucide-react";
 import { Button } from "@/components/Button";
 import { InterestPicker } from "@/components/InterestPicker";
 import { learningContent } from "@/lib/data";
-import { recordExploreActivity, recordSearchActivity, saveInterests, useLearningState } from "@/lib/learning";
-import type { Interest } from "@/lib/types";
+import { getProgressStats, recordExploreActivity, recordSearchActivity, saveInterests, toggleFollowCreator, useLearningState } from "@/lib/learning";
+import type { CreatorProfile, Interest } from "@/lib/types";
 
 export function ExploreExperience() {
   const learningState = useLearningState();
+  const stats = getProgressStats(learningState);
   const [query, setQuery] = useState(learningState.memory.lastSearchQuery);
   const searchResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -80,6 +81,22 @@ export function ExploreExperience() {
         </div>
       </section>
 
+      <CreatorDiscoverySection
+        title="Featured Creators"
+        creators={stats.creatorDiscovery.featured}
+        followedCreatorIds={learningState.followedCreatorIds}
+      />
+      <CreatorDiscoverySection
+        title="Trending Creators"
+        creators={stats.creatorDiscovery.trending}
+        followedCreatorIds={learningState.followedCreatorIds}
+      />
+      <CreatorDiscoverySection
+        title="Rising Creators"
+        creators={stats.creatorDiscovery.rising}
+        followedCreatorIds={learningState.followedCreatorIds}
+      />
+
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <div className="flex items-center gap-3">
           <Search className="size-5 text-violet-700" />
@@ -127,5 +144,52 @@ export function ExploreExperience() {
         </div>
       </section>
     </div>
+  );
+}
+
+type CreatorDiscoverySectionProps = {
+  title: string;
+  creators: CreatorProfile[];
+  followedCreatorIds: string[];
+};
+
+function CreatorDiscoverySection({ title, creators, followedCreatorIds }: CreatorDiscoverySectionProps) {
+  return (
+    <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+      <div className="mb-4 flex items-center gap-3">
+        <UserPlus className="size-5 text-violet-700" />
+        <h2 className="text-2xl font-black tracking-tight">{title}</h2>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {creators.map((creator) => {
+          const isFollowed = followedCreatorIds.includes(creator.id);
+
+          return (
+            <div key={creator.id} className="rounded-3xl bg-mist p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-black">{creator.name}</p>
+                  <p className="text-sm font-semibold text-slate-500">@{creator.username}</p>
+                </div>
+                <Button type="button" variant={isFollowed ? "primary" : "secondary"} onClick={() => toggleFollowCreator(creator.id)}>
+                  {isFollowed ? "Following" : "Follow"}
+                </Button>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{creator.bio}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {creator.topics.map((topic) => (
+                  <span key={topic} className="rounded-full bg-white px-3 py-1 text-xs font-black text-violet-700">
+                    {topic}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+                {creator.followerCount} followers · {creator.learningScore} score · {creator.contentCount} posts
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }

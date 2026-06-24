@@ -1,5 +1,6 @@
 import { learningContent } from "@/lib/data";
 import { scoreContentQuality } from "@/lib/content/scoring";
+import { normalizeContributions } from "@/lib/contributions/normalize";
 import type { ContentType, LearningContent, LearningState, NormalizedContent } from "@/lib/types";
 
 type ContentSource = {
@@ -79,11 +80,13 @@ export function normalizeContentItem(content: LearningContent, state: LearningSt
     ingestedAt: content.createdAt,
     tags: Array.from(new Set([...content.interests, content.level, content.format])),
     quality: scoreContentQuality(content, state, source.authorityScore),
+    creatorId: source.id,
+    isUserGenerated: false,
   };
 }
 
 export function ingestContentCatalog(state: LearningState): NormalizedContent[] {
-  return learningContent.map((content) => normalizeContentItem(content, state));
+  return [...learningContent.map((content) => normalizeContentItem(content, state)), ...normalizeContributions(state)];
 }
 
 export function getNormalizedContentById(state: LearningState, contentId: string) {

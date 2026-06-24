@@ -25,6 +25,9 @@ const signalWeights: Record<UserSignal["type"], number> = {
   explore_activity: 5,
   profile_activity: 1,
   path_followed: 8,
+  creator_followed: 6,
+  creator_unfollowed: -4,
+  contribution_created: 10,
 };
 
 function clampScore(score: number) {

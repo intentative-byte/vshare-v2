@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Flame, RotateCw, Zap } from "lucide-react";
 import { Button } from "@/components/Button";
+import { ContributionComposer } from "@/components/ContributionComposer";
 import { MediaStreamItem } from "@/components/MediaStreamItem";
 import { learningContent } from "@/lib/data";
 import { buildLearningStream, getInitialStreamIndex, getPrefetchQueue } from "@/lib/feed-engine/stream";
@@ -144,6 +145,8 @@ export function FeedExperience() {
           ))}
         </div>
       </section>
+
+      {(stats.completedCount > 0 || stats.viewedCount > 2) && <ContributionComposer />}
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
         <div className="mb-4 flex items-center justify-between">
