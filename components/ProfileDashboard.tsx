@@ -115,6 +115,37 @@ export function ProfileDashboard() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Future state</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.trajectory.trajectoryAccuracy}% trajectory accuracy</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Current path" value={stats.trajectory.currentPath} />
+          <DashboardRow label="Projected path" value={stats.trajectory.projectedPath} />
+          <DashboardRow label="Optimized path" value={stats.trajectory.optimizedPath} />
+          <DashboardRow label="Identity shift" value={stats.futureState.identity.identityGap} />
+          <DashboardRow label="Gap analysis" value={`${stats.futureState.gapAnalysis.gap}% capability gap`} />
+          <DashboardRow label="Moving toward desired future" value={stats.trajectory.movingTowardDesiredFuture ? "Yes" : "Not yet"} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-4">
+          {stats.futureState.futureStates.map((future) => (
+            <div key={future.label} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{future.label}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-600">{future.summary}</p>
+              <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-700">
+                {future.capability}% capability - {future.outcomeVelocity}% outcome velocity
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 grid gap-3">
+          {stats.futureState.gapAnalysis.requiredActions.map((action) => (
+            <div key={action} className="rounded-2xl bg-violet-50 p-4 text-sm font-black text-violet-700">
+              {action}
+            </div>
+          ))}
+        </div>
+      </section>
+
       <GrowthPlanner />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">

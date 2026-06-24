@@ -53,6 +53,8 @@ import { extractOutcomeFrameworks, extractOutcomeLessons } from "@/lib/learning/
 import { generateOutcomePlaybooks } from "@/lib/playbooks/playbook-generator";
 import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
+import { getFutureStateEngine } from "@/lib/future-state/future-state-engine";
+import { getTrajectoryEngine } from "@/lib/trajectory/trajectory-engine";
 import { getOutcomeAttributionMap } from "@/lib/attribution/outcome-attribution";
 import { getExecutionEngine } from "@/lib/execution/execution-engine";
 import { getOutcomeVelocity } from "@/lib/velocity/outcome-velocity";
@@ -938,6 +940,8 @@ export function getProgressStats(state: LearningState) {
   const vaiDecision = getVaiDecisionEngine(state);
   const economy = getPersonalEconomy(state);
   const simulation = getSimulationEngine(state);
+  const futureState = getFutureStateEngine(state);
+  const trajectory = getTrajectoryEngine(state);
   const outcomeIntelligence = {
     score: getOutcomeIntelligenceScore(state),
     timeline: getOutcomeTimeline(state),
@@ -982,6 +986,8 @@ export function getProgressStats(state: LearningState) {
     vaiDecision,
     economy,
     simulation,
+    futureState,
+    trajectory,
     outcomeIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,

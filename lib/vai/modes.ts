@@ -4,6 +4,7 @@ import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
 import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
+import { getTrajectoryEngine } from "@/lib/trajectory/trajectory-engine";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -22,6 +23,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const goalOS = getGoalOperatingSystem(state);
   const economy = getPersonalEconomy(state);
   const simulation = getSimulationEngine(state);
+  const trajectory = getTrajectoryEngine(state);
 
   if (state.vaiMode === "silent") {
     return {
@@ -45,7 +47,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `Simulated best path: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}. Expected progress ${simulation.bestPath?.expectedProgress ?? 0}%. Then optimize around ${goalOS.currentGoal?.desiredOutcome ?? "the highest-value outcome"}.`,
+      suggestion: `Highest probability path: ${trajectory.optimizedPath}. Simulated best path: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}. Trajectory accuracy ${trajectory.trajectoryAccuracy}%.`,
       actionLabel: "Do next",
     };
   }
