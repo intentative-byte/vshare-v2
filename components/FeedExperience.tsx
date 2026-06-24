@@ -101,6 +101,9 @@ export function FeedExperience() {
               <p className="text-sm font-black text-violet-100">Highest leverage action</p>
               <p className="mt-1 text-lg font-black leading-6 text-white">{stats.personalDashboard.recommendedNextAction.title}</p>
               <p className="mt-1 text-sm leading-6 text-slate-200">{stats.personalDashboard.recommendedNextAction.reason}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-200">
+                VAI confidence: {stats.vaiDecision.confidenceScore}% · Expected: {stats.vaiDecision.expectedOutcome}
+              </p>
               <p className="mt-2 text-sm leading-6 text-slate-200">Decision lens: {stats.decisionIntelligence.latestRecommendation}</p>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
                 {stats.personalDashboard.recommendedNextAction.mode} · {stats.personalDashboard.recommendedNextAction.estimatedMinutes} min

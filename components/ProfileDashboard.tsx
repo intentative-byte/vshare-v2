@@ -67,6 +67,24 @@ export function ProfileDashboard() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">VAI decision engine</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.vaiDecision.highestLeverageAction.title}</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Top opportunity" value={stats.vaiDecision.topOpportunity} />
+          <DashboardRow label="Top constraint" value={stats.vaiDecision.topConstraint} />
+          <DashboardRow label="Recommended action" value={stats.vaiDecision.recommendedNextStep} />
+          <DashboardRow label="Confidence score" value={`${stats.vaiDecision.confidenceScore}%`} />
+          <DashboardRow label="Expected outcome" value={stats.vaiDecision.expectedOutcome} />
+          <DashboardRow label="Leverage score" value={`${stats.vaiDecision.leverage.leverageScore}%`} />
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          <DashboardRow label="Today" value={stats.vaiDecision.nextActions.today} />
+          <DashboardRow label="This week" value={stats.vaiDecision.nextActions.thisWeek} />
+          <DashboardRow label="This month" value={stats.vaiDecision.nextActions.thisMonth} />
+        </div>
+      </section>
+
       <DecisionLogger />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">

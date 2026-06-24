@@ -1,10 +1,8 @@
 import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
-import { getCapabilityScore } from "@/lib/capability/scoring";
-import { getHighestLeverageAction } from "@/lib/decisions/decision-engine";
-import { getDecisionIntelligence } from "@/lib/recommendations/decision-recommendations";
 import { getNetworkIntelligence } from "@/lib/network/network-intelligence";
 import { getOutcomeIntelligenceScore } from "@/lib/outcomes/outcome-intelligence";
 import { getSuccessAnalysis } from "@/lib/outcomes/success-analysis";
+import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -18,9 +16,9 @@ export type VaiGuidance = {
 export function getVaiGuidance(state: LearningState): VaiGuidance {
   const learningMap = getPersonalLearningMap(state);
   const [nextConcept] = getRecommendedNextConcepts(state);
-  const capability = getCapabilityScore(state);
   const outcomeScore = getOutcomeIntelligenceScore(state);
   const network = getNetworkIntelligence(state);
+  const vaiDecision = getVaiDecisionEngine(state);
   const [topPerson] = network.matches.people;
 
   if (state.vaiMode === "silent") {
@@ -36,22 +34,18 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     return {
       mode: "coach",
       headline: "VAI Coach",
-      suggestion: nextConcept
-        ? `Challenge: learn ${nextConcept.concept}, apply it today, and collaborate with ${topPerson?.expert.name ?? "a relevant expert"}.`
-        : `Push the next measurable result. Capability score is ${capability.capabilityScore}.`,
+      suggestion: `Challenge assumption: is ${vaiDecision.topConstraint.toLowerCase()} really the blocker? Do ${vaiDecision.recommendedNextStep} and prove the result.`,
       actionLabel: "Take action",
     };
   }
 
   if (state.vaiMode === "strategist") {
-    const action = getHighestLeverageAction(state);
-    const decision = getDecisionIntelligence(state);
     const success = getSuccessAnalysis(state);
 
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `${action.title}. ${action.reason} Strategic relationship: ${topPerson?.expert.name ?? "build one expert connection"}. Decision lens: ${decision.latestRecommendation} Leverage pattern: ${success.worked[0]}.`,
+      suggestion: `${vaiDecision.highestLeverageAction.title}. Confidence ${vaiDecision.confidenceScore}%. Strategic relationship: ${topPerson?.expert.name ?? "build one expert connection"}. Leverage pattern: ${success.worked[0]}.`,
       actionLabel: "Do next",
     };
   }
@@ -60,7 +54,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
     mode: "partner",
     headline: "VAI Partner",
     suggestion: nextConcept
-      ? `Suggested improvement: apply ${nextConcept.concept}; useful connection: ${topPerson?.expert.name ?? "follow a creator in this topic"}.`
+      ? `Recommended: ${vaiDecision.recommendedNextStep}. Useful connection: ${topPerson?.expert.name ?? "follow a creator in this topic"}.`
       : `You are progressing toward ${learningMap.targetPosition}. Outcome velocity is ${outcomeScore.outcomeVelocity}.`,
     actionLabel: "Review suggestion",
   };

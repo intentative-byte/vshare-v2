@@ -341,6 +341,37 @@ export type DecisionQualityScore = {
   decisionQualityScore: number;
 };
 
+export type BottleneckType =
+  | "knowledge_bottleneck"
+  | "skill_bottleneck"
+  | "execution_bottleneck"
+  | "consistency_bottleneck"
+  | "resource_bottleneck";
+
+export type Bottleneck = {
+  type: BottleneckType;
+  label: string;
+  impact: number;
+  reason: string;
+};
+
+export type LeverageScore = {
+  potentialImpact: number;
+  requiredEffort: number;
+  confidence: number;
+  timeToOutcome: number;
+  leverageScore: number;
+};
+
+export type DecisionRecommendationMemory = {
+  id: string;
+  recommendation: string;
+  userAction: string | null;
+  result: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+};
+
 export type LearningPath = {
   id: string;
   title: string;
@@ -388,6 +419,7 @@ export type LearningState = {
   projects: UserProject[];
   timeAllocation: TimeAllocation;
   decisions: DecisionRecord[];
+  vaiDecisionMemory: DecisionRecommendationMemory[];
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];

@@ -49,6 +49,7 @@ import { getOutcomeIntelligenceScore, getOutcomeTimeline } from "@/lib/outcomes/
 import { getSuccessAnalysis } from "@/lib/outcomes/success-analysis";
 import { extractOutcomeFrameworks, extractOutcomeLessons } from "@/lib/learning/outcome-extraction";
 import { generateOutcomePlaybooks } from "@/lib/playbooks/playbook-generator";
+import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getNormalizedContentById } from "@/lib/content/ingestion";
 import { updateConceptProgress, updateConceptProgressForOutcome } from "@/lib/progression/concept-pipeline";
 import type {
@@ -59,6 +60,7 @@ import type {
   Interest,
   LearningState,
   DecisionOption,
+  DecisionRecommendationMemory,
   DecisionType,
   OutcomeType,
   ProjectStatus,
@@ -93,6 +95,7 @@ function createDefaultLearningState(): LearningState {
     projects: [],
     timeAllocation: defaultTimeAllocation,
     decisions: [],
+    vaiDecisionMemory: [],
     viewedAtById: {},
     contentEngagement: {},
     signals: [],
@@ -194,6 +197,7 @@ function parseLearningState(value: string | null): LearningState {
       projects: parsed.projects ?? [],
       timeAllocation: normalizeTimeAllocation(parsed.timeAllocation),
       decisions: parsed.decisions ?? [],
+      vaiDecisionMemory: parsed.vaiDecisionMemory ?? [],
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
@@ -779,6 +783,28 @@ export function setDecisionOutcome(decisionId: string, outcome: string) {
   }));
 }
 
+export function rememberVaiDecision(input: {
+  recommendation: string;
+  userAction?: string | null;
+  result?: string | null;
+}) {
+  return updateLearningState((state) => {
+    const memory: DecisionRecommendationMemory = {
+      id: `vai-rec-${Date.now()}`,
+      recommendation: input.recommendation,
+      userAction: input.userAction ?? null,
+      result: input.result ?? null,
+      createdAt: new Date().toISOString(),
+      resolvedAt: input.result ? new Date().toISOString() : null,
+    };
+
+    return {
+      ...state,
+      vaiDecisionMemory: [memory, ...state.vaiDecisionMemory].slice(0, 120),
+    };
+  });
+}
+
 export function setProjectStatus(projectId: string, status: ProjectStatus) {
   return updateLearningState((state) => ({
     ...state,
@@ -865,6 +891,7 @@ export function getProgressStats(state: LearningState) {
   const recommendedTimeAllocation = recommendTimeAllocation(state);
   const decisionIntelligence = getDecisionIntelligence(state);
   const networkIntelligence = getNetworkIntelligence(state);
+  const vaiDecision = getVaiDecisionEngine(state);
   const outcomeIntelligence = {
     score: getOutcomeIntelligenceScore(state),
     timeline: getOutcomeTimeline(state),
@@ -900,6 +927,7 @@ export function getProgressStats(state: LearningState) {
     recommendedTimeAllocation,
     decisionIntelligence,
     networkIntelligence,
+    vaiDecision,
     outcomeIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,
