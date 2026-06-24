@@ -7,11 +7,17 @@ import { Button } from "@/components/Button";
 import { LearningCard } from "@/components/LearningCard";
 import {
   getProgressStats,
-  getRecommendedContent,
+  getRankedRecommendedContent,
+  markContentCompleted,
+  markContentShared,
+  markContentSkipped,
   markContentViewed,
+  recordFeedActivity,
+  recordWatchTime,
   toggleSavedContent,
   useLearningState,
 } from "@/lib/learning";
+import { learningContent } from "@/lib/data";
 
 const feedPageSize = 6;
 
@@ -19,9 +25,14 @@ export function FeedExperience() {
   const learningState = useLearningState();
   const [visibleCount, setVisibleCount] = useState(feedPageSize);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const recommendedContent = useMemo(() => getRecommendedContent(learningState), [learningState]);
+  const rankedContent = useMemo(() => getRankedRecommendedContent(learningState), [learningState]);
   const stats = useMemo(() => getProgressStats(learningState), [learningState]);
-  const visibleContent = recommendedContent.slice(0, visibleCount);
+  const visibleContent = rankedContent.slice(0, visibleCount);
+  const lastViewedContent = learningContent.find((content) => content.id === learningState.memory.lastViewedContentId);
+
+  useEffect(() => {
+    recordFeedActivity();
+  }, []);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -33,7 +44,7 @@ export function FeedExperience() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
-          setVisibleCount((currentCount) => Math.min(currentCount + feedPageSize, recommendedContent.length));
+          setVisibleCount((currentCount) => Math.min(currentCount + feedPageSize, rankedContent.length));
         }
       },
       { rootMargin: "300px" },
@@ -42,7 +53,7 @@ export function FeedExperience() {
     observer.observe(sentinel);
 
     return () => observer.disconnect();
-  }, [recommendedContent.length]);
+  }, [rankedContent.length]);
 
   if (!learningState.interests.length) {
     return (
@@ -72,8 +83,17 @@ export function FeedExperience() {
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-200">For you</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight">Today&apos;s learning feed</h1>
             <p className="mt-3 max-w-2xl leading-7 text-slate-300">
-              Unseen cards are ranked first from your interests, saves, and viewing memory.
+              Ranked from your topic scores, watch history, saves, completions, and recent activity.
             </p>
+            {lastViewedContent ? (
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: learningState.memory.lastViewedPosition, behavior: "smooth" })}
+                className="mt-4 rounded-full bg-white/10 px-4 py-2 text-left text-sm font-bold text-violet-100 transition hover:bg-white/15"
+              >
+                Continue from {lastViewedContent.title}
+              </button>
+            ) : null}
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="rounded-2xl bg-white/10 p-3">
@@ -81,7 +101,7 @@ export function FeedExperience() {
               <p className="text-xs font-bold text-violet-100">Unseen</p>
             </div>
             <div className="rounded-2xl bg-white/10 p-3">
-              <p className="text-2xl font-black">{stats.completedCount}</p>
+              <p className="text-2xl font-black">{stats.viewedCount}</p>
               <p className="text-xs font-bold text-violet-100">Viewed</p>
             </div>
             <div className="rounded-2xl bg-white/10 p-3">
@@ -95,17 +115,24 @@ export function FeedExperience() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {visibleContent.map((content) => (
           <LearningCard
-            key={content.id}
-            content={content}
-            isSaved={learningState.savedContentIds.includes(content.id)}
-            isViewed={learningState.viewedContentIds.includes(content.id)}
+            key={content.content.id}
+            content={content.content}
+            isSaved={learningState.savedContentIds.includes(content.content.id)}
+            isViewed={learningState.viewedContentIds.includes(content.content.id)}
+            isCompleted={learningState.completedContentIds.includes(content.content.id)}
+            lane={content.lane}
+            reasons={content.reasons}
             onToggleSaved={toggleSavedContent}
-            onMarkViewed={markContentViewed}
+            onViewed={markContentViewed}
+            onWatchTime={recordWatchTime}
+            onComplete={markContentCompleted}
+            onSkip={markContentSkipped}
+            onShare={markContentShared}
           />
         ))}
       </div>
 
-      {visibleCount < recommendedContent.length ? (
+      {visibleCount < rankedContent.length ? (
         <div ref={sentinelRef} className="flex justify-center py-4 text-sm font-bold text-slate-500">
           <RotateCw className="mr-2 size-4 animate-spin" />
           Loading more

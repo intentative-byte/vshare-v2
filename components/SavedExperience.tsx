@@ -4,7 +4,16 @@ import Link from "next/link";
 import { Bookmark, Search } from "lucide-react";
 import { Button } from "@/components/Button";
 import { LearningCard } from "@/components/LearningCard";
-import { getSavedContent, markContentViewed, toggleSavedContent, useLearningState } from "@/lib/learning";
+import {
+  getSavedContent,
+  markContentCompleted,
+  markContentShared,
+  markContentSkipped,
+  markContentViewed,
+  recordWatchTime,
+  toggleSavedContent,
+  useLearningState,
+} from "@/lib/learning";
 
 export function SavedExperience() {
   const learningState = useLearningState();
@@ -35,8 +44,13 @@ export function SavedExperience() {
               content={content}
               isSaved={learningState.savedContentIds.includes(content.id)}
               isViewed={learningState.viewedContentIds.includes(content.id)}
+              isCompleted={learningState.completedContentIds.includes(content.id)}
               onToggleSaved={toggleSavedContent}
-              onMarkViewed={markContentViewed}
+              onViewed={markContentViewed}
+              onWatchTime={recordWatchTime}
+              onComplete={markContentCompleted}
+              onSkip={markContentSkipped}
+              onShare={markContentShared}
             />
           ))}
         </div>

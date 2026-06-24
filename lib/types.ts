@@ -67,11 +67,62 @@ export type LearningContent = {
   };
 };
 
+export type UserSignalType =
+  | "topic_selected"
+  | "content_viewed"
+  | "watch_time"
+  | "content_completed"
+  | "content_skipped"
+  | "content_saved"
+  | "content_unsaved"
+  | "content_shared"
+  | "search"
+  | "explore_activity"
+  | "profile_activity";
+
+export type UserSignal = {
+  id: string;
+  type: UserSignalType;
+  contentId?: string;
+  topic?: Interest;
+  query?: string;
+  value?: number;
+  occurredAt: string;
+};
+
+export type ContentEngagement = {
+  views: number;
+  watchSeconds: number;
+  completions: number;
+  skips: number;
+  saves: number;
+  shares: number;
+  lastViewedAt: string | null;
+  lastCompletedAt: string | null;
+  lastSkippedAt: string | null;
+};
+
+export type SessionMemory = {
+  lastViewedPosition: number;
+  lastViewedContentId: string | null;
+  lastActiveTopic: Interest | null;
+  lastSearchQuery: string;
+  lastFeedVisitAt: string | null;
+  lastExploreVisitAt: string | null;
+  lastProfileVisitAt: string | null;
+};
+
 export type LearningState = {
   interests: Interest[];
+  interestScores: Record<Interest, number>;
   viewedContentIds: string[];
   savedContentIds: string[];
+  completedContentIds: string[];
+  skippedContentIds: string[];
   viewedAtById: Record<string, string>;
+  contentEngagement: Record<string, ContentEngagement>;
+  signals: UserSignal[];
+  memory: SessionMemory;
   streak: number;
   lastActiveDate: string | null;
   onboardedAt: string | null;
