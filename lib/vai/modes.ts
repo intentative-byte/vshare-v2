@@ -5,6 +5,7 @@ import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
 import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
 import { getStrategicPlanningEngine } from "@/lib/strategy/strategic-planning";
+import { getLifeOperatingSystem } from "@/lib/life-os/life-operating-system";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -24,6 +25,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const economy = getPersonalEconomy(state);
   const simulation = getSimulationEngine(state);
   const strategy = getStrategicPlanningEngine(state);
+  const lifeOS = getLifeOperatingSystem(state);
 
   if (state.vaiMode === "silent") {
     return {
@@ -49,6 +51,15 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
       headline: "VAI Strategist",
       suggestion: `Strategic alignment ${strategy.strategicAlignmentScore}%. Primary objective: ${strategy.objectives.primaryObjective}. Next action: ${simulation.bestPath?.optionLabel ?? economy.mostLeverage?.label ?? vaiDecision.highestLeverageAction.title}.`,
       actionLabel: "Do next",
+    };
+  }
+
+  if (state.vaiMode === "operator") {
+    return {
+      mode: "operator",
+      headline: "VAI Operator",
+      suggestion: `${lifeOS.operator.command}. ${lifeOS.operator.reason} Life alignment ${lifeOS.lifeAlignmentScore}%.`,
+      actionLabel: lifeOS.operator.priority === "stabilize" ? "Stabilize system" : "Advance system",
     };
   }
 

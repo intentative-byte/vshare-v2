@@ -28,6 +28,26 @@ export function ProfileDashboard() {
         </p>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Life operating system</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.lifeOS.lifeAlignmentScore}% life alignment</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Top opportunity" value={stats.lifeOS.commandCenter.topOpportunity} />
+          <DashboardRow label="Top constraint" value={stats.lifeOS.commandCenter.topConstraint} />
+          <DashboardRow label="Recommended action" value={stats.lifeOS.commandCenter.recommendedAction} />
+          <DashboardRow label="North star" value={stats.lifeOS.northStar.highestLeverageObjective} />
+          <DashboardRow label="Operator command" value={stats.lifeOS.operator.command} />
+          <DashboardRow label="Governance" value={stats.lifeOS.governance[0]?.correction ?? "System is coherent enough to advance."} />
+        </div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-5">
+          <StatCard icon={Target} label="Knowledge" value={`${stats.lifeOS.systemHealth.knowledgeHealth}%`} />
+          <StatCard icon={Target} label="Capability" value={`${stats.lifeOS.systemHealth.capabilityHealth}%`} />
+          <StatCard icon={Target} label="Execution" value={`${stats.lifeOS.systemHealth.executionHealth}%`} />
+          <StatCard icon={Target} label="Outcome" value={`${stats.lifeOS.systemHealth.outcomeHealth}%`} />
+          <StatCard icon={Target} label="Focus" value={`${stats.lifeOS.systemHealth.focusHealth}%`} />
+        </div>
+      </section>
+
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatCard
           icon={Flame}
@@ -387,7 +407,7 @@ export function ProfileDashboard() {
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3">
-            {(["silent", "partner", "coach", "strategist"] as const).map((mode) => (
+            {(["silent", "partner", "coach", "strategist", "operator"] as const).map((mode) => (
               <Button key={mode} type="button" variant={learningState.vaiMode === mode ? "primary" : "secondary"} onClick={() => setVaiMode(mode)}>
                 {mode}
               </Button>
