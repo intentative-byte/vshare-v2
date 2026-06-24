@@ -55,6 +55,35 @@ export function ProfileDashboard() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Strategic planning</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.strategy.strategicAlignmentScore}% strategic alignment</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Primary objective" value={stats.strategy.objectives.primaryObjective} />
+          <DashboardRow label="Secondary objective" value={stats.strategy.objectives.secondaryObjective} />
+          <DashboardRow label="Top constraint" value={`${stats.strategy.constraints[0]?.label ?? "No constraint"} - ${stats.strategy.constraints[0]?.reason ?? "Strategy forming"}`} />
+          <DashboardRow label="Highest impact activity" value={stats.strategy.highestImpactActivities[0]?.activity ?? "Create a primary goal"} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-5">
+          {stats.strategy.horizons.map((horizon) => (
+            <div key={horizon.horizon} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{horizon.horizon.replace("_", " ")}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-600">{horizon.focus}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <DashboardRow label="Milestones" value={stats.strategy.roadmap.milestones.slice(0, 3).join(" -> ")} />
+          <DashboardRow label="Projects" value={stats.strategy.roadmap.projects.slice(0, 2).join(" -> ")} />
+          <DashboardRow label="Outcomes" value={stats.strategy.roadmap.outcomes.slice(0, 2).join(" -> ")} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <DashboardRow label="Weekly review" value={stats.strategy.reviews.weeklyReview[0]} />
+          <DashboardRow label="Monthly review" value={stats.strategy.reviews.monthlyReview[0]} />
+          <DashboardRow label="Quarterly review" value={stats.strategy.reviews.quarterlyReview[0]} />
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Personal economy</p>
         <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.economy.leverageScore}% leverage score</h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-5">
