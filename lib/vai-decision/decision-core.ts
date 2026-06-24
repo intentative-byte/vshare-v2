@@ -1,6 +1,7 @@
 import { detectBottlenecks } from "@/lib/bottlenecks/detect-bottlenecks";
 import { getCapabilityScore } from "@/lib/capability/scoring";
 import { getHighestLeverageAction } from "@/lib/decisions/decision-engine";
+import { getDigitalTwin } from "@/lib/digital-twin/twin-engine";
 import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
 import { calculateLeverageScore } from "@/lib/leverage/leverage-engine";
 import { getNextActionPlan } from "@/lib/recommendations/next-actions";
@@ -12,6 +13,7 @@ export function getVaiDecisionEngine(state: LearningState, availableMinutes = 30
   const [topBottleneck] = bottlenecks;
   const action = getHighestLeverageAction(state, availableMinutes);
   const capability = getCapabilityScore(state);
+  const twin = getDigitalTwin(state);
   const leverage = calculateLeverageScore({
     bottleneck: topBottleneck,
     availableMinutes,
@@ -27,12 +29,13 @@ export function getVaiDecisionEngine(state: LearningState, availableMinutes = 30
       outcomes: state.outcomes,
       availableMinutes,
       capability,
+      digitalTwin: twin,
     },
-    topOpportunity: topGap ? `${topGap.concept} in ${topGap.topic}` : action.title,
-    topConstraint: topBottleneck.label,
+    topOpportunity: twin.gapMap.knowledgeGaps[0] ?? (topGap ? `${topGap.concept} in ${topGap.topic}` : action.title),
+    topConstraint: twin.drift.driftScore > 50 ? "Digital twin detected drift" : topBottleneck.label,
     highestLeverageAction: action,
     recommendedNextStep: action.title,
-    confidenceScore: leverage.confidence,
+    confidenceScore: Math.min(100, Math.round((leverage.confidence + twin.twinAccuracy) / 2)),
     expectedOutcome:
       action.mode === "build"
         ? "Evidence-backed capability gain"

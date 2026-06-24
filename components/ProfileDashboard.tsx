@@ -54,6 +54,25 @@ export function ProfileDashboard() {
         </div>
       </section>
 
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Digital twin</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.digitalTwin.twinAccuracy}% twin accuracy</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Current state" value={`${stats.digitalTwin.currentState.capabilityScore}% capability · ${stats.digitalTwin.currentState.knows.join(", ") || "Knowledge forming"}`} />
+          <DashboardRow label="Target state" value={stats.digitalTwin.targetState.desiredPosition} />
+          <DashboardRow label="Gap" value={`${stats.digitalTwin.gapMap.capabilityGap}% capability gap · ${stats.digitalTwin.gapMap.knowledgeGaps[0] ?? "No clear knowledge gap"}`} />
+          <DashboardRow label="Momentum" value={`${stats.digitalTwin.momentum.momentumScore}% momentum · ${stats.digitalTwin.momentum.outcomeMomentum} recent outcomes`} />
+          <DashboardRow label="Consistency" value={`${stats.digitalTwin.consistencyModel.consistencyScore}% · ${stats.digitalTwin.consistencyModel.weekly} active days this week`} />
+          <DashboardRow label="Drift" value={`${stats.digitalTwin.drift.driftScore}% drift · ${stats.digitalTwin.executionModel.pattern}`} />
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-4">
+          <DashboardRow label="Knowledge timeline" value={`${stats.digitalTwin.timelines.knowledgeTimeline.length} events`} />
+          <DashboardRow label="Capability timeline" value={`${stats.digitalTwin.timelines.capabilityTimeline.length} events`} />
+          <DashboardRow label="Goal timeline" value={`${stats.digitalTwin.timelines.goalTimeline.length} events`} />
+          <DashboardRow label="Outcome timeline" value={`${stats.digitalTwin.timelines.outcomeTimeline.length} events`} />
+        </div>
+      </section>
+
       <GrowthPlanner />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">

@@ -41,6 +41,7 @@ import { createProject, isValidProject, updateProjectStatus } from "@/lib/projec
 import { defaultTimeAllocation, normalizeTimeAllocation, recommendTimeAllocation } from "@/lib/projects/time-allocation";
 import { getPersonalDashboard } from "@/lib/growth/personal-dashboard";
 import { getPersonalGrowthScore } from "@/lib/growth/growth-score";
+import { getDigitalTwin } from "@/lib/digital-twin/twin-engine";
 import { createDecisionRecord, isValidDecision } from "@/lib/decisions/decision-framework";
 import { createEvidence, isValidEvidence } from "@/lib/evidence/evidence-engine";
 import { resolveDecision } from "@/lib/history/decision-history";
@@ -893,6 +894,7 @@ export function getProgressStats(state: LearningState) {
   const intelligence = getLearningOperatingSystem(state);
   const capability = getCapabilityOperatingSystem(state);
   const personalDashboard = getPersonalDashboard(state);
+  const digitalTwin = getDigitalTwin(state);
   const growth = getPersonalGrowthScore(state);
   const goalRoadmaps = getGoalRoadmaps(state);
   const goalOS = getGoalOperatingSystem(state);
@@ -930,6 +932,7 @@ export function getProgressStats(state: LearningState) {
     intelligence,
     capability,
     personalDashboard,
+    digitalTwin,
     growth,
     goalRoadmaps,
     goalOS,
