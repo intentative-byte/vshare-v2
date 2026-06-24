@@ -111,6 +111,9 @@ export function FeedExperience() {
               <p className="mt-2 text-sm leading-6 text-slate-200">
                 Twin: {stats.digitalTwin.momentum.momentumScore}% momentum · {stats.digitalTwin.drift.driftScore}% drift
               </p>
+              <p className="mt-2 text-sm leading-6 text-slate-200">
+                Economy: stop {stats.economy.stopDoing.toLowerCase()} Double down on {stats.economy.doubleDown}.
+              </p>
               <p className="mt-2 text-sm leading-6 text-slate-200">Decision lens: {stats.decisionIntelligence.latestRecommendation}</p>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
                 {stats.personalDashboard.recommendedNextAction.mode} · {stats.personalDashboard.recommendedNextAction.estimatedMinutes} min

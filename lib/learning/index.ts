@@ -51,6 +51,7 @@ import { getOutcomeIntelligenceScore, getOutcomeTimeline } from "@/lib/outcomes/
 import { getSuccessAnalysis } from "@/lib/outcomes/success-analysis";
 import { extractOutcomeFrameworks, extractOutcomeLessons } from "@/lib/learning/outcome-extraction";
 import { generateOutcomePlaybooks } from "@/lib/playbooks/playbook-generator";
+import { getPersonalEconomy } from "@/lib/economy/personal-economy";
 import { getOutcomeAttributionMap } from "@/lib/attribution/outcome-attribution";
 import { getExecutionEngine } from "@/lib/execution/execution-engine";
 import { getOutcomeVelocity } from "@/lib/velocity/outcome-velocity";
@@ -934,6 +935,7 @@ export function getProgressStats(state: LearningState) {
   const decisionIntelligence = getDecisionIntelligence(state);
   const networkIntelligence = getNetworkIntelligence(state);
   const vaiDecision = getVaiDecisionEngine(state);
+  const economy = getPersonalEconomy(state);
   const outcomeIntelligence = {
     score: getOutcomeIntelligenceScore(state),
     timeline: getOutcomeTimeline(state),
@@ -976,6 +978,7 @@ export function getProgressStats(state: LearningState) {
     decisionIntelligence,
     networkIntelligence,
     vaiDecision,
+    economy,
     outcomeIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,

@@ -343,6 +343,34 @@ export type GrowthScore = {
   personalGrowthScore: number;
 };
 
+export type PersonalResources = {
+  time: number;
+  energy: number;
+  attention: number;
+  focus: number;
+  money: number;
+};
+
+export type EconomyAllocation = {
+  learning: number;
+  outreach: number;
+  product: number;
+  building: number;
+  practicing: number;
+  teaching: number;
+  recovery: number;
+};
+
+export type EconomyLeverageItem = {
+  type: "project" | "skill" | "goal" | "action";
+  label: string;
+  potentialImpact: number;
+  difficulty: number;
+  timeRequired: number;
+  outcomeProbability: number;
+  leverageScore: number;
+};
+
 export type DecisionType = "career" | "business" | "health" | "learning" | "financial" | "personal";
 
 export type DecisionOption = {

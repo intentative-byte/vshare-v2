@@ -55,6 +55,48 @@ export function ProfileDashboard() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Personal economy</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.economy.leverageScore}% leverage score</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-5">
+          <StatCard icon={Target} label="Time" value={`${stats.economy.resources.time}%`} />
+          <StatCard icon={Target} label="Energy" value={`${stats.economy.resources.energy}%`} />
+          <StatCard icon={Target} label="Attention" value={`${stats.economy.resources.attention}%`} />
+          <StatCard icon={Target} label="Focus" value={`${stats.economy.resources.focus}%`} />
+          <StatCard icon={Target} label="Money" value={`${stats.economy.resources.money}%`} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Resource constraint" value={stats.economy.resourceConstraint.summary} />
+          <DashboardRow label="Allocation" value={`${stats.economy.allocation.learning}% learning - ${stats.economy.allocation.outreach}% outreach - ${stats.economy.allocation.product}% product`} />
+          <DashboardRow label="Opportunity cost" value={`${stats.economy.opportunityCost.opportunityCostScore}% - ${stats.economy.opportunityCost.tradeoff}`} />
+          <DashboardRow label="Return on effort" value={`${stats.economy.returnOnEffort.returnOnEffort}% - ${stats.economy.returnOnEffort.summary}`} />
+          <DashboardRow label="Stop doing" value={stats.economy.stopDoing} />
+          <DashboardRow label="Double down" value={stats.economy.doubleDown} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <div className="rounded-3xl bg-mist p-4">
+            <p className="font-black">Leverage opportunities</p>
+            <div className="mt-3 grid gap-2">
+              {stats.economy.leverageOpportunities.slice(0, 4).map((item) => (
+                <p key={`${item.type}-${item.label}`} className="text-sm font-semibold text-slate-600">
+                  {item.label} - {item.leverageScore}% leverage
+                </p>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl bg-mist p-4">
+            <p className="font-black">Focus risks</p>
+            <div className="mt-3 grid gap-2">
+              {stats.economy.focus.recommendations.map((recommendation) => (
+                <p key={recommendation} className="text-sm font-semibold text-slate-600">
+                  {recommendation}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Digital twin</p>
         <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.digitalTwin.twinAccuracy}% twin accuracy</h2>
         <div className="mt-5 grid gap-3 lg:grid-cols-2">
