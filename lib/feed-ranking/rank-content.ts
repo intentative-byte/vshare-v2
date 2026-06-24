@@ -56,10 +56,11 @@ function getRotationScore(state: LearningState, content: NormalizedContent) {
   const viewedPenalty = state.viewedContentIds.includes(content.id) ? -35 : 0;
   const completedPenalty = state.completedContentIds.includes(content.id) ? -90 : 0;
   const skippedPenalty = state.skippedContentIds.includes(content.id) ? -80 : 0;
+  const notInterestedPenalty = state.notInterestedContentIds.includes(content.id) ? -180 : 0;
   const repeatedViewPenalty = engagement ? Math.max(0, engagement.views - 1) * -10 : 0;
   const newContentBoost = Math.max(0, 24 - hoursSince(content.createdAt) / 24) * 0.9;
 
-  return viewedPenalty + completedPenalty + skippedPenalty + repeatedViewPenalty + newContentBoost;
+  return viewedPenalty + completedPenalty + skippedPenalty + notInterestedPenalty + repeatedViewPenalty + newContentBoost;
 }
 
 function scoreContent(state: LearningState, content: NormalizedContent) {
@@ -67,12 +68,14 @@ function scoreContent(state: LearningState, content: NormalizedContent) {
   const topicMatch = getTopicMatchScore(state, content);
   const watchHistory = Math.min(20, (engagement?.watchSeconds ?? 0) / 12);
   const saveActivity = state.savedContentIds.includes(content.id) ? 18 : 0;
+  const likeActivity = state.likedContentIds.includes(content.id) ? 14 : 0;
+  const replayActivity = Math.min(12, (engagement?.replays ?? 0) * 4);
   const completionRate = getContentCompletionRate(state, content.id) * 22;
   const recentInterest = getRecentInterestScore(state, content);
   const rotation = getRotationScore(state, content);
   const contentQuality = content.quality.overallContentScore;
 
-  return topicMatch + watchHistory + saveActivity + completionRate + recentInterest + contentQuality * 0.65 + rotation;
+  return topicMatch + watchHistory + saveActivity + likeActivity + replayActivity + completionRate + recentInterest + contentQuality * 0.65 + rotation;
 }
 
 function isPersonalized(state: LearningState, content: NormalizedContent) {

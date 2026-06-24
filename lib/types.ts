@@ -101,13 +101,19 @@ export type NormalizedContent = LearningContent & {
 
 export type UserSignalType =
   | "topic_selected"
+  | "view_started"
   | "content_viewed"
   | "watch_time"
   | "content_completed"
+  | "scroll_away"
   | "content_skipped"
   | "content_saved"
   | "content_unsaved"
+  | "content_liked"
+  | "content_unliked"
+  | "not_interested"
   | "content_shared"
+  | "replay"
   | "search"
   | "explore_activity"
   | "profile_activity"
@@ -124,12 +130,18 @@ export type UserSignal = {
 };
 
 export type ContentEngagement = {
+  starts: number;
   views: number;
   watchSeconds: number;
   completions: number;
+  scrollAways: number;
   skips: number;
   saves: number;
+  likes: number;
   shares: number;
+  replays: number;
+  notInterested: number;
+  lastStartedAt: string | null;
   lastViewedAt: string | null;
   lastCompletedAt: string | null;
   lastSkippedAt: string | null;
@@ -158,8 +170,10 @@ export type LearningState = {
   interestScores: Record<Interest, number>;
   viewedContentIds: string[];
   savedContentIds: string[];
+  likedContentIds: string[];
   completedContentIds: string[];
   skippedContentIds: string[];
+  notInterestedContentIds: string[];
   followedPathIds: string[];
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;

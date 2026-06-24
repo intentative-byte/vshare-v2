@@ -34,8 +34,10 @@ function createDefaultLearningState(): LearningState {
     interestScores: createDefaultInterestScores(),
     viewedContentIds: [],
     savedContentIds: [],
+    likedContentIds: [],
     completedContentIds: [],
     skippedContentIds: [],
+    notInterestedContentIds: [],
     followedPathIds: [],
     viewedAtById: {},
     contentEngagement: {},
@@ -75,12 +77,18 @@ function uniqueValues(values: string[]) {
 
 function getDefaultEngagement(): ContentEngagement {
   return {
+    starts: 0,
     views: 0,
     watchSeconds: 0,
     completions: 0,
+    scrollAways: 0,
     skips: 0,
     saves: 0,
+    likes: 0,
     shares: 0,
+    replays: 0,
+    notInterested: 0,
+    lastStartedAt: null,
     lastViewedAt: null,
     lastCompletedAt: null,
     lastSkippedAt: null,
@@ -117,8 +125,10 @@ function parseLearningState(value: string | null): LearningState {
       interestScores: normalizeInterestScores(parsed.interestScores, interests),
       viewedContentIds: uniqueValues(parsed.viewedContentIds ?? []),
       savedContentIds: uniqueValues(parsed.savedContentIds ?? []),
+      likedContentIds: uniqueValues(parsed.likedContentIds ?? []),
       completedContentIds: uniqueValues(parsed.completedContentIds ?? []),
       skippedContentIds: uniqueValues(parsed.skippedContentIds ?? []),
+      notInterestedContentIds: uniqueValues(parsed.notInterestedContentIds ?? []),
       followedPathIds: uniqueValues(parsed.followedPathIds ?? []),
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
@@ -214,15 +224,21 @@ function updateEngagementForSignal(state: LearningState, signal: UserSignal): Le
 
   const nextEngagement: ContentEngagement = {
     ...engagement,
+    starts: signal.type === "view_started" ? engagement.starts + 1 : engagement.starts,
     views: signal.type === "content_viewed" ? engagement.views + 1 : engagement.views,
     watchSeconds: signal.type === "watch_time" ? engagement.watchSeconds + Math.max(0, signal.value ?? 0) : engagement.watchSeconds,
     completions: signal.type === "content_completed" ? engagement.completions + 1 : engagement.completions,
+    scrollAways: signal.type === "scroll_away" ? engagement.scrollAways + 1 : engagement.scrollAways,
     skips: signal.type === "content_skipped" ? engagement.skips + 1 : engagement.skips,
     saves: signal.type === "content_saved" ? engagement.saves + 1 : engagement.saves,
+    likes: signal.type === "content_liked" ? engagement.likes + 1 : engagement.likes,
     shares: signal.type === "content_shared" ? engagement.shares + 1 : engagement.shares,
+    replays: signal.type === "replay" ? engagement.replays + 1 : engagement.replays,
+    notInterested: signal.type === "not_interested" ? engagement.notInterested + 1 : engagement.notInterested,
+    lastStartedAt: signal.type === "view_started" ? now : engagement.lastStartedAt,
     lastViewedAt: signal.type === "content_viewed" ? now : engagement.lastViewedAt,
     lastCompletedAt: signal.type === "content_completed" ? now : engagement.lastCompletedAt,
-    lastSkippedAt: signal.type === "content_skipped" ? now : engagement.lastSkippedAt,
+    lastSkippedAt: signal.type === "content_skipped" || signal.type === "not_interested" ? now : engagement.lastSkippedAt,
   };
 
   return {
@@ -271,10 +287,37 @@ function updateCollectionsForSignal(state: LearningState, signal: UserSignal): L
     };
   }
 
+  if (signal.type === "not_interested") {
+    return {
+      ...state,
+      notInterestedContentIds: state.notInterestedContentIds.includes(contentId)
+        ? state.notInterestedContentIds
+        : [...state.notInterestedContentIds, contentId],
+      skippedContentIds: state.skippedContentIds.includes(contentId)
+        ? state.skippedContentIds
+        : [...state.skippedContentIds, contentId],
+    };
+  }
+
   if (signal.type === "content_saved") {
     return {
       ...state,
       savedContentIds: state.savedContentIds.includes(contentId) ? state.savedContentIds : [...state.savedContentIds, contentId],
+    };
+  }
+
+  if (signal.type === "content_liked") {
+    return {
+      ...state,
+      likedContentIds: state.likedContentIds.includes(contentId) ? state.likedContentIds : [...state.likedContentIds, contentId],
+      notInterestedContentIds: state.notInterestedContentIds.filter((id) => id !== contentId),
+    };
+  }
+
+  if (signal.type === "content_unliked") {
+    return {
+      ...state,
+      likedContentIds: state.likedContentIds.filter((id) => id !== contentId),
     };
   }
 
@@ -358,6 +401,10 @@ export function recordUserSignal(input: Omit<UserSignal, "id" | "occurredAt">) {
   return updateLearningState((state) => applySignal(state, createSignal(input)));
 }
 
+export function recordViewStarted(contentId: string) {
+  return recordUserSignal({ type: "view_started", contentId });
+}
+
 export function markContentViewed(contentId: string, position = 0) {
   return recordUserSignal({ type: "content_viewed", contentId, value: position });
 }
@@ -378,8 +425,26 @@ export function markContentSkipped(contentId: string) {
   return recordUserSignal({ type: "content_skipped", contentId });
 }
 
+export function markScrollAway(contentId: string) {
+  return recordUserSignal({ type: "scroll_away", contentId });
+}
+
 export function markContentShared(contentId: string) {
   return recordUserSignal({ type: "content_shared", contentId });
+}
+
+export function toggleLikedContent(contentId: string) {
+  const state = getLearningState();
+  const isLiked = state.likedContentIds.includes(contentId);
+  return recordUserSignal({ type: isLiked ? "content_unliked" : "content_liked", contentId });
+}
+
+export function markNotInterested(contentId: string) {
+  return recordUserSignal({ type: "not_interested", contentId });
+}
+
+export function markReplay(contentId: string) {
+  return recordUserSignal({ type: "replay", contentId });
 }
 
 export function toggleFollowPath(pathId: string) {

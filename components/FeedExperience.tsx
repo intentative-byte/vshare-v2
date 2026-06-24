@@ -2,36 +2,47 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, RotateCw } from "lucide-react";
+import { ArrowRight, Flame, RotateCw, Zap } from "lucide-react";
 import { Button } from "@/components/Button";
-import { LearningCard } from "@/components/LearningCard";
+import { MediaStreamItem } from "@/components/MediaStreamItem";
+import { learningContent } from "@/lib/data";
+import { buildLearningStream, getInitialStreamIndex, getPrefetchQueue } from "@/lib/feed-engine/stream";
 import {
   getProgressStats,
-  getRankedRecommendedContent,
   markContentCompleted,
   markContentShared,
-  markContentSkipped,
   markContentViewed,
+  markNotInterested,
+  markReplay,
+  markScrollAway,
   recordFeedActivity,
+  recordViewStarted,
   recordWatchTime,
+  toggleLikedContent,
   toggleSavedContent,
   useLearningState,
 } from "@/lib/learning";
-import { learningContent } from "@/lib/data";
+import { getTrendingToday } from "@/lib/trending/trending-today";
 
 const feedPageSize = 6;
 
 export function FeedExperience() {
   const learningState = useLearningState();
   const [visibleCount, setVisibleCount] = useState(feedPageSize);
+  const [isHydrating, setIsHydrating] = useState(true);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const rankedContent = useMemo(() => getRankedRecommendedContent(learningState), [learningState]);
+  const streamItems = useMemo(() => buildLearningStream(learningState), [learningState]);
   const stats = useMemo(() => getProgressStats(learningState), [learningState]);
-  const visibleContent = rankedContent.slice(0, visibleCount);
+  const trendingItems = useMemo(() => getTrendingToday(learningState), [learningState]);
+  const initialStreamIndex = useMemo(() => getInitialStreamIndex(learningState, streamItems), [learningState, streamItems]);
+  const visibleContent = streamItems.slice(0, Math.max(visibleCount, initialStreamIndex + feedPageSize));
+  const prefetchQueue = getPrefetchQueue(streamItems, Math.max(0, visibleCount - 1));
   const lastViewedContent = learningContent.find((content) => content.id === learningState.memory.lastViewedContentId);
 
   useEffect(() => {
     recordFeedActivity();
+    const frameId = requestAnimationFrame(() => setIsHydrating(false));
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   useEffect(() => {
@@ -44,7 +55,7 @@ export function FeedExperience() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
-          setVisibleCount((currentCount) => Math.min(currentCount + feedPageSize, rankedContent.length));
+          setVisibleCount((currentCount) => Math.min(currentCount + feedPageSize, streamItems.length));
         }
       },
       { rootMargin: "300px" },
@@ -53,7 +64,7 @@ export function FeedExperience() {
     observer.observe(sentinel);
 
     return () => observer.disconnect();
-  }, [rankedContent.length]);
+  }, [streamItems.length]);
 
   if (!learningState.interests.length) {
     return (
@@ -76,14 +87,14 @@ export function FeedExperience() {
   }
 
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-5">
       <section className="rounded-[2rem] bg-ink p-5 text-white shadow-soft sm:p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-200">For you</p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight">Today&apos;s learning feed</h1>
+            <h1 className="mt-3 text-4xl font-black tracking-tight">Learning stream</h1>
             <p className="mt-3 max-w-2xl leading-7 text-slate-300">
-              Ranked from your topic scores, watch history, saves, completions, and recent activity.
+              Swipe through new, relevant, unseen lessons. The stream adapts as you watch, skip, like, and save.
             </p>
             {lastViewedContent ? (
               <button
@@ -112,7 +123,7 @@ export function FeedExperience() {
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+      <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">{stats.mission.title}</p>
@@ -134,27 +145,57 @@ export function FeedExperience() {
         </div>
       </section>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {visibleContent.map((content) => (
-          <LearningCard
-            key={content.content.id}
-            content={content.content}
-            isSaved={learningState.savedContentIds.includes(content.content.id)}
-            isViewed={learningState.viewedContentIds.includes(content.content.id)}
-            isCompleted={learningState.completedContentIds.includes(content.content.id)}
-            lane={content.lane}
-            reasons={content.reasons}
-            onToggleSaved={toggleSavedContent}
-            onViewed={markContentViewed}
-            onWatchTime={recordWatchTime}
-            onComplete={markContentCompleted}
-            onSkip={markContentSkipped}
-            onShare={markContentShared}
-          />
-        ))}
+      <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Flame className="size-5 text-violet-700" />
+            <h2 className="text-xl font-black tracking-tight">Trending Today</h2>
+          </div>
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">Discovery</span>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none]">
+          {trendingItems.map((item) => (
+            <div key={item.content.id} className="min-w-64 rounded-3xl bg-mist p-4">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">
+                {item.content.contentType.replace("_", " ")}
+              </p>
+              <h3 className="mt-2 line-clamp-2 text-lg font-black tracking-tight">{item.content.title}</h3>
+              <p className="mt-2 text-sm font-semibold text-slate-500">{item.trendScore} trend score</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500 shadow-soft">
+        <Zap className="size-4 text-violet-700" />
+        Prefetching next: {prefetchQueue.length ? prefetchQueue.join(", ") : "ready"}
       </div>
 
-      {visibleCount < rankedContent.length ? (
+      <section className="grid max-h-none snap-y gap-4 overflow-visible scroll-smooth md:max-h-[calc(100svh-2rem)] md:overflow-y-auto md:pr-1">
+        {isHydrating
+          ? Array.from({ length: 2 }).map((_, index) => <StreamSkeleton key={index} />)
+          : visibleContent.map((item) => (
+              <MediaStreamItem
+                key={item.content.id}
+                item={item}
+                isSaved={learningState.savedContentIds.includes(item.content.id)}
+                isLiked={learningState.likedContentIds.includes(item.content.id)}
+                isCompleted={learningState.completedContentIds.includes(item.content.id)}
+                onStarted={recordViewStarted}
+                onViewed={markContentViewed}
+                onWatchTime={recordWatchTime}
+                onScrollAway={markScrollAway}
+                onComplete={markContentCompleted}
+                onReplay={markReplay}
+                onToggleSaved={toggleSavedContent}
+                onToggleLiked={toggleLikedContent}
+                onShare={markContentShared}
+                onNotInterested={markNotInterested}
+              />
+            ))}
+      </section>
+
+      {visibleCount < streamItems.length ? (
         <div ref={sentinelRef} className="flex justify-center py-4 text-sm font-bold text-slate-500">
           <RotateCw className="mr-2 size-4 animate-spin" />
           Loading more
@@ -164,6 +205,23 @@ export function FeedExperience() {
           You&apos;re caught up for these interests. Visit Explore to widen the feed.
         </div>
       )}
+    </div>
+  );
+}
+
+function StreamSkeleton() {
+  return (
+    <div className="min-h-[calc(100svh-8rem)] animate-pulse snap-start overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-soft">
+      <div className="min-h-[52svh] bg-slate-200" />
+      <div className="grid gap-4 p-5">
+        <div className="h-4 w-1/2 rounded-full bg-slate-200" />
+        <div className="h-4 w-2/3 rounded-full bg-slate-200" />
+        <div className="grid grid-cols-3 gap-3">
+          <div className="h-20 rounded-2xl bg-slate-100" />
+          <div className="h-20 rounded-2xl bg-slate-100" />
+          <div className="h-20 rounded-2xl bg-slate-100" />
+        </div>
+      </div>
     </div>
   );
 }

@@ -16,9 +16,11 @@ function getEngagementScore(engagement: ContentEngagement | undefined) {
   const completionRatio = engagement.views ? engagement.completions / engagement.views : 0;
   const saveRatio = engagement.views ? engagement.saves / engagement.views : 0;
   const shareRatio = engagement.views ? engagement.shares / engagement.views : 0;
-  const skipPenalty = engagement.views ? (engagement.skips / engagement.views) * 30 : 0;
+  const likeRatio = engagement.views ? engagement.likes / engagement.views : 0;
+  const replayRatio = engagement.views ? engagement.replays / engagement.views : 0;
+  const skipPenalty = engagement.views ? ((engagement.skips + engagement.notInterested * 1.5) / engagement.views) * 30 : 0;
 
-  return clampScore(42 + completionRatio * 26 + saveRatio * 20 + shareRatio * 12 - skipPenalty);
+  return clampScore(42 + completionRatio * 26 + saveRatio * 20 + shareRatio * 12 + likeRatio * 14 + replayRatio * 10 - skipPenalty);
 }
 
 function getFreshnessScore(content: LearningContent) {
