@@ -132,9 +132,7 @@ export function LearningCard({
             ) : null}
           </div>
           <div>
-            <p className="text-sm font-semibold text-violet-100">
-              {content.source.name} · {content.quality.overallContentScore} score
-            </p>
+            <p className="text-sm font-semibold text-violet-100">{content.source.name}</p>
             <h2 className="mt-2 line-clamp-2 text-2xl font-black tracking-tight">{content.title}</h2>
           </div>
         </div>

@@ -31,6 +31,7 @@ test("local demo mode remains available without Supabase", () => {
   assert.match(read("lib/supabase/client.ts"), /return null/);
   assert.match(read("lib/supabase/server.ts"), /return null/);
   assert.match(read("components/AuthForm.tsx"), /stored on this device/);
+  assert.match(read("components/AuthForm.tsx"), /Continue in demo mode/);
 });
 
 test("health endpoint reports app status and local mode", () => {
@@ -44,4 +45,11 @@ test("VAI orchestration exposes a unified user state", () => {
   assert.match(orchestrator, /getUnifiedUserState/);
   assert.match(orchestrator, /getVaiOrchestration/);
   assert.match(read("lib/learning/index.ts"), /vai,?/);
+});
+
+test("first-user test plan is documented", () => {
+  const plan = read("docs/first-user-test-plan.md");
+  assert.match(plan, /Continue in demo mode/);
+  assert.match(plan, /Save one item/);
+  assert.match(plan, /Success criteria/);
 });

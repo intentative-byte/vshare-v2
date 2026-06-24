@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Flame, RotateCw, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, Flame, RotateCw } from "lucide-react";
 import { Button } from "@/components/Button";
 import { ContributionComposer } from "@/components/ContributionComposer";
 import { MediaStreamItem } from "@/components/MediaStreamItem";
 import { learningContent } from "@/lib/data";
-import { buildLearningStream, getInitialStreamIndex, getPrefetchQueue } from "@/lib/feed-engine/stream";
+import { buildLearningStream, getInitialStreamIndex } from "@/lib/feed-engine/stream";
 import {
   getProgressStats,
   markContentCompleted,
@@ -37,8 +37,13 @@ export function FeedExperience() {
   const trendingItems = useMemo(() => getTrendingToday(learningState), [learningState]);
   const initialStreamIndex = useMemo(() => getInitialStreamIndex(learningState, streamItems), [learningState, streamItems]);
   const visibleContent = streamItems.slice(0, Math.max(visibleCount, initialStreamIndex + feedPageSize));
-  const prefetchQueue = getPrefetchQueue(streamItems, Math.max(0, visibleCount - 1));
   const lastViewedContent = learningContent.find((content) => content.id === learningState.memory.lastViewedContentId);
+  const firstUserChecklist = [
+    { label: "Choose interests", done: learningState.interests.length > 0 },
+    { label: "View 3 items", done: learningState.viewedContentIds.length >= 3 },
+    { label: "Save 1 item", done: learningState.savedContentIds.length >= 1 },
+    { label: "Complete today's mission", done: stats.mission.completionPercentage === 100 },
+  ];
 
   useEffect(() => {
     recordFeedActivity();
@@ -93,9 +98,9 @@ export function FeedExperience() {
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-200">For you</p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight">Learning stream</h1>
+            <h1 className="mt-3 text-4xl font-black tracking-tight">Your learning feed</h1>
             <p className="mt-3 max-w-2xl leading-7 text-slate-300">
-              Swipe through new, relevant, unseen lessons. The stream adapts as you watch, skip, like, and save.
+              Learn one useful thing, save what matters, and let VShare guide your next move.
             </p>
             <div className="mt-4 rounded-3xl bg-white/10 p-4">
               <p className="text-sm font-black text-violet-100">{stats.vai.headline}</p>
@@ -105,10 +110,10 @@ export function FeedExperience() {
                 <ContextChip label="Goal" value={stats.vai.currentGoal} />
                 <ContextChip label="Constraint" value={stats.vai.topConstraint} />
                 <ContextChip label="Mission" value={stats.vai.dailyMission} />
-                <ContextChip label="Governor" value={stats.vai.governorState} />
+                <ContextChip label="Plan guardrail" value={stats.vai.governorState} />
               </div>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
-                {stats.vai.mode} mode · growth {stats.vai.growthScore}% · alignment {stats.vai.lifeAlignmentScore}%
+                Guidance: {stats.vai.mode} · Growth {stats.vai.growthScore}% · Alignment {stats.vai.lifeAlignmentScore}%
               </p>
             </div>
             {lastViewedContent ? (
@@ -141,6 +146,30 @@ export function FeedExperience() {
       <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">First-user checklist</p>
+            <h2 className="mt-1 text-2xl font-black tracking-tight">
+              {firstUserChecklist.filter((item) => item.done).length}/{firstUserChecklist.length} done
+            </h2>
+          </div>
+          <Link href="/saved">
+            <Button type="button" variant="secondary" className="w-full sm:w-auto">
+              View saved items
+            </Button>
+          </Link>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-4">
+          {firstUserChecklist.map((item) => (
+            <div key={item.label} className="flex items-center gap-2 rounded-2xl bg-mist p-3">
+              <CheckCircle2 className={item.done ? "size-4 text-emerald-600" : "size-4 text-slate-300"} />
+              <span className="text-sm font-bold text-slate-700">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">{stats.mission.title}</p>
             <h2 className="mt-1 text-2xl font-black tracking-tight">{stats.mission.completionPercentage}% complete</h2>
           </div>
@@ -161,7 +190,7 @@ export function FeedExperience() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Capability missions</p>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Today's actions</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-4">
           {stats.capability.missions.map((mission) => (
             <div key={mission.id} className="rounded-2xl bg-mist p-4">
@@ -176,7 +205,7 @@ export function FeedExperience() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Recommended next concepts</p>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Learn next</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           {stats.intelligence.recommendedNextConcepts.slice(0, 3).map((concept) => (
             <div key={`${concept.topic}-${concept.concept}`} className="rounded-2xl bg-mist p-4">
@@ -204,16 +233,11 @@ export function FeedExperience() {
                 {item.content.contentType.replace("_", " ")}
               </p>
               <h3 className="mt-2 line-clamp-2 text-lg font-black tracking-tight">{item.content.title}</h3>
-              <p className="mt-2 text-sm font-semibold text-slate-500">{item.trendScore} trend score</p>
+              <p className="mt-2 text-sm font-semibold text-slate-500">Trending now</p>
             </div>
           ))}
         </div>
       </section>
-
-      <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500 shadow-soft">
-        <Zap className="size-4 text-violet-700" />
-        Prefetching next: {prefetchQueue.length ? prefetchQueue.join(", ") : "ready"}
-      </div>
 
       <section className="grid max-h-none snap-y gap-4 overflow-visible scroll-smooth md:max-h-[calc(100svh-2rem)] md:overflow-y-auto md:pr-1">
         {isHydrating

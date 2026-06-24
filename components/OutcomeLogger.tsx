@@ -53,7 +53,7 @@ export function OutcomeLogger() {
     setTopics([]);
     setEvidenceLabel("");
     setEvidenceValue("");
-    setMessage("Outcome logged. Capability score updated.");
+    setMessage("Outcome logged. Your progress has been updated.");
   }
 
   return (

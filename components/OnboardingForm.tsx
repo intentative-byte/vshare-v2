@@ -24,10 +24,10 @@ export function OnboardingForm() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-6 rounded-[2rem] bg-ink p-6 text-white shadow-soft">
-        <p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-200">First launch</p>
+        <p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-200">Start here</p>
         <h1 className="mt-4 text-4xl font-black tracking-tight">Choose what you want to learn.</h1>
         <p className="mt-3 leading-7 text-slate-300">
-          VShare builds your feed from these interests and keeps improving as you view and save items.
+          Pick a few topics and VShare will build your first feed.
         </p>
       </div>
 

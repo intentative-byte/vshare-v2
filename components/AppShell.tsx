@@ -45,7 +45,7 @@ export function AppShell({ children, active }: AppShellProps) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8">{children}</main>
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/80 bg-white/95 px-3 py-2 shadow-soft backdrop-blur md:hidden">
         <div className="grid grid-cols-4 gap-1">
           {navItems.map((item) => {

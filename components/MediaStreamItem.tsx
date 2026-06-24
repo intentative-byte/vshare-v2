@@ -139,9 +139,7 @@ export const MediaStreamItem = memo(function MediaStreamItem({
           <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-white/15">
             {presentation.renderer === "audio" ? <Volume2 className="size-8" /> : <Play className="size-8" />}
           </div>
-          <p className="text-sm font-bold text-violet-100">
-            {item.content.source.name} · {item.content.quality.overallContentScore} score
-          </p>
+          <p className="text-sm font-bold text-violet-100">{item.content.source.name}</p>
           <h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{item.content.title}</h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-100">{item.content.summary}</p>
         </div>

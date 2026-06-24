@@ -2,12 +2,19 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Bookmark, Flame, Target, TrendingUp } from "lucide-react";
+import { ArrowRight, Bookmark, Flame, TrendingUp } from "lucide-react";
 import { Button } from "@/components/Button";
 import { getProgressStats, recordProfileActivity, setVaiMode, useLearningState } from "@/lib/learning";
 import type { LearningState } from "@/lib/types";
 
-const vaiModes: Array<LearningState["vaiMode"]> = ["silent", "partner", "coach", "strategist", "operator", "governor"];
+const vaiModes: Array<{ value: LearningState["vaiMode"]; label: string }> = [
+  { value: "silent", label: "Quiet" },
+  { value: "partner", label: "Suggest" },
+  { value: "coach", label: "Challenge" },
+  { value: "strategist", label: "Plan" },
+  { value: "operator", label: "Coordinate" },
+  { value: "governor", label: "Protect" },
+];
 
 export function ProfileDashboard() {
   const learningState = useLearningState();
@@ -27,11 +34,10 @@ export function ProfileDashboard() {
         </p>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-3">
         <MetricCard icon={TrendingUp} label="Growth Score" value={`${stats.vai.growthScore}%`} />
         <MetricCard icon={Flame} label="Streak" value={`${stats.streak} day${stats.streak === 1 ? "" : "s"}`} />
         <MetricCard icon={Bookmark} label="Saved Items" value={String(stats.savedCount)} />
-        <MetricCard icon={Target} label="Life Alignment" value={`${stats.vai.lifeAlignmentScore}%`} />
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
@@ -50,11 +56,16 @@ export function ProfileDashboard() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">VAI mode</p>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Guidance style</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {vaiModes.map((mode) => (
-            <Button key={mode} type="button" variant={learningState.vaiMode === mode ? "primary" : "secondary"} onClick={() => setVaiMode(mode)}>
-              {mode}
+            <Button
+              key={mode.value}
+              type="button"
+              variant={learningState.vaiMode === mode.value ? "primary" : "secondary"}
+              onClick={() => setVaiMode(mode.value)}
+            >
+              {mode.label}
             </Button>
           ))}
         </div>
