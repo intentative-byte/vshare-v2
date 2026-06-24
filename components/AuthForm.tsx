@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/Button";
 import { createClient } from "@/lib/supabase/client";
+import { getSupabaseConfigurationError } from "@/lib/supabase/env";
 
 export function AuthForm() {
   const searchParams = useSearchParams();
@@ -13,6 +14,7 @@ export function AuthForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const supabase = useMemo(() => createClient(), []);
+  const supabaseConfigurationError = useMemo(() => getSupabaseConfigurationError(), []);
   const nextPath = searchParams.get("next") ?? "/feed";
 
   function handleMagicLink() {
@@ -20,7 +22,9 @@ export function AuthForm() {
     setMessage(null);
 
     if (!supabase) {
-      setError("Supabase is not configured yet. Add the environment variables from .env.example.");
+      setError(
+        supabaseConfigurationError ?? "Supabase is not configured yet. Add the environment variables from .env.example.",
+      );
       return;
     }
 
@@ -45,7 +49,9 @@ export function AuthForm() {
     setError(null);
 
     if (!supabase) {
-      setError("Supabase is not configured yet. Add the environment variables from .env.example.");
+      setError(
+        supabaseConfigurationError ?? "Supabase is not configured yet. Add the environment variables from .env.example.",
+      );
       return;
     }
 

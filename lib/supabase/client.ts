@@ -5,9 +5,9 @@ import type { Database } from "@/lib/supabase/database.types";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 
 export function createClient() {
-  const { url, anonKey, isConfigured } = getSupabaseEnv();
+  const { url, anonKey, isValid } = getSupabaseEnv();
 
-  if (!isConfigured || !url || !anonKey) {
+  if (!isValid || !url || !anonKey) {
     return null;
   }
 
