@@ -13,17 +13,13 @@ export type AnonymizedLearningNetwork = {
   };
 };
 
-function countValues(values: string[]) {
+function countValues(values: string[]): Array<{ value: string; count: number }> {
   const counts = new Map<string, number>();
 
   values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1));
 
   return Array.from(counts.entries())
-    .map(([value, count]) => ({ [value.includes(":") ? "key" : "label"]: value, count }))
-    .map((entry) => {
-      const value = "key" in entry ? entry.key : entry.label;
-      return { value, count: entry.count };
-    })
+    .map(([value, count]) => ({ value, count }))
     .sort((a, b) => b.count - a.count);
 }
 
