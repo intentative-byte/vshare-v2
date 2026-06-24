@@ -199,7 +199,15 @@ export type OutcomeType =
   | "lost_weight"
   | "learned_skill"
   | "earned_revenue"
-  | "completed_certification";
+  | "completed_certification"
+  | "revenue"
+  | "clients"
+  | "jobs"
+  | "promotions"
+  | "skills"
+  | "fitness"
+  | "projects"
+  | "education";
 
 export type EvidenceType = "link" | "screenshot" | "document" | "video" | "note";
 
@@ -214,11 +222,20 @@ export type EvidenceAttachment = {
 export type UserOutcome = {
   id: string;
   type: OutcomeType;
+  goal: string;
+  action: string;
   title: string;
   description: string;
   topics: Interest[];
   evidenceIds: string[];
   createdAt: string;
+};
+
+export type OutcomeIntelligenceScore = {
+  executionScore: number;
+  outcomeScore: number;
+  improvementScore: number;
+  outcomeVelocity: number;
 };
 
 export type ConceptActionStage = "learned" | "attempted" | "applied" | "repeated" | "mastered";

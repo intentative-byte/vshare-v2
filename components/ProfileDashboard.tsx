@@ -95,6 +95,59 @@ export function ProfileDashboard() {
       <OutcomeLogger />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Outcome intelligence</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.outcomeIntelligence.score.outcomeVelocity}% outcome velocity</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-3">
+          <StatCard icon={Target} label="Execution score" value={`${stats.outcomeIntelligence.score.executionScore}%`} />
+          <StatCard icon={Target} label="Outcome score" value={`${stats.outcomeIntelligence.score.outcomeScore}%`} />
+          <StatCard icon={Target} label="Improvement score" value={`${stats.outcomeIntelligence.score.improvementScore}%`} />
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          <OutcomeList title="What worked" items={stats.outcomeIntelligence.successAnalysis.worked} />
+          <OutcomeList title="What failed" items={stats.outcomeIntelligence.successAnalysis.failed} />
+          <OutcomeList title="What repeated" items={stats.outcomeIntelligence.successAnalysis.repeated} />
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Outcome timeline</h2>
+          <div className="mt-5 grid gap-3">
+            {stats.outcomeIntelligence.timeline.length ? (
+              stats.outcomeIntelligence.timeline.slice(0, 5).map((item) => (
+                <div key={item.id} className="rounded-2xl bg-mist p-4">
+                  <p className="font-black">{item.goal}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">{item.action}</p>
+                  <p className="mt-1 text-xs font-black uppercase tracking-[0.16em] text-violet-700">
+                    {item.outcome} · {item.evidenceCount} evidence
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm font-semibold text-slate-500">Log outcomes to build your outcome timeline.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Lessons and playbooks</h2>
+          <div className="mt-5 grid gap-3">
+            {stats.outcomeIntelligence.lessons.slice(0, 3).map((lesson) => (
+              <div key={lesson.id} className="rounded-2xl bg-mist p-4">
+                <p className="text-sm font-semibold leading-6 text-slate-700">{lesson.lesson}</p>
+              </div>
+            ))}
+            {stats.outcomeIntelligence.playbooks.slice(0, 2).map((playbook) => (
+              <div key={playbook.id} className="rounded-2xl bg-violet-50 p-4">
+                <p className="font-black text-violet-700">{playbook.title}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-600">{playbook.steps.join(" -> ")}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Personal learning map</p>
@@ -484,6 +537,26 @@ function DashboardRow({ label, value }: DashboardRowProps) {
     <div className="rounded-2xl bg-mist p-4">
       <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">{label}</p>
       <p className="mt-1 text-sm font-semibold leading-6 text-slate-700">{value}</p>
+    </div>
+  );
+}
+
+type OutcomeListProps = {
+  title: string;
+  items: string[];
+};
+
+function OutcomeList({ title, items }: OutcomeListProps) {
+  return (
+    <div className="rounded-3xl bg-mist p-4">
+      <p className="font-black">{title}</p>
+      <div className="mt-3 grid gap-2">
+        {items.map((item) => (
+          <p key={item} className="text-sm font-semibold leading-6 text-slate-600">
+            {item}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }

@@ -44,6 +44,10 @@ import { createDecisionRecord, isValidDecision } from "@/lib/decisions/decision-
 import { createEvidence, isValidEvidence } from "@/lib/evidence/evidence-engine";
 import { resolveDecision } from "@/lib/history/decision-history";
 import { getDecisionIntelligence } from "@/lib/recommendations/decision-recommendations";
+import { getOutcomeIntelligenceScore, getOutcomeTimeline } from "@/lib/outcomes/outcome-intelligence";
+import { getSuccessAnalysis } from "@/lib/outcomes/success-analysis";
+import { extractOutcomeFrameworks, extractOutcomeLessons } from "@/lib/learning/outcome-extraction";
+import { generateOutcomePlaybooks } from "@/lib/playbooks/playbook-generator";
 import { getNormalizedContentById } from "@/lib/content/ingestion";
 import { updateConceptProgress, updateConceptProgressForOutcome } from "@/lib/progression/concept-pipeline";
 import type {
@@ -633,6 +637,8 @@ export type OutcomeResult =
 
 export function logOutcome(input: {
   type: OutcomeType;
+  goal?: string;
+  action?: string;
   title: string;
   description: string;
   topics: Interest[];
@@ -657,6 +663,8 @@ export function logOutcome(input: {
     const outcome: UserOutcome = {
       id: `outcome-${Date.now()}`,
       type: input.type,
+      goal: input.goal?.trim() || input.title.trim(),
+      action: input.action?.trim() || input.description.trim(),
       title: input.title.trim(),
       description: input.description.trim(),
       topics: input.topics,
@@ -855,6 +863,14 @@ export function getProgressStats(state: LearningState) {
   const goalRoadmaps = getGoalRoadmaps(state);
   const recommendedTimeAllocation = recommendTimeAllocation(state);
   const decisionIntelligence = getDecisionIntelligence(state);
+  const outcomeIntelligence = {
+    score: getOutcomeIntelligenceScore(state),
+    timeline: getOutcomeTimeline(state),
+    successAnalysis: getSuccessAnalysis(state),
+    lessons: extractOutcomeLessons(state),
+    frameworks: extractOutcomeFrameworks(state),
+    playbooks: generateOutcomePlaybooks(state),
+  };
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -881,6 +897,7 @@ export function getProgressStats(state: LearningState) {
     goalRoadmaps,
     recommendedTimeAllocation,
     decisionIntelligence,
+    outcomeIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,
       progress: getGoalProgress(state, goal),

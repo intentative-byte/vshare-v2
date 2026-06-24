@@ -11,6 +11,8 @@ import type { EvidenceType, Interest, OutcomeType } from "@/lib/types";
 
 export function OutcomeLogger() {
   const [type, setType] = useState<OutcomeType>("learned_skill");
+  const [goal, setGoal] = useState("");
+  const [action, setAction] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [topics, setTopics] = useState<Interest[]>([]);
@@ -22,6 +24,8 @@ export function OutcomeLogger() {
   function handleSubmit() {
     const result = logOutcome({
       type,
+      goal,
+      action,
       title,
       description,
       topics,
@@ -41,6 +45,8 @@ export function OutcomeLogger() {
     }
 
     setTitle("");
+    setGoal("");
+    setAction("");
     setDescription("");
     setTopics([]);
     setEvidenceLabel("");
@@ -73,6 +79,18 @@ export function OutcomeLogger() {
             </option>
           ))}
         </select>
+        <input
+          value={goal}
+          onChange={(event) => setGoal(event.target.value)}
+          placeholder="Goal this outcome supports"
+          className="min-h-12 rounded-2xl border border-slate-200 px-4 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+        />
+        <input
+          value={action}
+          onChange={(event) => setAction(event.target.value)}
+          placeholder="Action you took"
+          className="min-h-12 rounded-2xl border border-slate-200 px-4 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+        />
         <input
           value={title}
           onChange={(event) => setTitle(event.target.value)}

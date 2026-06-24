@@ -9,6 +9,14 @@ export const outcomeTypes: Array<{ value: OutcomeType; label: string; executionW
   { value: "learned_skill", label: "Learned Skill", executionWeight: 18 },
   { value: "earned_revenue", label: "Earned Revenue", executionWeight: 30 },
   { value: "completed_certification", label: "Completed Certification", executionWeight: 24 },
+  { value: "revenue", label: "Revenue", executionWeight: 30 },
+  { value: "clients", label: "Clients", executionWeight: 28 },
+  { value: "jobs", label: "Jobs", executionWeight: 30 },
+  { value: "promotions", label: "Promotions", executionWeight: 28 },
+  { value: "skills", label: "Skills", executionWeight: 20 },
+  { value: "fitness", label: "Fitness", executionWeight: 24 },
+  { value: "projects", label: "Projects", executionWeight: 24 },
+  { value: "education", label: "Education", executionWeight: 22 },
 ];
 
 export function getOutcomeLabel(type: OutcomeType) {
