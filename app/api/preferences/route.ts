@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { goalOptions, interestOptions } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 
 type PreferencePayload = {
@@ -11,7 +12,19 @@ export async function GET() {
   const supabase = await createClient();
 
   if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    // TODO: Reconnect Supabase by returning saved preferences once auth/database is restored.
+    return NextResponse.json({
+      preferences: {
+        id: "local-preferences",
+        user_id: "local-user",
+        topics: interestOptions.slice(0, 2),
+        goals: goalOptions.slice(0, 1),
+        daily_minutes: 20,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      mode: "local",
+    });
   }
 
   const {
@@ -33,9 +46,22 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   const supabase = await createClient();
+  const payload = (await request.json()) as PreferencePayload;
 
   if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    // TODO: Reconnect Supabase by persisting preferences once auth/database is restored.
+    return NextResponse.json({
+      preferences: {
+        id: "local-preferences",
+        user_id: "local-user",
+        topics: payload.topics ?? [],
+        goals: payload.goals ?? [],
+        daily_minutes: payload.daily_minutes ?? 20,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      mode: "local",
+    });
   }
 
   const {
@@ -45,8 +71,6 @@ export async function PUT(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   }
-
-  const payload = (await request.json()) as PreferencePayload;
 
   const { data, error } = await supabase
     .from("preferences")

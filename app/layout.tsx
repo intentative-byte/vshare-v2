@@ -9,9 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "VShare v2",
-  description:
-    "A personalised learning and knowledge-sharing platform that turns scrolling into continuous growth.",
+  title: "VShare",
+  description: "A personalized learning feed that adapts to your interests, saves, and progress.",
 };
 
 export default function RootLayout({
