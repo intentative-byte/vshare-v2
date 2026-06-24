@@ -40,7 +40,10 @@ import { createProject, isValidProject, updateProjectStatus } from "@/lib/projec
 import { defaultTimeAllocation, normalizeTimeAllocation, recommendTimeAllocation } from "@/lib/projects/time-allocation";
 import { getPersonalDashboard } from "@/lib/growth/personal-dashboard";
 import { getPersonalGrowthScore } from "@/lib/growth/growth-score";
+import { createDecisionRecord, isValidDecision } from "@/lib/decisions/decision-framework";
 import { createEvidence, isValidEvidence } from "@/lib/evidence/evidence-engine";
+import { resolveDecision } from "@/lib/history/decision-history";
+import { getDecisionIntelligence } from "@/lib/recommendations/decision-recommendations";
 import { getNormalizedContentById } from "@/lib/content/ingestion";
 import { updateConceptProgress, updateConceptProgressForOutcome } from "@/lib/progression/concept-pipeline";
 import type {
@@ -50,6 +53,8 @@ import type {
   GoalType,
   Interest,
   LearningState,
+  DecisionOption,
+  DecisionType,
   OutcomeType,
   ProjectStatus,
   TimeAllocation,
@@ -82,6 +87,7 @@ function createDefaultLearningState(): LearningState {
     goals: [],
     projects: [],
     timeAllocation: defaultTimeAllocation,
+    decisions: [],
     viewedAtById: {},
     contentEngagement: {},
     signals: [],
@@ -182,6 +188,7 @@ function parseLearningState(value: string | null): LearningState {
       goals: parsed.goals ?? [],
       projects: parsed.projects ?? [],
       timeAllocation: normalizeTimeAllocation(parsed.timeAllocation),
+      decisions: parsed.decisions ?? [],
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
@@ -730,6 +737,39 @@ export function addProject(input: {
   return result;
 }
 
+export type DecisionResult = { ok: true } | { ok: false; error: "invalid_decision" };
+
+export function addDecision(input: {
+  type: DecisionType;
+  decision: string;
+  reason: string;
+  desiredOutcome: string;
+  options: DecisionOption[];
+  chosenOptionId: string;
+}): DecisionResult {
+  if (!isValidDecision(input)) {
+    return { ok: false, error: "invalid_decision" };
+  }
+
+  updateLearningState((state) => ({
+    ...state,
+    decisions: [createDecisionRecord(input), ...state.decisions].slice(0, 120),
+  }));
+
+  return { ok: true };
+}
+
+export function setDecisionOutcome(decisionId: string, outcome: string) {
+  if (outcome.trim().length < 3) {
+    return getLearningState();
+  }
+
+  return updateLearningState((state) => ({
+    ...state,
+    decisions: state.decisions.map((decision) => (decision.id === decisionId ? resolveDecision(decision, outcome) : decision)),
+  }));
+}
+
 export function setProjectStatus(projectId: string, status: ProjectStatus) {
   return updateLearningState((state) => ({
     ...state,
@@ -814,6 +854,7 @@ export function getProgressStats(state: LearningState) {
   const growth = getPersonalGrowthScore(state);
   const goalRoadmaps = getGoalRoadmaps(state);
   const recommendedTimeAllocation = recommendTimeAllocation(state);
+  const decisionIntelligence = getDecisionIntelligence(state);
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -839,6 +880,7 @@ export function getProgressStats(state: LearningState) {
     growth,
     goalRoadmaps,
     recommendedTimeAllocation,
+    decisionIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,
       progress: getGoalProgress(state, goal),

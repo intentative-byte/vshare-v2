@@ -1,6 +1,7 @@
 import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
 import { getCapabilityScore } from "@/lib/capability/scoring";
 import { getHighestLeverageAction } from "@/lib/decisions/decision-engine";
+import { getDecisionIntelligence } from "@/lib/recommendations/decision-recommendations";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -38,11 +39,12 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
 
   if (state.vaiMode === "strategist") {
     const action = getHighestLeverageAction(state);
+    const decision = getDecisionIntelligence(state);
 
     return {
       mode: "strategist",
       headline: "VAI Strategist",
-      suggestion: `${action.title}. ${action.reason} Allocate ${action.estimatedMinutes} minutes.`,
+      suggestion: `${action.title}. ${action.reason} Decision lens: ${decision.latestRecommendation} Allocate ${action.estimatedMinutes} minutes.`,
       actionLabel: "Do next",
     };
   }

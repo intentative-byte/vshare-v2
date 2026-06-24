@@ -281,6 +281,40 @@ export type GrowthScore = {
   personalGrowthScore: number;
 };
 
+export type DecisionType = "career" | "business" | "health" | "learning" | "financial" | "personal";
+
+export type DecisionOption = {
+  id: string;
+  label: string;
+  upside: string;
+  downside: string;
+  risk: number;
+  leverage: number;
+};
+
+export type DecisionRecord = {
+  id: string;
+  type: DecisionType;
+  decision: string;
+  reason: string;
+  desiredOutcome: string;
+  options: DecisionOption[];
+  chosenOptionId: string;
+  recommendation: string;
+  outcome: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+};
+
+export type DecisionQualityScore = {
+  clarityScore: number;
+  optionQualityScore: number;
+  riskAwarenessScore: number;
+  leverageScore: number;
+  outcomeScore: number;
+  decisionQualityScore: number;
+};
+
 export type LearningPath = {
   id: string;
   title: string;
@@ -327,6 +361,7 @@ export type LearningState = {
   goals: UserGoal[];
   projects: UserProject[];
   timeAllocation: TimeAllocation;
+  decisions: DecisionRecord[];
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];

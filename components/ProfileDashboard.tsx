@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { BarChart3, Bell, Bookmark, Compass, Flame, Gauge, Map, Target } from "lucide-react";
 import { Button } from "@/components/Button";
+import { DecisionLogger } from "@/components/DecisionLogger";
 import { GrowthPlanner } from "@/components/GrowthPlanner";
 import { OutcomeLogger } from "@/components/OutcomeLogger";
 import { getProgressStats, recordProfileActivity, setVaiMode, toggleFollowPath, useLearningState } from "@/lib/learning";
@@ -54,6 +55,19 @@ export function ProfileDashboard() {
       </section>
 
       <GrowthPlanner />
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Decision intelligence</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.decisionIntelligence.decisionQualityScore}% decision quality</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Highest leverage path" value={stats.decisionIntelligence.highestLeveragePath} />
+          <DashboardRow label="Recommendation" value={stats.decisionIntelligence.latestRecommendation} />
+          <DashboardRow label="Patterns" value={stats.decisionIntelligence.patterns.join(", ") || "Decision memory forming"} />
+          <DashboardRow label="Memory" value={`${stats.decisionIntelligence.wins.length} wins · ${stats.decisionIntelligence.mistakes.length} mistakes`} />
+        </div>
+      </section>
+
+      <DecisionLogger />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Capability engine</p>
