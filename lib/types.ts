@@ -69,6 +69,13 @@ export type ContentQualityScore = {
   overallContentScore: number;
 };
 
+export type ContentPurpose = {
+  skill: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  topic: Interest;
+  outcome: string;
+};
+
 export type CreatorProfile = {
   id: string;
   name: string;
@@ -108,6 +115,7 @@ export type NormalizedContent = LearningContent & {
   ingestedAt: string;
   tags: string[];
   quality: ContentQualityScore;
+  purpose: ContentPurpose;
   creatorId: string;
   isUserGenerated: boolean;
 };
@@ -174,6 +182,13 @@ export type SessionMemory = {
   lastProfileVisitAt: string | null;
 };
 
+export type KnowledgeScore = {
+  awarenessScore: number;
+  understandingScore: number;
+  applicationScore: number;
+  masteryScore: number;
+};
+
 export type LearningPath = {
   id: string;
   title: string;
@@ -218,6 +233,7 @@ export type LearningState = {
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];
   memory: SessionMemory;
+  vaiMode: "silent" | "partner" | "coach";
   streak: number;
   lastActiveDate: string | null;
   onboardedAt: string | null;

@@ -32,6 +32,7 @@ import {
 import { getNotificationIntents } from "@/lib/notifications/framework";
 import { getRecommendedLearningPaths } from "@/lib/paths/learning-paths";
 import { getWeeklyRecap } from "@/lib/retention/weekly-recap";
+import { getLearningOperatingSystem } from "@/lib/intelligence/operating-system";
 import type { ContentEngagement, ContributionType, Interest, LearningState, UserContribution, UserSignal } from "@/lib/types";
 
 const learningStateKey = "vshare:learning-state";
@@ -54,6 +55,7 @@ function createDefaultLearningState(): LearningState {
     contentEngagement: {},
     signals: [],
     memory: defaultSessionMemory,
+    vaiMode: "partner",
     streak: 0,
     lastActiveDate: null,
     onboardedAt: null,
@@ -147,6 +149,7 @@ function parseLearningState(value: string | null): LearningState {
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
       memory: normalizeSessionMemory(parsed.memory),
+      vaiMode: parsed.vaiMode ?? "partner",
     };
   } catch {
     return defaultLearningState;
@@ -584,6 +587,13 @@ export function recordFeedActivity() {
   return updateLearningState((state) => rememberRouteActivity(state, "feed"));
 }
 
+export function setVaiMode(mode: LearningState["vaiMode"]) {
+  return updateLearningState((state) => ({
+    ...state,
+    vaiMode: mode,
+  }));
+}
+
 export function getRecommendedContent(state: LearningState) {
   return rankFeedContent(state).map((rankedContent) => rankedContent.content);
 }
@@ -616,6 +626,7 @@ export function getProgressStats(state: LearningState) {
   const creatorProfiles = getCreatorProfiles(state);
   const creatorDiscovery = getCreatorDiscovery(state);
   const activation = getActivationProgress(state);
+  const intelligence = getLearningOperatingSystem(state);
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -635,6 +646,7 @@ export function getProgressStats(state: LearningState) {
     creatorProfiles,
     creatorDiscovery,
     activation,
+    intelligence,
     resourcesShared: state.userContributions.length,
     followingCount: state.followedCreatorIds.length,
   };

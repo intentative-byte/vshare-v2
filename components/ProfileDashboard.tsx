@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { BarChart3, Bell, Bookmark, Compass, Flame, Gauge, Map, Target } from "lucide-react";
 import { Button } from "@/components/Button";
-import { getProgressStats, recordProfileActivity, toggleFollowPath, useLearningState } from "@/lib/learning";
+import { getProgressStats, recordProfileActivity, setVaiMode, toggleFollowPath, useLearningState } from "@/lib/learning";
 import { formatMinutes } from "@/lib/utils";
 
 export function ProfileDashboard() {
@@ -36,6 +36,89 @@ export function ProfileDashboard() {
         <StatCard icon={BarChart3} label="Time completed" value={formatMinutes(stats.totalMinutes)} />
         <StatCard icon={Target} label="Resources shared" value={String(stats.resourcesShared)} />
         <StatCard icon={Target} label="Following" value={String(stats.followingCount)} />
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Personal learning map</p>
+            <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.intelligence.personalLearningMap.knowledgeGrowthScore}% growth score</h2>
+            <p className="mt-3 text-sm font-semibold text-slate-600">
+              Current: {stats.intelligence.personalLearningMap.currentPosition}
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-600">
+              Target: {stats.intelligence.personalLearningMap.targetPosition}
+            </p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {(["silent", "partner", "coach"] as const).map((mode) => (
+              <Button key={mode} type="button" variant={learningState.vaiMode === mode ? "primary" : "secondary"} onClick={() => setVaiMode(mode)}>
+                {mode}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {stats.intelligence.personalLearningMap.suggestedRoute.slice(0, 3).map((step) => (
+            <div key={step} className="rounded-2xl bg-mist p-4 text-sm font-black">
+              {step}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <h2 className="text-2xl font-black tracking-tight">Knowledge graph scores</h2>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {stats.intelligence.topicKnowledgeScores
+            .filter((item) => !learningState.interests.length || learningState.interests.includes(item.topic))
+            .slice(0, 6)
+            .map((item) => (
+              <div key={item.topic} className="rounded-3xl bg-mist p-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-black">{item.topic}</h3>
+                  <span className="text-sm font-black text-violet-700">{item.score.masteryScore}% mastery</span>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <MiniScore label="Awareness" value={item.score.awarenessScore} />
+                  <MiniScore label="Understanding" value={item.score.understandingScore} />
+                  <MiniScore label="Application" value={item.score.applicationScore} />
+                  <MiniScore label="Mastery" value={item.score.masteryScore} />
+                </div>
+              </div>
+            ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Learning gaps</h2>
+          <div className="mt-5 grid gap-3">
+            {stats.intelligence.learningGaps.slice(0, 5).map((gap) => (
+              <div key={`${gap.topic}-${gap.concept}`} className="rounded-2xl bg-mist p-4">
+                <p className="font-black">{gap.concept}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-600">
+                  {gap.topic} · {gap.status.replace("_", " ")}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{gap.reason}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Learning journeys</h2>
+          <div className="mt-5 grid gap-3">
+            {stats.intelligence.learningJourneys.slice(0, 5).map((journey) => (
+              <div key={`${journey.topic}-${journey.level}`} className="rounded-2xl bg-mist p-4">
+                <p className="font-black capitalize">
+                  {journey.topic} {journey.level}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-600">{journey.steps.join(" -> ")}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
@@ -238,6 +321,20 @@ function MetricRow({ label, value }: MetricRowProps) {
         <span className="text-violet-700">{value}%</span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-mist">
+        <div className="h-full rounded-full bg-violet-600" style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function MiniScore({ label, value }: MetricRowProps) {
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2 text-xs font-black text-slate-600">
+        <span>{label}</span>
+        <span>{value}</span>
+      </div>
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white">
         <div className="h-full rounded-full bg-violet-600" style={{ width: `${value}%` }} />
       </div>
     </div>

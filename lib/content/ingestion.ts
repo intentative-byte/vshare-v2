@@ -1,6 +1,7 @@
 import { learningContent } from "@/lib/data";
 import { scoreContentQuality } from "@/lib/content/scoring";
 import { normalizeContributions } from "@/lib/contributions/normalize";
+import { getContentPurpose } from "@/lib/intelligence/content-purpose";
 import type { ContentType, LearningContent, LearningState, NormalizedContent } from "@/lib/types";
 
 type ContentSource = {
@@ -80,6 +81,7 @@ export function normalizeContentItem(content: LearningContent, state: LearningSt
     ingestedAt: content.createdAt,
     tags: Array.from(new Set([...content.interests, content.level, content.format])),
     quality: scoreContentQuality(content, state, source.authorityScore),
+    purpose: getContentPurpose(content),
     creatorId: source.id,
     isUserGenerated: false,
   };

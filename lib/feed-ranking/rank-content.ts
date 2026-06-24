@@ -1,6 +1,7 @@
 import { applyFeedDiversity } from "@/lib/content/diversity";
 import { ingestContentCatalog } from "@/lib/content/ingestion";
 import { getContentCommunityScore } from "@/lib/community/signals";
+import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
 import type { Interest, LearningState, NormalizedContent } from "@/lib/types";
 
 export type RankedContent = {
@@ -66,6 +67,7 @@ function getRotationScore(state: LearningState, content: NormalizedContent) {
 
 function scoreContent(state: LearningState, content: NormalizedContent) {
   const engagement = state.contentEngagement[content.id];
+  const nextConcepts = getRecommendedNextConcepts(state);
   const topicMatch = getTopicMatchScore(state, content);
   const watchHistory = Math.min(20, (engagement?.watchSeconds ?? 0) / 12);
   const saveActivity = state.savedContentIds.includes(content.id) ? 18 : 0;
@@ -74,6 +76,15 @@ function scoreContent(state: LearningState, content: NormalizedContent) {
   const followedCreatorBoost = state.followedCreatorIds.includes(content.creatorId) ? 28 : 0;
   const communityScore = Math.max(-25, Math.min(35, getContentCommunityScore(state, content.id)));
   const lowQualityPenalty = content.isUserGenerated && content.quality.overallContentScore < 55 ? -40 : 0;
+  const gapBoost = nextConcepts.some(
+    (concept) =>
+      concept.topic === content.purpose.topic &&
+      (content.purpose.skill.toLowerCase().includes(concept.concept.toLowerCase()) ||
+        concept.concept.toLowerCase().includes(content.purpose.skill.toLowerCase()) ||
+        content.interests.includes(concept.topic)),
+  )
+    ? 34
+    : 0;
   const completionRate = getContentCompletionRate(state, content.id) * 22;
   const recentInterest = getRecentInterestScore(state, content);
   const rotation = getRotationScore(state, content);
@@ -87,6 +98,7 @@ function scoreContent(state: LearningState, content: NormalizedContent) {
     replayActivity +
     followedCreatorBoost +
     communityScore +
+    gapBoost +
     completionRate +
     recentInterest +
     contentQuality * 0.65 +

@@ -97,6 +97,10 @@ export function FeedExperience() {
             <p className="mt-3 max-w-2xl leading-7 text-slate-300">
               Swipe through new, relevant, unseen lessons. The stream adapts as you watch, skip, like, and save.
             </p>
+            <div className="mt-4 rounded-3xl bg-white/10 p-4">
+              <p className="text-sm font-black text-violet-100">{stats.intelligence.vaiGuidance.headline}</p>
+              <p className="mt-1 text-sm leading-6 text-slate-200">{stats.intelligence.vaiGuidance.suggestion}</p>
+            </div>
             {lastViewedContent ? (
               <button
                 type="button"
@@ -141,6 +145,18 @@ export function FeedExperience() {
               <p className="mt-1 text-xs font-semibold text-slate-500">
                 {task.current}/{task.target} {task.completed ? "done" : "left"}
               </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft sm:p-5">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Recommended next concepts</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          {stats.intelligence.recommendedNextConcepts.slice(0, 3).map((concept) => (
+            <div key={`${concept.topic}-${concept.concept}`} className="rounded-2xl bg-mist p-4">
+              <p className="font-black">{concept.concept}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">{concept.topic}</p>
             </div>
           ))}
         </div>

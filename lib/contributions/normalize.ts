@@ -1,4 +1,5 @@
 import { scoreContentQuality } from "@/lib/content/scoring";
+import { getContentPurpose } from "@/lib/intelligence/content-purpose";
 import type { ContentType, LearningFormat, LearningState, NormalizedContent, UserContribution } from "@/lib/types";
 
 const contributionCreatorId = "vshare-learner";
@@ -82,6 +83,7 @@ export function normalizeContribution(contribution: UserContribution, state: Lea
     ingestedAt: contribution.createdAt,
     tags: Array.from(new Set([...contribution.topics, contribution.type])),
     quality: scoreContentQuality(content, state, sourceAuthorityScore),
+    purpose: getContentPurpose(content),
     creatorId: contributionCreatorId,
     isUserGenerated: true,
   };
