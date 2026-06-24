@@ -6,6 +6,7 @@ export async function getCurrentUserProfile(): Promise<Profile | null> {
   const supabase = await createClient();
 
   if (!supabase) {
+    // TODO: Reconnect Supabase by reading the signed-in profile once auth/database is restored.
     return demoProfiles[0] ?? null;
   }
 
@@ -25,6 +26,7 @@ export async function getFeedPosts(): Promise<FeedItem[]> {
   const supabase = await createClient();
 
   if (!supabase) {
+    // TODO: Reconnect Supabase by loading personalized feed posts once auth/database is restored.
     return demoPosts;
   }
 

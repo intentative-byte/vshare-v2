@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/Button";
+import { startDemoSession } from "@/lib/demo";
 import { createClient } from "@/lib/supabase/client";
 
 export function AuthForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -63,6 +65,14 @@ export function AuthForm() {
     });
   }
 
+  function handleDemoMode() {
+    setError(null);
+    setMessage("Starting demo mode...");
+    startDemoSession();
+    router.push(nextPath);
+    router.refresh();
+  }
+
   return (
     <div className="rounded-[2rem] border border-white/80 bg-white p-6 shadow-soft">
       <div className="space-y-2">
@@ -89,6 +99,9 @@ export function AuthForm() {
         <Button type="button" variant="secondary" onClick={handleGithub} disabled={isPending} className="w-full">
           <span className="mr-2 text-xs font-black">GH</span>
           Continue with GitHub
+        </Button>
+        <Button type="button" variant="secondary" onClick={handleDemoMode} disabled={isPending} className="w-full">
+          Continue in demo mode
         </Button>
       </div>
 

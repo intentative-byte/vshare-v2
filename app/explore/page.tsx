@@ -1,7 +1,5 @@
-import Link from "next/link";
-import { ArrowRight, Hash } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { ContentCard } from "@/components/ContentCard";
+import { ExploreClient } from "@/components/ExploreClient";
 import { getExploreTopics, getFeedPosts } from "@/lib/queries";
 
 export default async function ExplorePage() {
@@ -17,35 +15,7 @@ export default async function ExplorePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-        <aside className="rounded-[2rem] border border-white/80 bg-white p-6 shadow-soft">
-          <h2 className="text-xl font-black tracking-tight">Trending topics</h2>
-          <div className="mt-5 grid gap-3">
-            {topics.map((item) => (
-              <Link
-                key={item.topic}
-                href={`/feed?topic=${encodeURIComponent(item.topic)}`}
-                className="flex items-center justify-between rounded-2xl bg-mist p-4 font-bold text-ink transition hover:bg-violet-50"
-              >
-                <span className="inline-flex items-center gap-2">
-                  <Hash className="size-4 text-violet-600" />
-                  {item.topic}
-                </span>
-                <span className="inline-flex items-center gap-2 text-sm text-slate-500">
-                  {item.count}
-                  <ArrowRight className="size-4" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </aside>
-
-        <section className="grid gap-5">
-          {posts.slice(0, 3).map((post) => (
-            <ContentCard key={post.id} post={post} />
-          ))}
-        </section>
-      </div>
+      <ExploreClient initialTopics={topics} initialPosts={posts} />
     </AppShell>
   );
 }

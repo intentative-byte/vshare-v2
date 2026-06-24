@@ -14,6 +14,7 @@ export async function middleware(request: NextRequest) {
   const { url, anonKey, isConfigured } = getSupabaseEnv();
 
   if (!isConfigured || !url || !anonKey) {
+    // TODO: Reconnect Supabase auth redirects once database/auth is restored.
     return response;
   }
 

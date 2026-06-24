@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getFeedPosts } from "@/lib/queries";
+import { demoProfiles } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { Post } from "@/lib/types";
 
@@ -15,9 +16,40 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
+  const payload = (await request.json()) as PostPayload;
+
+  if (!payload.title?.trim() || !payload.summary?.trim()) {
+    return NextResponse.json({ error: "Title and summary are required." }, { status: 422 });
+  }
 
   if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    // TODO: Reconnect Supabase by persisting created posts once auth/database is restored.
+    return NextResponse.json(
+      {
+        post: {
+          id: `demo-${Date.now()}`,
+          author_id: demoProfiles[0]?.id ?? "demo-user",
+          title: payload.title.trim(),
+          summary: payload.summary.trim(),
+          url: payload.url?.trim() || null,
+          content_type: payload.content_type ?? "article",
+          topics: payload.topics ?? [],
+          difficulty: payload.difficulty ?? "beginner",
+          estimated_minutes: payload.estimated_minutes ?? 10,
+          created_at: new Date().toISOString(),
+          profile: demoProfiles[0]
+            ? {
+                username: demoProfiles[0].username,
+                full_name: demoProfiles[0].full_name,
+                avatar_url: demoProfiles[0].avatar_url,
+                headline: demoProfiles[0].headline,
+              }
+            : null,
+        },
+        mode: "demo",
+      },
+      { status: 201 },
+    );
   }
 
   const {
@@ -26,12 +58,6 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
-  }
-
-  const payload = (await request.json()) as PostPayload;
-
-  if (!payload.title?.trim() || !payload.summary?.trim()) {
-    return NextResponse.json({ error: "Title and summary are required." }, { status: 422 });
   }
 
   const { data, error } = await supabase

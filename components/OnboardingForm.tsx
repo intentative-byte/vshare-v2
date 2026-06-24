@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
 import { goalOptions, topicOptions } from "@/lib/data";
+import { getDemoOnboarding, saveDemoOnboarding } from "@/lib/demo";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
 
 export function OnboardingForm() {
@@ -19,6 +21,20 @@ export function OnboardingForm() {
 
   const canSubmit = useMemo(() => topics.length > 0 && goals.length > 0 && username.trim().length >= 3, [goals, topics, username]);
 
+  useEffect(() => {
+    const demoOnboarding = getDemoOnboarding();
+
+    if (!demoOnboarding) {
+      return;
+    }
+
+    setTopics(demoOnboarding.topics);
+    setGoals(demoOnboarding.goals);
+    setDailyMinutes(demoOnboarding.daily_minutes);
+    setHeadline(demoOnboarding.headline ?? "");
+    setUsername(demoOnboarding.username);
+  }, []);
+
   function toggleValue(value: string, values: string[], setter: (next: string[]) => void) {
     setter(values.includes(value) ? values.filter((item) => item !== value) : [...values, value]);
   }
@@ -28,6 +44,21 @@ export function OnboardingForm() {
     setMessage(null);
 
     startTransition(async () => {
+      if (!isSupabaseConfigured()) {
+        // TODO: Reconnect Supabase by replacing this browser-only demo save with persisted profile/preferences writes.
+        saveDemoOnboarding({
+          username: username.trim().toLowerCase(),
+          headline: headline.trim() || null,
+          topics,
+          goals,
+          daily_minutes: dailyMinutes,
+        });
+        setMessage("Demo preferences saved locally. Building your learning feed...");
+        router.push("/feed");
+        router.refresh();
+        return;
+      }
+
       const profileResponse = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
