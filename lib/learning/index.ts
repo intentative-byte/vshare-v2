@@ -59,6 +59,7 @@ import { getStrategicPlanningEngine } from "@/lib/strategy/strategic-planning";
 import { getLifeOperatingSystem } from "@/lib/life-os/life-operating-system";
 import { getCollectiveIntelligence } from "@/lib/community-intelligence/collective-intelligence";
 import { getMarketIntelligence } from "@/lib/market/market-intelligence";
+import { getAutonomousGrowthEngine } from "@/lib/autonomous-growth/autonomous-growth-engine";
 import { getOutcomeAttributionMap } from "@/lib/attribution/outcome-attribution";
 import { getExecutionEngine } from "@/lib/execution/execution-engine";
 import { getOutcomeVelocity } from "@/lib/velocity/outcome-velocity";
@@ -950,6 +951,7 @@ export function getProgressStats(state: LearningState) {
   const lifeOS = getLifeOperatingSystem(state);
   const collective = getCollectiveIntelligence(state);
   const market = getMarketIntelligence(state);
+  const autonomousGrowth = getAutonomousGrowthEngine(state);
   const outcomeIntelligence = {
     score: getOutcomeIntelligenceScore(state),
     timeline: getOutcomeTimeline(state),
@@ -1000,6 +1002,7 @@ export function getProgressStats(state: LearningState) {
     lifeOS,
     collective,
     market,
+    autonomousGrowth,
     outcomeIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,

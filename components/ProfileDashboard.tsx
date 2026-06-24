@@ -49,6 +49,24 @@ export function ProfileDashboard() {
       </section>
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Autonomous growth</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.autonomousGrowth.compoundedGrowthRate}% compounded growth rate</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Daily mission" value={stats.autonomousGrowth.missions.daily} />
+          <DashboardRow label="Weekly mission" value={stats.autonomousGrowth.missions.weekly} />
+          <DashboardRow label="Monthly mission" value={stats.autonomousGrowth.missions.monthly} />
+          <DashboardRow label="Governor command" value={stats.autonomousGrowth.governor.command} />
+          <DashboardRow label="Feedback" value={stats.autonomousGrowth.feedback.improvementSignal} />
+          <DashboardRow label="Friction reduction" value={`${stats.autonomousGrowth.frictionReductionScore}%`} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <DashboardRow label="Observe" value={stats.autonomousGrowth.growthLoop.observe} />
+          <DashboardRow label="Recommend" value={stats.autonomousGrowth.growthLoop.recommend} />
+          <DashboardRow label="Improve" value={stats.autonomousGrowth.growthLoop.improve} />
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Collective intelligence</p>
         <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.collective.collectiveLearningGain}% collective learning gain</h2>
         <div className="mt-5 grid gap-3 lg:grid-cols-2">
@@ -448,7 +466,7 @@ export function ProfileDashboard() {
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3">
-            {(["silent", "partner", "coach", "strategist", "operator"] as const).map((mode) => (
+            {(["silent", "partner", "coach", "strategist", "operator", "governor"] as const).map((mode) => (
               <Button key={mode} type="button" variant={learningState.vaiMode === mode ? "primary" : "secondary"} onClick={() => setVaiMode(mode)}>
                 {mode}
               </Button>

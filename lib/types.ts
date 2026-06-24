@@ -489,7 +489,7 @@ export type LearningState = {
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];
   memory: SessionMemory;
-  vaiMode: "silent" | "partner" | "coach" | "strategist" | "operator";
+  vaiMode: "silent" | "partner" | "coach" | "strategist" | "operator" | "governor";
   streak: number;
   lastActiveDate: string | null;
   onboardedAt: string | null;

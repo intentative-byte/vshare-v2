@@ -7,6 +7,7 @@ import { getSimulationEngine } from "@/lib/simulation/simulation-engine";
 import { getLifeOperatingSystem } from "@/lib/life-os/life-operating-system";
 import { getCollectiveIntelligence } from "@/lib/community-intelligence/collective-intelligence";
 import { getMarketIntelligence } from "@/lib/market/market-intelligence";
+import { getAutonomousGrowthEngine } from "@/lib/autonomous-growth/autonomous-growth-engine";
 import { getPersonalLearningMap } from "@/lib/intelligence/learning-map";
 import type { LearningState } from "@/lib/types";
 
@@ -28,6 +29,7 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const lifeOS = getLifeOperatingSystem(state);
   const collective = getCollectiveIntelligence(state);
   const market = getMarketIntelligence(state);
+  const autonomousGrowth = getAutonomousGrowthEngine(state);
 
   if (state.vaiMode === "silent") {
     return {
@@ -62,6 +64,15 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
       headline: "VAI Operator",
       suggestion: `${lifeOS.operator.command}. ${lifeOS.operator.reason} Life alignment ${lifeOS.lifeAlignmentScore}%.`,
       actionLabel: lifeOS.operator.priority === "stabilize" ? "Stabilize system" : "Advance system",
+    };
+  }
+
+  if (state.vaiMode === "governor") {
+    return {
+      mode: "governor",
+      headline: "VAI Governor",
+      suggestion: `${autonomousGrowth.governor.command}. ${autonomousGrowth.governor.protectionReason} Compounded growth rate ${autonomousGrowth.compoundedGrowthRate}%.`,
+      actionLabel: autonomousGrowth.governor.mode === "protect" ? "Protect growth" : "Compound growth",
     };
   }
 
