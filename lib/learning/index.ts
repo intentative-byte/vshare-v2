@@ -44,6 +44,7 @@ import { createDecisionRecord, isValidDecision } from "@/lib/decisions/decision-
 import { createEvidence, isValidEvidence } from "@/lib/evidence/evidence-engine";
 import { resolveDecision } from "@/lib/history/decision-history";
 import { getDecisionIntelligence } from "@/lib/recommendations/decision-recommendations";
+import { getNetworkIntelligence } from "@/lib/network/network-intelligence";
 import { getOutcomeIntelligenceScore, getOutcomeTimeline } from "@/lib/outcomes/outcome-intelligence";
 import { getSuccessAnalysis } from "@/lib/outcomes/success-analysis";
 import { extractOutcomeFrameworks, extractOutcomeLessons } from "@/lib/learning/outcome-extraction";
@@ -863,6 +864,7 @@ export function getProgressStats(state: LearningState) {
   const goalRoadmaps = getGoalRoadmaps(state);
   const recommendedTimeAllocation = recommendTimeAllocation(state);
   const decisionIntelligence = getDecisionIntelligence(state);
+  const networkIntelligence = getNetworkIntelligence(state);
   const outcomeIntelligence = {
     score: getOutcomeIntelligenceScore(state),
     timeline: getOutcomeTimeline(state),
@@ -897,6 +899,7 @@ export function getProgressStats(state: LearningState) {
     goalRoadmaps,
     recommendedTimeAllocation,
     decisionIntelligence,
+    networkIntelligence,
     outcomeIntelligence,
     goalProgress: state.goals.map((goal) => ({
       goal,

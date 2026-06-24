@@ -70,6 +70,20 @@ export function ProfileDashboard() {
       <DecisionLogger />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Network intelligence</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.networkIntelligence.overallTrustScore}% trust score</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-3">
+          <StatCard icon={Target} label="Learning trust" value={`${stats.networkIntelligence.trust.learningTrustScore}%`} />
+          <StatCard icon={Target} label="Creator trust" value={`${stats.networkIntelligence.trust.creatorTrustScore}%`} />
+          <StatCard icon={Target} label="Expert trust" value={`${stats.networkIntelligence.trust.expertTrustScore}%`} />
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <DashboardRow label="Knowledge network" value={`${stats.networkIntelligence.knowledgeNetwork.nodeCount} nodes · ${stats.networkIntelligence.knowledgeNetwork.edges.length} edges`} />
+          <DashboardRow label="Reputation" value={`${stats.networkIntelligence.reputation.user.reputationScore}% reputation · ${stats.networkIntelligence.reputation.user.outcomeQuality}% outcome quality`} />
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Capability engine</p>
         <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.capability.score.capabilityScore}% capability score</h2>
         <p className="mt-2 text-sm font-semibold text-slate-600">

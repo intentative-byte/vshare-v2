@@ -98,6 +98,60 @@ export function ExploreExperience() {
       />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <h2 className="text-2xl font-black tracking-tight">Network matches</h2>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <div className="rounded-3xl bg-mist p-4">
+            <p className="font-black">People</p>
+            <div className="mt-3 grid gap-3">
+              {stats.networkIntelligence.matches.people.slice(0, 3).map((match) => (
+                <div key={match.expert.id} className="rounded-2xl bg-white p-3">
+                  <p className="font-black">{match.expert.name}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">{match.reason}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl bg-mist p-4">
+            <p className="font-black">Resources</p>
+            <div className="mt-3 grid gap-3">
+              {stats.networkIntelligence.matches.resources.slice(0, 3).map((match) => (
+                <div key={match.content.id} className="rounded-2xl bg-white p-3">
+                  <p className="font-black">{match.content.title}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">{match.reason}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl bg-mist p-4">
+            <p className="font-black">Learning paths</p>
+            <div className="mt-3 grid gap-3">
+              {stats.networkIntelligence.matches.paths.slice(0, 3).map((match) => (
+                <div key={match.path.id} className="rounded-2xl bg-white p-3">
+                  <p className="font-black">{match.path.title}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">{match.reason}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl bg-mist p-4">
+            <p className="font-black">Projects</p>
+            <div className="mt-3 grid gap-3">
+              {stats.networkIntelligence.matches.projects.length ? (
+                stats.networkIntelligence.matches.projects.slice(0, 3).map((match) => (
+                  <div key={match.project.id} className="rounded-2xl bg-white p-3">
+                    <p className="font-black">{match.project.title}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-600">{match.reason}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm font-semibold text-slate-600">Add a project to unlock project matches.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <div className="flex items-center gap-3">
           <Search className="size-5 text-violet-700" />
           <h2 className="text-2xl font-black tracking-tight">Search learning topics</h2>

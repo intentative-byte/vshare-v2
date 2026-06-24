@@ -25,6 +25,7 @@ export function getCreatorProfiles(state: LearningState): CreatorProfile[] {
   ingestContentCatalog(state).forEach((content) => {
     const existingCreator = creators.get(content.creatorId);
     const topics = Array.from(new Set([...(existingCreator?.topics ?? []), ...content.interests])).slice(0, 4);
+    const skills = Array.from(new Set([...(existingCreator?.skills ?? []), content.purpose.skill])).slice(0, 6);
     const contentCount = (existingCreator?.contentCount ?? 0) + 1;
     const communityBoost = generatedFollowerCounts.get(content.creatorId) ?? 0;
     const baseFollowerCount = content.creatorId === localContributorCreatorId ? communityBoost : content.source.authorityScore * 11;
@@ -35,6 +36,9 @@ export function getCreatorProfiles(state: LearningState): CreatorProfile[] {
       username: content.creatorId === localContributorCreatorId ? "you" : usernameFromName(content.source.name),
       bio: getCreatorBio(content.source.name, topics),
       topics,
+      skills,
+      expertise: Array.from(new Set([...(existingCreator?.expertise ?? []), content.purpose.outcome])).slice(0, 4),
+      industries: topics.map((topic) => (topic === "Entrepreneurship" ? "Business" : topic)).slice(0, 4),
       followerCount: Math.round(baseFollowerCount + communityBoost),
       learningScore: Math.min(100, Math.round(content.source.authorityScore * 0.7 + contentCount * 6 + communityBoost * 3)),
       contentCount,

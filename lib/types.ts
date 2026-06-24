@@ -82,9 +82,18 @@ export type CreatorProfile = {
   username: string;
   bio: string;
   topics: Interest[];
+  skills: string[];
+  expertise: string[];
+  industries: string[];
   followerCount: number;
   learningScore: number;
   contentCount: number;
+};
+
+export type TrustScore = {
+  learningTrustScore: number;
+  creatorTrustScore: number;
+  expertTrustScore: number;
 };
 
 export type LearningContent = {
