@@ -34,6 +34,12 @@ import { getNotificationIntents } from "@/lib/notifications/framework";
 import { getRecommendedLearningPaths } from "@/lib/paths/learning-paths";
 import { getWeeklyRecap } from "@/lib/retention/weekly-recap";
 import { getLearningOperatingSystem } from "@/lib/intelligence/operating-system";
+import { createGoal, getGoalProgress, isValidGoal } from "@/lib/goals/goal-engine";
+import { getGoalRoadmaps } from "@/lib/roadmaps/decompose-goal";
+import { createProject, isValidProject, updateProjectStatus } from "@/lib/projects/project-system";
+import { defaultTimeAllocation, normalizeTimeAllocation, recommendTimeAllocation } from "@/lib/projects/time-allocation";
+import { getPersonalDashboard } from "@/lib/growth/personal-dashboard";
+import { getPersonalGrowthScore } from "@/lib/growth/growth-score";
 import { createEvidence, isValidEvidence } from "@/lib/evidence/evidence-engine";
 import { getNormalizedContentById } from "@/lib/content/ingestion";
 import { updateConceptProgress, updateConceptProgressForOutcome } from "@/lib/progression/concept-pipeline";
@@ -41,11 +47,16 @@ import type {
   ContentEngagement,
   ContributionType,
   EvidenceType,
+  GoalType,
   Interest,
   LearningState,
   OutcomeType,
+  ProjectStatus,
+  TimeAllocation,
   UserContribution,
+  UserGoal,
   UserOutcome,
+  UserProject,
   UserSignal,
 } from "@/lib/types";
 
@@ -68,6 +79,9 @@ function createDefaultLearningState(): LearningState {
     outcomes: [],
     evidence: [],
     conceptProgress: {},
+    goals: [],
+    projects: [],
+    timeAllocation: defaultTimeAllocation,
     viewedAtById: {},
     contentEngagement: {},
     signals: [],
@@ -165,6 +179,9 @@ function parseLearningState(value: string | null): LearningState {
       outcomes: parsed.outcomes ?? [],
       evidence: parsed.evidence ?? [],
       conceptProgress: parsed.conceptProgress ?? {},
+      goals: parsed.goals ?? [],
+      projects: parsed.projects ?? [],
+      timeAllocation: normalizeTimeAllocation(parsed.timeAllocation),
       viewedAtById: parsed.viewedAtById ?? {},
       contentEngagement: normalizeContentEngagement(parsed.contentEngagement),
       signals: (parsed.signals ?? []).slice(-600),
@@ -658,6 +675,78 @@ export function logOutcome(input: {
   return result;
 }
 
+export type GoalResult = { ok: true; goal: UserGoal } | { ok: false; error: "invalid_goal" };
+
+export function addGoal(input: {
+  type: GoalType;
+  title: string;
+  desiredOutcome: string;
+  topics: Interest[];
+  targetDate?: string | null;
+}): GoalResult {
+  if (!isValidGoal(input)) {
+    return { ok: false, error: "invalid_goal" };
+  }
+
+  let result: GoalResult = { ok: false, error: "invalid_goal" };
+
+  updateLearningState((state) => {
+    const goal = createGoal(input);
+    result = { ok: true, goal };
+
+    return {
+      ...state,
+      goals: [goal, ...state.goals].slice(0, 40),
+    };
+  });
+
+  return result;
+}
+
+export type ProjectResult = { ok: true; project: UserProject } | { ok: false; error: "invalid_project" };
+
+export function addProject(input: {
+  title: string;
+  description: string;
+  skills: string[];
+  topics: Interest[];
+}): ProjectResult {
+  if (!isValidProject(input)) {
+    return { ok: false, error: "invalid_project" };
+  }
+
+  let result: ProjectResult = { ok: false, error: "invalid_project" };
+
+  updateLearningState((state) => {
+    const project = createProject(input);
+    result = { ok: true, project };
+
+    return {
+      ...state,
+      projects: [project, ...state.projects].slice(0, 60),
+    };
+  });
+
+  return result;
+}
+
+export function setProjectStatus(projectId: string, status: ProjectStatus) {
+  return updateLearningState((state) => ({
+    ...state,
+    projects: state.projects.map((project) => (project.id === projectId ? updateProjectStatus(project, status) : project)),
+  }));
+}
+
+export function setTimeAllocation(allocation: Partial<TimeAllocation>) {
+  return updateLearningState((state) => ({
+    ...state,
+    timeAllocation: normalizeTimeAllocation({
+      ...state.timeAllocation,
+      ...allocation,
+    }),
+  }));
+}
+
 export function toggleSavedContent(contentId: string) {
   const state = getLearningState();
   const isSaved = state.savedContentIds.includes(contentId);
@@ -721,6 +810,10 @@ export function getProgressStats(state: LearningState) {
   const activation = getActivationProgress(state);
   const intelligence = getLearningOperatingSystem(state);
   const capability = getCapabilityOperatingSystem(state);
+  const personalDashboard = getPersonalDashboard(state);
+  const growth = getPersonalGrowthScore(state);
+  const goalRoadmaps = getGoalRoadmaps(state);
+  const recommendedTimeAllocation = recommendTimeAllocation(state);
 
   return {
     viewedCount: state.viewedContentIds.length,
@@ -742,6 +835,14 @@ export function getProgressStats(state: LearningState) {
     activation,
     intelligence,
     capability,
+    personalDashboard,
+    growth,
+    goalRoadmaps,
+    recommendedTimeAllocation,
+    goalProgress: state.goals.map((goal) => ({
+      goal,
+      progress: getGoalProgress(state, goal),
+    })),
     resourcesShared: state.userContributions.length,
     followingCount: state.followedCreatorIds.length,
   };

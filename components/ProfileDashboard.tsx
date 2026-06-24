@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { BarChart3, Bell, Bookmark, Compass, Flame, Gauge, Map, Target } from "lucide-react";
 import { Button } from "@/components/Button";
+import { GrowthPlanner } from "@/components/GrowthPlanner";
 import { OutcomeLogger } from "@/components/OutcomeLogger";
 import { getProgressStats, recordProfileActivity, setVaiMode, toggleFollowPath, useLearningState } from "@/lib/learning";
 import { formatMinutes } from "@/lib/utils";
@@ -38,6 +39,21 @@ export function ProfileDashboard() {
         <StatCard icon={Target} label="Resources shared" value={String(stats.resourcesShared)} />
         <StatCard icon={Target} label="Following" value={String(stats.followingCount)} />
       </section>
+
+      <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Personal dashboard</p>
+        <h2 className="mt-1 text-3xl font-black tracking-tight">{stats.growth.personalGrowthScore}% personal growth score</h2>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          <DashboardRow label="Current position" value={stats.personalDashboard.currentPosition} />
+          <DashboardRow label="Desired position" value={stats.personalDashboard.desiredPosition} />
+          <DashboardRow label="Progress gap" value={`${stats.personalDashboard.progressGap}%`} />
+          <DashboardRow label="Top opportunity" value={stats.personalDashboard.topOpportunity} />
+          <DashboardRow label="Top constraint" value={stats.personalDashboard.topConstraint} />
+          <DashboardRow label="Recommended next action" value={stats.personalDashboard.recommendedNextAction.title} />
+        </div>
+      </section>
+
+      <GrowthPlanner />
 
       <section className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Capability engine</p>
@@ -77,7 +93,7 @@ export function ProfileDashboard() {
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3">
-            {(["silent", "partner", "coach"] as const).map((mode) => (
+            {(["silent", "partner", "coach", "strategist"] as const).map((mode) => (
               <Button key={mode} type="button" variant={learningState.vaiMode === mode ? "primary" : "secondary"} onClick={() => setVaiMode(mode)}>
                 {mode}
               </Button>
@@ -116,6 +132,34 @@ export function ProfileDashboard() {
             ) : (
               <p className="text-sm font-semibold text-slate-500">Log outcomes or apply concepts to build your timeline.</p>
             )}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Goal roadmaps</h2>
+          <div className="mt-5 grid gap-3">
+            {stats.goalRoadmaps.length ? (
+              stats.goalRoadmaps.slice(0, 4).map((roadmap) => (
+                <div key={roadmap.goalId} className="rounded-2xl bg-mist p-4">
+                  <p className="font-black">{roadmap.milestones[0]}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">{roadmap.skillsRequired.join(", ") || "Build required skills"}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm font-semibold text-slate-500">Add a goal to generate a roadmap.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/80 bg-white p-5 shadow-soft">
+          <h2 className="text-2xl font-black tracking-tight">Time allocation</h2>
+          <div className="mt-5 grid gap-3">
+            <MetricRow label="Learning" value={stats.recommendedTimeAllocation.learning} />
+            <MetricRow label="Building" value={stats.recommendedTimeAllocation.building} />
+            <MetricRow label="Practicing" value={stats.recommendedTimeAllocation.practicing} />
+            <MetricRow label="Teaching" value={stats.recommendedTimeAllocation.teaching} />
           </div>
         </div>
       </section>
@@ -412,6 +456,20 @@ function MiniScore({ label, value }: MetricRowProps) {
       <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white">
         <div className="h-full rounded-full bg-violet-600" style={{ width: `${value}%` }} />
       </div>
+    </div>
+  );
+}
+
+type DashboardRowProps = {
+  label: string;
+  value: string;
+};
+
+function DashboardRow({ label, value }: DashboardRowProps) {
+  return (
+    <div className="rounded-2xl bg-mist p-4">
+      <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">{label}</p>
+      <p className="mt-1 text-sm font-semibold leading-6 text-slate-700">{value}</p>
     </div>
   );
 }

@@ -240,6 +240,47 @@ export type CapabilityScore = {
   capabilityDelta: number;
 };
 
+export type GoalType = "learn" | "career" | "business" | "health" | "financial" | "project";
+
+export type UserGoal = {
+  id: string;
+  type: GoalType;
+  title: string;
+  desiredOutcome: string;
+  topics: Interest[];
+  createdAt: string;
+  targetDate: string | null;
+};
+
+export type ProjectStatus = "active" | "completed" | "abandoned";
+
+export type UserProject = {
+  id: string;
+  title: string;
+  description: string;
+  status: ProjectStatus;
+  skills: string[];
+  topics: Interest[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TimeAllocation = {
+  learning: number;
+  building: number;
+  practicing: number;
+  teaching: number;
+};
+
+export type GrowthScore = {
+  knowledgeGrowth: number;
+  capabilityGrowth: number;
+  executionGrowth: number;
+  goalProgress: number;
+  consistency: number;
+  personalGrowthScore: number;
+};
+
 export type LearningPath = {
   id: string;
   title: string;
@@ -283,11 +324,14 @@ export type LearningState = {
   outcomes: UserOutcome[];
   evidence: EvidenceAttachment[];
   conceptProgress: Record<string, ConceptProgress>;
+  goals: UserGoal[];
+  projects: UserProject[];
+  timeAllocation: TimeAllocation;
   viewedAtById: Record<string, string>;
   contentEngagement: Record<string, ContentEngagement>;
   signals: UserSignal[];
   memory: SessionMemory;
-  vaiMode: "silent" | "partner" | "coach";
+  vaiMode: "silent" | "partner" | "coach" | "strategist";
   streak: number;
   lastActiveDate: string | null;
   onboardedAt: string | null;

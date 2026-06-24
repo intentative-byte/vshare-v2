@@ -98,8 +98,12 @@ export function FeedExperience() {
               Swipe through new, relevant, unseen lessons. The stream adapts as you watch, skip, like, and save.
             </p>
             <div className="mt-4 rounded-3xl bg-white/10 p-4">
-              <p className="text-sm font-black text-violet-100">{stats.intelligence.vaiGuidance.headline}</p>
-              <p className="mt-1 text-sm leading-6 text-slate-200">{stats.intelligence.vaiGuidance.suggestion}</p>
+              <p className="text-sm font-black text-violet-100">Highest leverage action</p>
+              <p className="mt-1 text-lg font-black leading-6 text-white">{stats.personalDashboard.recommendedNextAction.title}</p>
+              <p className="mt-1 text-sm leading-6 text-slate-200">{stats.personalDashboard.recommendedNextAction.reason}</p>
+              <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-violet-100">
+                {stats.personalDashboard.recommendedNextAction.mode} · {stats.personalDashboard.recommendedNextAction.estimatedMinutes} min
+              </p>
             </div>
             {lastViewedContent ? (
               <button
