@@ -1,5 +1,4 @@
 import { getRecommendedNextConcepts } from "@/lib/gaps/gap-engine";
-import { getNetworkIntelligence } from "@/lib/network/network-intelligence";
 import { getOutcomeIntelligenceScore } from "@/lib/outcomes/outcome-intelligence";
 import { getVaiDecisionEngine } from "@/lib/vai-decision/decision-core";
 import { getGoalOperatingSystem } from "@/lib/goals/goal-operating-system";
@@ -19,12 +18,10 @@ export function getVaiGuidance(state: LearningState): VaiGuidance {
   const learningMap = getPersonalLearningMap(state);
   const [nextConcept] = getRecommendedNextConcepts(state);
   const outcomeScore = getOutcomeIntelligenceScore(state);
-  const network = getNetworkIntelligence(state);
   const vaiDecision = getVaiDecisionEngine(state);
   const goalOS = getGoalOperatingSystem(state);
   const economy = getPersonalEconomy(state);
   const simulation = getSimulationEngine(state);
-  const [topPerson] = network.matches.people;
 
   if (state.vaiMode === "silent") {
     return {
