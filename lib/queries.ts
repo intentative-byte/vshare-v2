@@ -1,4 +1,4 @@
-import { demoPosts, demoProfiles } from "@/lib/data";
+import { fallbackFeedItems, localProfiles } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { FeedItem, Profile } from "@/lib/types";
 
@@ -7,7 +7,7 @@ export async function getCurrentUserProfile(): Promise<Profile | null> {
 
   if (!supabase) {
     // TODO: Reconnect Supabase by reading the signed-in profile once auth/database is restored.
-    return demoProfiles[0] ?? null;
+    return localProfiles[0] ?? null;
   }
 
   const {
@@ -27,7 +27,7 @@ export async function getFeedPosts(): Promise<FeedItem[]> {
 
   if (!supabase) {
     // TODO: Reconnect Supabase by loading personalized feed posts once auth/database is restored.
-    return demoPosts;
+    return fallbackFeedItems;
   }
 
   const { data: posts, error } = await supabase
@@ -37,7 +37,7 @@ export async function getFeedPosts(): Promise<FeedItem[]> {
     .limit(24);
 
   if (error || !posts) {
-    return demoPosts;
+    return fallbackFeedItems;
   }
 
   const authorIds = Array.from(new Set(posts.map((post) => post.author_id)));

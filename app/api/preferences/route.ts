@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { goalOptions, topicOptions } from "@/lib/data";
+import { goalOptions, interestOptions } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 
 type PreferencePayload = {
@@ -15,15 +15,15 @@ export async function GET() {
     // TODO: Reconnect Supabase by returning saved preferences once auth/database is restored.
     return NextResponse.json({
       preferences: {
-        id: "demo-preferences",
-        user_id: "demo-user",
-        topics: topicOptions.slice(0, 2),
+        id: "local-preferences",
+        user_id: "local-user",
+        topics: interestOptions.slice(0, 2),
         goals: goalOptions.slice(0, 1),
         daily_minutes: 20,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },
-      mode: "demo",
+      mode: "local",
     });
   }
 
@@ -52,15 +52,15 @@ export async function PUT(request: NextRequest) {
     // TODO: Reconnect Supabase by persisting preferences once auth/database is restored.
     return NextResponse.json({
       preferences: {
-        id: "demo-preferences",
-        user_id: "demo-user",
+        id: "local-preferences",
+        user_id: "local-user",
         topics: payload.topics ?? [],
         goals: payload.goals ?? [],
         daily_minutes: payload.daily_minutes ?? 20,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },
-      mode: "demo",
+      mode: "local",
     });
   }
 

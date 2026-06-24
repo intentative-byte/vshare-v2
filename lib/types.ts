@@ -36,3 +36,43 @@ export type Preference = {
 export type FeedItem = Post & {
   relevance: number;
 };
+
+export type Interest =
+  | "AI"
+  | "Business"
+  | "Finance"
+  | "Fitness"
+  | "Science"
+  | "Technology"
+  | "Fashion"
+  | "Music"
+  | "Entrepreneurship"
+  | "Other";
+
+export type LearningFormat = "article" | "video" | "audio" | "challenge" | "brief";
+
+export type LearningContent = {
+  id: string;
+  title: string;
+  summary: string;
+  interests: Interest[];
+  format: LearningFormat;
+  durationMinutes: number;
+  level: "starter" | "intermediate" | "deep";
+  createdAt: string;
+  sourceLabel: string;
+  media: {
+    kind: "video" | "audio" | "text";
+    status: "available" | "planned";
+  };
+};
+
+export type LearningState = {
+  interests: Interest[];
+  viewedContentIds: string[];
+  savedContentIds: string[];
+  viewedAtById: Record<string, string>;
+  streak: number;
+  lastActiveDate: string | null;
+  onboardedAt: string | null;
+};

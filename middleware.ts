@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import type { Database } from "@/lib/supabase/database.types";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 
-const protectedRoutes = ["/feed", "/explore", "/onboarding", "/profile"];
+const protectedRoutes: string[] = [];
 const authRoutes = ["/login"];
 
 export async function middleware(request: NextRequest) {

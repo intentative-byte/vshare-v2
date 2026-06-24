@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getFeedPosts } from "@/lib/queries";
-import { demoProfiles } from "@/lib/data";
+import { localProfiles } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { Post } from "@/lib/types";
 
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         post: {
-          id: `demo-${Date.now()}`,
-          author_id: demoProfiles[0]?.id ?? "demo-user",
+          id: `local-${Date.now()}`,
+          author_id: localProfiles[0]?.id ?? "local-user",
           title: payload.title.trim(),
           summary: payload.summary.trim(),
           url: payload.url?.trim() || null,
@@ -37,16 +37,16 @@ export async function POST(request: NextRequest) {
           difficulty: payload.difficulty ?? "beginner",
           estimated_minutes: payload.estimated_minutes ?? 10,
           created_at: new Date().toISOString(),
-          profile: demoProfiles[0]
+          profile: localProfiles[0]
             ? {
-                username: demoProfiles[0].username,
-                full_name: demoProfiles[0].full_name,
-                avatar_url: demoProfiles[0].avatar_url,
-                headline: demoProfiles[0].headline,
+                username: localProfiles[0].username,
+                full_name: localProfiles[0].full_name,
+                avatar_url: localProfiles[0].avatar_url,
+                headline: localProfiles[0].headline,
               }
             : null,
         },
-        mode: "demo",
+        mode: "local",
       },
       { status: 201 },
     );

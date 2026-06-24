@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { demoProfiles } from "@/lib/data";
+import { localProfiles } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 
 type ProfilePayload = {
@@ -15,7 +15,7 @@ export async function GET() {
 
   if (!supabase) {
     // TODO: Reconnect Supabase by returning the authenticated profile once auth/database is restored.
-    return NextResponse.json({ profile: demoProfiles[0] ?? null, mode: "demo" });
+    return NextResponse.json({ profile: localProfiles[0] ?? null, mode: "local" });
   }
 
   const {
@@ -49,17 +49,17 @@ export async function PUT(request: NextRequest) {
     // TODO: Reconnect Supabase by persisting profile updates once auth/database is restored.
     return NextResponse.json({
       profile: {
-        ...(demoProfiles[0] ?? {}),
-        id: demoProfiles[0]?.id ?? "demo-user",
+        ...(localProfiles[0] ?? {}),
+        id: localProfiles[0]?.id ?? "local-user",
         username,
         full_name: payload.full_name ?? username,
         headline: payload.headline ?? null,
         avatar_url: payload.avatar_url ?? null,
         interests: payload.interests ?? [],
-        created_at: demoProfiles[0]?.created_at ?? new Date().toISOString(),
+        created_at: localProfiles[0]?.created_at ?? new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },
-      mode: "demo",
+      mode: "local",
     });
   }
 
