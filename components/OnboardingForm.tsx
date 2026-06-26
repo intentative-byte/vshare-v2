@@ -3,8 +3,18 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { DEMO_MODE_COOKIE, isDemoModeEnabled } from "@/lib/demo";
 import { goalOptions, topicOptions } from "@/lib/data";
 import { cn } from "@/lib/utils";
+
+function readDemoModeCookie(): boolean {
+  if (typeof document === "undefined") {
+    return false;
+  }
+
+  const match = document.cookie.match(new RegExp(`(?:^|; )${DEMO_MODE_COOKIE}=([^;]*)`));
+  return isDemoModeEnabled(match?.[1]);
+}
 
 export function OnboardingForm() {
   const router = useRouter();
@@ -16,6 +26,7 @@ export function OnboardingForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const isDemoMode = useMemo(() => readDemoModeCookie(), []);
 
   const canSubmit = useMemo(() => topics.length > 0 && goals.length > 0 && username.trim().length >= 3, [goals, topics, username]);
 
@@ -28,6 +39,13 @@ export function OnboardingForm() {
     setMessage(null);
 
     startTransition(async () => {
+      if (isDemoMode) {
+        setMessage("Preferences saved. Building your learning feed...");
+        router.push("/feed");
+        router.refresh();
+        return;
+      }
+
       const profileResponse = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -49,7 +67,7 @@ export function OnboardingForm() {
       });
 
       if (!profileResponse.ok || !preferencesResponse.ok) {
-        setError("Sign in and configure Supabase before saving onboarding preferences.");
+        setError("Sign in to save your preferences, or continue in demo mode from the login page.");
         return;
       }
 

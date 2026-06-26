@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { ArrowRight, Brain, Layers3, Sparkles } from "lucide-react";
 import { Button } from "@/components/Button";
+import { DemoModeLink } from "@/components/DemoModeLink";
 
 const features = [
   {
-    title: "Personalized knowledge feed",
-    description: "Supabase-backed preferences shape a topic-specific feed that improves with every saved resource.",
+    title: "Personal learning feed",
+    description: "Your feed adapts to your interests, goals, and saved resources.",
     icon: Sparkles,
   },
   {
-    title: "Learning-first social graph",
-    description: "Profiles, posts, and shared goals help members discover people who make their learning sharper.",
+    title: "Learning paths",
+    description: "Follow simple paths that help you build skills step by step.",
     icon: Layers3,
   },
   {
-    title: "Continuous growth loops",
-    description: "Onboarding captures intent, while API routes keep preferences, posts, and profiles in sync.",
+    title: "Daily growth loop",
+    description: "Complete small daily missions and keep your progress moving.",
     icon: Brain,
   },
 ];
@@ -25,15 +26,9 @@ export default function HomePage() {
     <main className="min-h-screen bg-mist text-ink">
       <section className="mx-auto grid min-h-screen max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
-          <p className="mb-5 inline-flex rounded-full bg-white px-4 py-2 text-sm font-bold text-violet-700 shadow-soft">
-            VShare v2 is rebuilt in this repository
-          </p>
-          <h1 className="text-5xl font-black tracking-tight sm:text-7xl">
-            Turn your feed into a learning engine.
-          </h1>
+          <h1 className="text-5xl font-black tracking-tight sm:text-7xl">Turn scrolling into growth.</h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-            VShare remembers what you care about, adapts to your goals, and surfaces high-signal resources from
-            people building in the same direction.
+            Choose what you want to learn. VShare builds a feed that helps you improve every day.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/login">
@@ -42,9 +37,9 @@ export default function HomePage() {
                 <ArrowRight className="ml-2 size-4" />
               </Button>
             </Link>
-            <Link href="/explore">
-              <Button variant="secondary">Explore demo feed</Button>
-            </Link>
+            <DemoModeLink href="/feed" variant="secondary">
+              Explore feed
+            </DemoModeLink>
           </div>
         </div>
 

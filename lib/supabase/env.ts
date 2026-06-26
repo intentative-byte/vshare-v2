@@ -6,5 +6,6 @@ export function getSupabaseEnv() {
     url,
     anonKey,
     isConfigured: Boolean(url && anonKey),
+    isGithubAuthEnabled: process.env.NEXT_PUBLIC_GITHUB_AUTH_ENABLED === "true",
   };
 }
