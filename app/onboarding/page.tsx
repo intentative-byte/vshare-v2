@@ -9,8 +9,8 @@ export default function OnboardingPage() {
           <p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-200">Adaptive setup</p>
           <h2 className="mt-4 text-4xl font-black tracking-tight">Tell VShare what progress looks like.</h2>
           <p className="mt-4 leading-7 text-slate-300">
-            Your selected topics and goals are stored in Supabase and used to prioritize resource recommendations,
-            creator discovery, and future learning loops.
+            Your selected topics and goals shape what VShare recommends, who you discover, and how your daily learning
+            loop evolves.
           </p>
         </aside>
         <OnboardingForm />

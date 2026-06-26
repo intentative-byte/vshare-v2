@@ -25,7 +25,7 @@ export function CreatePostForm() {
       });
 
       if (!response.ok) {
-        setError("Sign in and configure Supabase before publishing a resource.");
+        setError("Sign in to publish resources, or continue in demo mode from the login page.");
         return;
       }
 

@@ -15,8 +15,7 @@ export default async function FeedPage() {
             {profile?.full_name ? `Welcome back, ${profile.full_name.split(" ")[0]}.` : "Your learning feed is ready."}
           </h1>
           <p className="mt-4 max-w-2xl leading-7 text-slate-300">
-            High-signal resources are ranked by topic overlap, learning intent, and freshness. Configure Supabase to
-            replace demo recommendations with your own network.
+            Resources are ranked by your interests, learning goals, and what is fresh in your community.
           </p>
         </section>
         <CreatePostForm />

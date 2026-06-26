@@ -22,7 +22,7 @@ export default async function ProfilePage() {
               <h1 className="mt-2 text-4xl font-black tracking-tight">
                 {profile?.full_name ?? profile?.username ?? "VShare learner"}
               </h1>
-              <p className="mt-2 text-slate-600">{profile?.headline ?? "Curating a sharper personal learning graph."}</p>
+              <p className="mt-2 text-slate-600">{profile?.headline ?? "Building skills one resource at a time."}</p>
             </div>
           </div>
           <Link href="/onboarding">
@@ -47,8 +47,8 @@ export default async function ProfilePage() {
           <Sparkles className="size-8 text-violet-200" />
           <h2 className="mt-4 text-2xl font-black tracking-tight">Learning signal</h2>
           <p className="mt-3 leading-7 text-slate-300">
-            Your saved interests and shared resources shape recommendations across the feed, explore page, and future
-            creator matching.
+            Your saved interests and shared resources shape recommendations across your feed, explore page, and creator
+            discovery.
           </p>
         </aside>
         <div className="grid gap-5">

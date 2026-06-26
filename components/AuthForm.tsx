@@ -1,18 +1,22 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/Button";
+import { DEMO_MODE_COOKIE } from "@/lib/demo";
 import { createClient } from "@/lib/supabase/client";
+import { getSupabaseEnv } from "@/lib/supabase/env";
 
 export function AuthForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const supabase = useMemo(() => createClient(), []);
+  const { isGithubAuthEnabled } = useMemo(() => getSupabaseEnv(), []);
   const nextPath = searchParams.get("next") ?? "/feed";
 
   function handleMagicLink() {
@@ -20,7 +24,7 @@ export function AuthForm() {
     setMessage(null);
 
     if (!supabase) {
-      setError("Supabase is not configured yet. Add the environment variables from .env.example.");
+      setError("Sign-in is not available right now. Continue in demo mode to explore VShare.");
       return;
     }
 
@@ -45,7 +49,7 @@ export function AuthForm() {
     setError(null);
 
     if (!supabase) {
-      setError("Supabase is not configured yet. Add the environment variables from .env.example.");
+      setError("Sign-in is not available right now. Continue in demo mode to explore VShare.");
       return;
     }
 
@@ -61,6 +65,11 @@ export function AuthForm() {
         setError(signInError.message);
       }
     });
+  }
+
+  function handleDemoMode() {
+    document.cookie = `${DEMO_MODE_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+    router.push("/onboarding");
   }
 
   return (
@@ -86,9 +95,14 @@ export function AuthForm() {
           <Mail className="mr-2 size-4" />
           Send magic link
         </Button>
-        <Button type="button" variant="secondary" onClick={handleGithub} disabled={isPending} className="w-full">
-          <span className="mr-2 text-xs font-black">GH</span>
-          Continue with GitHub
+        {isGithubAuthEnabled ? (
+          <Button type="button" variant="secondary" onClick={handleGithub} disabled={isPending} className="w-full">
+            <span className="mr-2 text-xs font-black">GH</span>
+            Continue with GitHub
+          </Button>
+        ) : null}
+        <Button type="button" variant="secondary" onClick={handleDemoMode} className="w-full">
+          Continue in demo mode
         </Button>
       </div>
 
