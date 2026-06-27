@@ -1662,24 +1662,99 @@ def reconcile_missing_positions():
 # =============================================================================
 
 def session_score_display():
-    wins = SESSION_COUNTERS.get("wins", 0)
-    losses = SESSION_COUNTERS.get("losses", 0)
-    exits = SESSION_COUNTERS.get("final_exits", 0)
-    wr = (wins / exits * 100) if exits else 0.0
-    wr_line = f"WIN RATE: {wr:.1f}% ({wins}W / {losses}L / {SESSION_COUNTERS.get('breakevens', 0)}BE)"
-    tel_n = max(1, SESSION_COUNTERS.get("entry_telemetry_count", 0))
-    return (
-        f"SESSION SCORE — {VERSION}\n{'=' * 40}\n"
-        f"START: {SESSION_COUNTERS.get('session_start', 'N/A')}\n"
-        f"ENTRIES: {SESSION_COUNTERS.get('entries', 0)}  PARTIALS: {SESSION_COUNTERS.get('partial_takes', 0)}  "
-        f"EXITS: {exits}\n{wr_line}\n"
-        f"ENTRY ACCURACY: 0.25={ENTRY_HITS_025}/{ENTRY_TOTAL}  0.50={ENTRY_HITS_050}/{ENTRY_TOTAL}  "
-        f"1.00={ENTRY_HITS_100}/{ENTRY_TOTAL}\n"
-        f"AVG MMS: {SESSION_COUNTERS.get('missed_move_score_total', 0)/tel_n:.3f}  "
-        f"AVG MATR: {SESSION_COUNTERS.get('move_at_entry_atr_total', 0)/tel_n:.3f}\n"
-        f"KILL SWITCH: {'ACTIVE' if KILL_SWITCH_ACTIVE else 'CLEAR'}\n"
-        f"CONSECUTIVE LOSSES: {SESSION_COUNTERS.get('consecutive_losses', 0)}\n"
-    )
+    sc = SESSION_COUNTERS
+    start = sc.get("session_start") or "NOT SET"
+    entries, partials, exits = sc.get("entries", 0), sc.get("partial_takes", 0), sc.get("final_exits", 0)
+    wins, losses, breakevens = sc.get("wins", 0), sc.get("losses", 0), sc.get("breakevens", 0)
+    total = wins + losses + breakevens
+    wr = (wins / total * 100) if total else 0
+    rate025 = (ENTRY_HITS_025 / ENTRY_TOTAL * 100) if ENTRY_TOTAL else 0
+    rate050 = (ENTRY_HITS_050 / ENTRY_TOTAL * 100) if ENTRY_TOTAL else 0
+    rate100 = (ENTRY_HITS_100 / ENTRY_TOTAL * 100) if ENTRY_TOTAL else 0
+    on = OVERNIGHT_STATS
+    on_wr = (on["overnight_wins"] / on["overnight_trades"] * 100) if on["overnight_trades"] else 0
+    ks_state = "ACTIVE" if KILL_SWITCH_ACTIVE else "CLEAR"
+    tel_count = sc.get("entry_telemetry_count", 0)
+    avg_mms = (sc.get("missed_move_score_total", 0.0) / tel_count) if tel_count else 0.0
+    avg_maeatr = (sc.get("move_at_entry_atr_total", 0.0) / tel_count) if tel_count else 0.0
+    avg_vwap = (sc.get("vwap_distance_total", 0.0) / tel_count) if tel_count else 0.0
+    rf, rf_w = sc.get("resp_fast", 0), sc.get("resp_fast_wins", 0)
+    rn, rn_w = sc.get("resp_normal", 0), sc.get("resp_normal_wins", 0)
+    rs, rs_w = sc.get("resp_slow", 0), sc.get("resp_slow_wins", 0)
+    rfl, rfl_w = sc.get("resp_failed", 0), sc.get("resp_failed_wins", 0)
+
+    def wr_line(c, w):
+        return f"{(w / c * 100):.0f}%" if c else "0%"
+
+    shadow_band_lines = []
+    for t in SHADOW_AUTH_THRESHOLDS:
+        t_str = str(t)
+        count = LIVE_SHADOW_BAND_COUNTS.get(t_str, 0)
+        pct = (count / LIVE_SHADOW_TOTAL * 100) if LIVE_SHADOW_TOTAL else 0
+        fire_marker = " <<FIRE" if t == MIN_FIRE_AUTH else ""
+        shadow_band_lines.append(f"  >={t_str}: {count} ({pct:.1f}%){fire_marker}")
+
+    return f"""
+DAX SESSION SCORE
+=================
+BUILD: {UPGRADE_VERSION}
+SESSION START: {start}
+
+ENTRIES:       {entries}
+PARTIAL TAKES: {partials}
+FINAL EXITS:   {exits}
+
+WINS:          {wins}
+LOSSES:        {losses}
+BREAKEVENS:    {breakevens}
+WIN RATE:      {wr:.1f}%
+
+KILL SWITCH [ADD-14 / ADD-29]
+-----------------------------
+STATUS:               {ks_state}
+CONSECUTIVE LOSSES:   {sc.get('consecutive_losses', 0)}
+MAX CONSECUTIVE HWM:  {sc.get('max_consecutive_losses', 0)}
+THRESHOLD:            {PULL_PLUG_AFTER_CONSECUTIVE_LOSSES}
+ACTIVATIONS:          {sc.get('kill_switch_activations', 0)}
+RESETS:               {sc.get('kill_switch_resets', 0)}
+LAST ACTIVATED:       {KILL_SWITCH_ACTIVATED_AT or '---'}
+LAST RESET:           {KILL_SWITCH_RESET_AT or '---'}
+
+ENTRY TELEMETRY [ADD-16]
+------------------------
+TRADES TRACKED:         {tel_count}
+AVG MISSED_MOVE_SCORE:  {avg_mms:.3f}
+AVG MOVE_AT_ENTRY_ATR:  {avg_maeatr:.3f}
+AVG |VWAP_DISTANCE|:    {avg_vwap:.3f}%
+
+FIRST RESPONSE ENGINE [ADD-21]
+-------------------------------
+FAST   (<=3m):  {rf}  wins={rf_w}  wr={wr_line(rf, rf_w)}
+NORMAL (<=10m): {rn}  wins={rn_w}  wr={wr_line(rn, rn_w)}
+SLOW   (>10m):  {rs}  wins={rs_w}  wr={wr_line(rs, rs_w)}
+FAILED (never): {rfl} wins={rfl_w} wr={wr_line(rfl, rfl_w)}
+
+ENTRY ACCURACY
+--------------
+TOTAL TRACKED:   {ENTRY_TOTAL}
+REACHED +0.25%:  {ENTRY_HITS_025}  ({rate025:.1f}%)
+REACHED +0.50%:  {ENTRY_HITS_050}  ({rate050:.1f}%)
+REACHED +1.00%:  {ENTRY_HITS_100}  ({rate100:.1f}%)
+
+OVERNIGHT STATS
+---------------
+TRADES: {on['overnight_trades']}  WR: {on_wr:.1f}%
+TOTAL PNL: {on['overnight_pnl_total']:.2f}%
+BEST: {on['best_gap']:.2f}%  WORST: {on['worst_gap']:.2f}%
+
+AUTH SHADOW BANDS [LIVE]
+------------------------
+TOTAL SCANNED: {LIVE_SHADOW_TOTAL}
+{chr(10).join(shadow_band_lines)}
+
+EXEC ERRORS:   {sc.get('execution_errors', 0)}
+MGR CYCLES:    {sc.get('exit_manager_cycles', 0)}
+"""
 
 def reset_journal_and_session():
     global TRADE_STATE, SESSION_ENTRY_SYMBOLS, SESSION_EXIT_SYMBOLS, SESSION_PARTIAL_KEYS
