@@ -567,6 +567,10 @@ Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalle
 | Production build | `npm run build` | pass — **21 routes** |
 | Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
 
+### Continuous integration
+
+Run `43652248887` on commit `56cf176` and run `43652389183` on commit `cf9bfd7`, pull request #8: **all five jobs passed on both** — hygiene, lint, types, unit tests and build; database policies and functions against a PostgreSQL service; end-to-end and accessibility; dependency audit; full-history secret scan.
+
 ### Query performance — measured, not assumed
 
 `scripts/measure-analytics-performance.mjs`, against 2,000 cards, 2,000 accounts, 80,000 interactions and 4,809 sessions spread over 60 days:
