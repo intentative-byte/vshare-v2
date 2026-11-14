@@ -69,6 +69,7 @@ of this one.
 |---|---|---|
 | `visit_started` | A browser said it loaded the application for the first time in a tab | An upper bound. Never a denominator for a rate that matters |
 | `topic_selected`, `card_opened`, `card_completed`, `card_saved`, `card_skipped`, `session_completed`, `account_created`, `return_visit_with_completion`, `first_card_shown` | What the browser announced | Kept for continuity with Milestone 5 and 6 data. The derived metric of the same meaning is the one to read |
+| `first_completion_seconds` (reported) | What a browser claimed before Milestone 7 | **One name, two meanings.** It exists as a reported event and as a derived metric, kept apart only by the `source` column. The superseded `first_win_metrics` view once mixed them and took whichever was larger; it is now pinned to the reported rows. Read `analytics_overview` |
 
 ## 4. Rates shown on the dashboard
 

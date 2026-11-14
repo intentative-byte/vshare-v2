@@ -389,3 +389,46 @@ begin
     'and leaves nothing behind pointing at an account that no longer exists');
 end;
 $$;
+
+-- Reported and derived rows share a day and a name, and must never mix.
+do $$
+declare
+  v_mod uuid;
+begin
+  perform test.reset();
+  v_mod := test.create_user('mix-mod@example.com');
+
+  perform test.become_service();
+  insert into public.user_roles (user_id, role) values (v_mod, 'moderator');
+
+  -- A browser claims a first win took nearly three hours; the measurement
+  -- for the same day says sixty seconds.
+  insert into public.analytics_daily (day, source, name, dimension, dimension_key, count, value_sum, value_count)
+  values
+    ('2026-02-01', 'reported', 'first_completion_seconds', 'all', 'all', 1, 9999, 1),
+    ('2026-02-01', 'derived', 'first_completion_seconds', 'all', 'all', 1, 60, 1);
+
+  perform public.rollup_day('2026-02-01');
+  -- rollup_day clears the derived rows for the day, so put the measurement
+  -- back the way a real rollup would have left it.
+  insert into public.analytics_daily (day, source, name, dimension, dimension_key, count, value_sum, value_count)
+  values ('2026-02-01', 'derived', 'first_completion_seconds', 'all', 'all', 1, 60, 1);
+
+  perform test.become(v_mod);
+
+  perform test.equals(
+    (select mean_seconds_to_first_completion::int from public.first_win_metrics
+      where day = '2026-02-01'), 9999,
+    'the superseded view reports only what browsers claimed, which is what it always counted');
+  perform test.equals(
+    (select mean_seconds_to_first_completion::int from public.analytics_overview
+      where day = '2026-02-01'), 60,
+    'the overview reports the measurement, and never the larger of the two');
+
+  perform test.become_service();
+  perform test.equals(
+    (select count(*)::int from public.analytics_daily
+      where day = '2026-02-01' and name = 'first_completion_seconds'), 2,
+    'both rows coexist under the same name, kept apart by their source');
+end;
+$$;

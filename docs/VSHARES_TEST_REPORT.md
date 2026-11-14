@@ -562,7 +562,7 @@ Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalle
 | Lint | `npm run lint` | pass (0 warnings) |
 | Types | `npm run typecheck` | pass (strict) |
 | Unit tests | `npm test` | **177 passed, 0 failed** (12 files; 20 new) |
-| Database policies and functions | `npm run test:db` | **22 files, 378 assertions, 0 failed** (73 new) |
+| Database policies and functions | `npm run test:db` | **22 files, 381 assertions, 0 failed** (76 new) |
 | End-to-end, accessibility, headers | `npm run test:e2e` | **90 passed, 62 skipped, 0 failed** |
 | Production build | `npm run build` | pass — **21 routes** |
 | Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
@@ -613,9 +613,9 @@ Three indexes were added for the rollup, then measured: **73–77 ms with them, 
 
 It is a separate script rather than part of the end-to-end suite on purpose. The gallery is not served in production, and `security-headers.spec.ts` asserts it answers 404 there; adding it to the routine accessibility list meant turning dev tools on for the whole run, which made that security check pass for the wrong reason. Caught by running the suite and watching that test fail, then reverted.
 
-### Database coverage added (73 assertions)
+### Database coverage added (76 assertions)
 
-`210_analytics_rollup.sql` (34) and `220_analytics_integrity.sql` (39):
+`210_analytics_rollup.sql` (34) and `220_analytics_integrity.sql` (42):
 
 - **Replay cannot move a derived number.** A completion recorded three times and announced to the event endpoint twenty times still counts as one; the reported count faithfully records twenty, in a separate row that is never merged with it.
 - **Re-running the rollup three times gives the same answer**, and records the day once.
@@ -640,6 +640,7 @@ It is a separate script rather than part of the end-to-end suite on purpose. The
 | `rollup_day` was revoked from everyone including the service role | Running the first rollup test | Granted to `service_role` only, which is the intended caller |
 | The applied-learning tile read "Not enough data", which invites the reader to wait for a number that is never coming | Looking at the captured screenshot | A separate `emptyLabel`, so "Not measured" and "Not enough data" are different statements |
 | Adding the gallery to the accessibility suite required dev tools on, which made the "gallery is not reachable in production" security check pass for the wrong reason | Running the suite | Reverted; the gallery is checked by its own script instead |
+| **The Milestone 5 funnel view mixed a browser's claim with a measurement.** `first_completion_seconds` now exists as both a reported event and a derived metric; the view's `max(...) filter (where name = ...)` took whichever row was larger. A browser claiming 9,999 seconds beat a measured 60 | Reading the two definitions side by side after adding the derived metric, then proving it with a query | The superseded view is pinned to reported rows, which is all it ever counted. Three assertions now hold the two apart |
 
 ### Against the Milestone 7 requirements
 

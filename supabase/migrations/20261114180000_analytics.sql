@@ -835,3 +835,39 @@ begin
   return v_export;
 end;
 $$;
+
+-- ------------------------------------------- the superseded M5 view --
+
+-- first_win_metrics was written in Milestone 5, when every row in
+-- analytics_daily was reported. It is not any more, and one name —
+-- first_completion_seconds — now exists as both a reported event and a
+-- derived metric. The view's `max(...) filter (where name = ...)` would take
+-- whichever row happened to be larger, mixing a browser's claim with a
+-- measurement. Found by reading the two definitions side by side after the
+-- derived metric was added.
+--
+-- It is pinned to the reported rows, which is what it was always counting,
+-- and analytics_overview is the one to read.
+create or replace view public.first_win_metrics
+with (security_invoker = true)
+as
+select
+  d.day,
+  max(d.count) filter (where d.name = 'visit_started') as visits,
+  max(d.count) filter (where d.name = 'topic_selected') as topics_chosen,
+  max(d.count) filter (where d.name = 'card_completed') as completions,
+  max(d.count) filter (where d.name = 'account_created') as accounts_created,
+  round(
+    (max(d.value_sum) filter (where d.name = 'first_completion_seconds'))
+    / nullif(max(d.value_count) filter (where d.name = 'first_completion_seconds'), 0),
+    1
+  ) as mean_seconds_to_first_completion
+from public.analytics_daily d
+where d.dimension = 'all'
+  and d.source = 'reported'
+group by d.day;
+
+comment on view public.first_win_metrics is
+  'Superseded by analytics_overview. Reported rows only, so it cannot mix a browser''s claim with a measurement.';
+
+grant select on public.first_win_metrics to authenticated;
