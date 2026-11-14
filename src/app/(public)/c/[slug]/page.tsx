@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { BrandLockup } from "@/components/shell/brand";
 import { ButtonLink } from "@/components/ui/button";
 import { HighImpactNotice } from "@/components/catalogue/high-impact-notice";
+import { CardActions } from "@/components/catalogue/card-actions";
 import { isDatabaseConfigured } from "@/platform/env";
 import { findPublishedCard } from "@/modules/content/server";
 
@@ -115,6 +116,8 @@ export default async function CardPage({ params }: { params: Promise<Params> }) 
               VSHARES summarises and links. The original remains the work of its publisher.
             </p>
           </section>
+
+          <CardActions contentId={card.id} slug={card.slug} title={card.title} />
         </article>
       </main>
     </div>

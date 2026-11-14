@@ -22,6 +22,8 @@ export {
   recordGuestCollision,
   getMyProfile,
   updateProfile,
+  exportMyAccountData,
+  deleteAccount,
   readViewer,
   readMyProfile,
 } from "./actions";

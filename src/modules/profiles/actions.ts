@@ -21,7 +21,13 @@ import {
   updateProfileInput,
   upgradeGuestInput,
 } from "./schemas";
-import { findOwnProfile, recordMerge, updateOwnProfile } from "./repository";
+import {
+  deleteMyAccount,
+  exportMyData,
+  findOwnProfile,
+  recordMerge,
+  updateOwnProfile,
+} from "./repository";
 import type { Profile } from "./types";
 
 /**
@@ -239,6 +245,52 @@ export const updateProfile = defineAction({
     );
 
     return profile ? ok(profile) : failWithDefault("UNAVAILABLE");
+  },
+});
+
+/**
+ * Everything held about the caller, as one document.
+ *
+ * Scoped by the database to whoever is asking, so it cannot be pointed at
+ * anyone else, and rate-limited because assembling it is not free.
+ */
+export const exportMyAccountData = defineAction({
+  name: "profiles.exportMyData",
+  access: "viewer",
+  input: z.object({}).strict(),
+  rateLimit: rateLimitRules.exportPerUser,
+  handler: async () => {
+    const data = await exportMyData();
+    return data ? ok(data) : failWithDefault("UNAVAILABLE");
+  },
+});
+
+/**
+ * Deletes the caller's account.
+ *
+ * A registered account must have authenticated recently; the database
+ * enforces that, and says so plainly when it has not.
+ */
+export const deleteAccount = defineAction({
+  name: "profiles.deleteAccount",
+  access: "viewer",
+  input: z.object({ confirm: z.literal("DELETE") }).strict(),
+  rateLimit: rateLimitRules.exportPerUser,
+  handler: async ({ confirm }) => {
+    const outcome = await deleteMyAccount(confirm);
+
+    if (outcome.status === "reauthenticate") {
+      return fail(
+        "FORBIDDEN",
+        "For your safety, sign in again before deleting your account.",
+      );
+    }
+
+    if (outcome.status === "failed") {
+      return failWithDefault("UNAVAILABLE");
+    }
+
+    return ok({ deleted: true, removed: outcome.removed });
   },
 });
 

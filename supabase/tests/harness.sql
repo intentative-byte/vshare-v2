@@ -201,3 +201,42 @@ begin
   restart identity cascade;
 end;
 $$;
+
+-- Acts as a user whose session proves a recent authentication, which is
+-- what a destructive action requires. Mirrors the `amr` claim the auth
+-- service issues after a sign-in.
+create or replace function test.become_recently_authenticated(
+  p_user_id uuid,
+  p_seconds_ago integer default 60
+)
+returns void
+language plpgsql
+as $$
+declare
+  v_is_anonymous boolean;
+begin
+  execute 'reset role';
+
+  select is_anonymous into v_is_anonymous from auth.users where id = p_user_id;
+
+  if v_is_anonymous is null then
+    raise exception 'test.become_recently_authenticated: no such user %', p_user_id;
+  end if;
+
+  perform set_config(
+    'request.jwt.claims',
+    json_build_object(
+      'sub', p_user_id::text,
+      'is_anonymous', v_is_anonymous,
+      'amr', json_build_array(
+        json_build_object(
+          'method', 'otp',
+          'timestamp', extract(epoch from now())::bigint - p_seconds_ago
+        )
+      )
+    )::text,
+    true
+  );
+  execute 'set local role authenticated';
+end;
+$$;

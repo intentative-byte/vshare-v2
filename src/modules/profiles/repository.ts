@@ -108,4 +108,37 @@ export async function recordMerge(guestUserId: string, targetUserId: string): Pr
   return !error;
 }
 
+/** Everything held about the caller, assembled by the database. */
+export async function exportMyData(): Promise<Record<string, unknown> | null> {
+  const supabase = await createRequestClient();
+  const { data, error } = await supabase.rpc("export_my_data");
+
+  return error ? null : (data as Record<string, unknown>);
+}
+
+export type DeletionOutcome =
+  | { status: "deleted"; removed: Record<string, unknown> }
+  | { status: "reauthenticate" }
+  | { status: "failed" };
+
+export async function deleteMyAccount(confirm: string): Promise<DeletionOutcome> {
+  const supabase = await createRequestClient();
+  const { data, error } = await supabase.rpc("delete_my_account", { p_confirm: confirm });
+
+  if (error) {
+    // The database refuses a destructive action on a session that has not
+    // proved who it belongs to recently.
+    if (error.message.includes("sign in again")) {
+      return { status: "reauthenticate" };
+    }
+
+    return { status: "failed" };
+  }
+
+  return {
+    status: "deleted",
+    removed: (data as { removed: Record<string, unknown> }).removed,
+  };
+}
+
 export { toProfile };

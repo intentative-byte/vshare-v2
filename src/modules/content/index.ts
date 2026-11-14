@@ -18,6 +18,7 @@
 
 export {
   submitResource,
+  resubmitResource,
   reportCard,
   getMySubmissions,
   getModerationQueue,
@@ -26,6 +27,7 @@ export {
 
 export {
   submitResourceInput,
+  resubmitInput,
   moderateInput,
   reportInput,
   sourceUrlSchema,

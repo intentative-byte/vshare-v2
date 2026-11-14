@@ -9,9 +9,9 @@
 |---|---|---|---|
 | 0 | Reconstruction | — | **done** |
 | 1 | Product foundation: spec, architecture, data, contracts, security, design | — | **done in draft — awaiting owner sign-off** |
-| 2 | Core application: shell, auth, profiles, categories, content, navigation | MVP (M1–M3) | next |
-| 3 | Value Feed: discovery, ranking, saves, shares, interactions | MVP (M4–M6) | planned |
-| 5 (foundation only) | VAI: deterministic ranking and Next Best | MVP (M4) | planned |
+| 2 | Core application: shell, auth, profiles, categories, content, navigation | MVP (M1–M3) | **done** |
+| 3 | Value Feed: discovery, ranking, saves, shares, interactions | MVP (M4–M6) | **done (M4–M6 built)** |
+| 5 (foundation only) | VAI: deterministic ranking and Next Best | MVP (M4) | **done** |
 | 7 (essentials only) | Event analytics and funnels | MVP (M7) | planned |
 | 11 (MVP level) | Security review, accessibility, release preparation | MVP (M8) | planned |
 | 4 | Learning engine: paths, quizzes, progress, quests, mastery | R2 | planned |
@@ -33,10 +33,10 @@ Size is given in focused engineering sessions (one session ≈ one working block
 |---|---|---|---|---|
 | M1 ✅ | **Foundation and shell** — complete 2026-11-14 | Legacy app replaced by the new structure; platform layer (env validation, db clients, action pipeline, rate limit, logger, errors, flags); security headers; design tokens and core primitives; five-tab app shell with empty states; local Supabase; Vitest, Playwright, axe; CI extended to run them; `/api/health`, `/api/ready` (M-13, M-14) | Met, except CI has not executed yet and the reference screens await owner review. 54 unit and 44 end-to-end checks pass locally; no demo-mode code remains | 2–3 |
 | M2 ✅ | **Identity and profiles** — complete 2026-11-14 | Migration 1: profiles, roles, preferences; magic link, Google, guest accounts and upgrade; safe redirects; profile editing; role checks (M-02, M-09) | Met for the database layer: 89 assertions pass against real PostgreSQL, including isolation with two distinct users on every table. The auth-service journeys are implemented and their tests are written, but skipped until a service is reachable | 2 |
-| M3 ✅ | **Catalogue and moderation** — built 2026-11-14 | Migration 2: taxonomy, value cards, reports, moderation log, audit log; admin catalogue and taxonomy management; moderation queue; public card page; **launch catalogue curated and loaded** (M-11, part of M-08) | Admin-only access proven at every layer; the schema and rules are tested. **Open:** the owner's review of batch 1, and link checking, which needs network access | 2–3 (+ curation time) |
+| M3 ✅ | **Catalogue and moderation** — built 2026-11-14 | Migration 2: taxonomy, value cards, reports, moderation log, audit log; moderation queue (cards and taxonomy are managed by audited server functions, not a screen; an admin catalogue interface is still outstanding); public card page; **launch catalogue curated and loaded** (M-11, part of M-08) | Admin-only access proven at every layer; the schema and rules are tested. **Open:** the owner's review of batch 1, and link checking, which needs network access | 2–3 (+ curation time) |
 | M4 ✅ | **Value Feed and VAI foundation** — built 2026-11-14 | Migration 3: interactions, user topics, recommendations, ranking config; ranker v1; finite sessions; "Why this?"; Next Best; topic selection and preference memory (M-03, M-04, M-05) | Met. 43 ranker and session tests, 54 new database assertions, recommendations logged with their component breakdown, and query performance measured | 3 |
 | M5 ✅ | **First Learning Win, library, progress** — built 2026-11-14 | Home → topic → card → "Got it" → win state as a guest; SAVED; progress summary; PATH tab (M-01, M-06, M-07) | Built and covered by tests. The first-win end-to-end checks are written and skipped until a service exists, so the 60-second benchmark is not yet measured against a real journey | 2 |
-| M6 | **Submission, sharing, data rights** | Submit a resource; my submissions; reports; share; export; account deletion; guest purge job (M-08, M-10) | Export and deletion tests pass (no orphan rows); submission rate limits and URL rules tested | 2 |
+| M6 ✅ | **Submission, sharing, data rights** — built 2026-11-14 | Migration 5: consent events, export, deletion, guest purge; submit a resource; my submissions; correction and resubmission; reports; share; export; account deletion (M-08, M-10) | Met. 57 new database assertions: the export carries every category and nothing of anyone else's; deletion needs a confirmation and a recent sign-in; no orphan rows remain; the purge is idempotent and keeps active guests. **Open:** the guest purge is deliberately not scheduled, and the live journeys remain skipped | 2 |
 | M7 | **Essential analytics** | Event ingestion, consent handling, rollups, funnel and validation-metrics views (M-12) | Rollups reconcile with raw events on fixtures; no identifiers recorded before consent | 1–2 |
 | M8 | **Hardening and release preparation** | ASVS L2 walk-through; accessibility audit incl. manual screen-reader pass; performance budget check; runbook; backup and restore drill; privacy notice and terms drafts; release checklist | `VSHARES_TEST_REPORT.md` and `VSHARES_SECURITY.md` updated with results; no open critical or high defects; owner go/no-go | 2 |
 
@@ -44,7 +44,17 @@ Total: roughly 16–19 sessions plus catalogue curation and owner reviews.
 
 Deployment to any shared or public environment happens only after M8 and only on explicit owner authorisation.
 
-## 3. Next development milestone — M2 in detail
+## 3. Next development milestone — M7 in detail
+
+1. Event ingestion through the action pipeline with a closed vocabulary, rejecting any name not in it.
+2. Consent handling end to end: the switch, the consent record, and the automatic deletion of events collected under a withdrawn consent (all three exist; M7 adds the screens and the reconciliation).
+3. Daily rollups, reconciled against raw events on fixtures.
+4. The first-session funnel and the validation-metrics view, with every number carrying its definition.
+5. No identifier recorded before consent — proven by a test that reads the tables as a privileged client after an unconsented session.
+
+Exit criteria: rollups reconcile with raw events, and the validation metrics in spec §B1 can be read for a date range.
+
+## 4. Earlier milestone detail — M2 (complete)
 
 1. First product migration: `profiles`, `user_roles`, `preferences`, with row-level security on each and the handle generator, plus `has_role()`.
 2. Supabase auth adapter behind `platform/auth`, registered with the action pipeline's viewer resolver.
@@ -56,7 +66,7 @@ Deployment to any shared or public environment happens only after M8 and only on
 
 Exit criteria: a person can sign in with a magic link against the local stack, a guest's work survives registration, and no table lets one account read another's rows.
 
-## 4. First development milestone — M1 in detail (complete)
+## 5. First development milestone — M1 in detail (complete)
 
 1. Create `src/` structure, module skeletons for the eight MVP modules (index files and boundary lint rule only), remove legacy `app/`, `components/`, `lib/`, `middleware.ts`, `scripts/smoke-test.mjs` and the legacy migration and seed (kept in git history and on `main`).
 2. `platform/env.ts` with a Zod schema; `.env.example` listing every variable by name.
@@ -70,7 +80,7 @@ Exit criteria: a person can sign in with a magic link against the local stack, a
 
 Needs from the owner before M1 starts: sign-off of the Phase 1 documents, and approval to replace the legacy application code on the rebuild branch.
 
-## 5. After the MVP
+## 6. After the MVP
 
 | Release | Theme | Gate to start |
 |---|---|---|

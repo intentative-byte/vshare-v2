@@ -4,10 +4,11 @@ import { z } from "zod";
 import { defineAction } from "@/platform/action";
 import { fail, failWithDefault, ok } from "@/platform/result";
 import { rateLimitRules } from "@/platform/rate-limit";
-import { moderateInput, reportInput, submitResourceInput } from "./schemas";
+import { moderateInput, reportInput, resubmitInput, submitResourceInput } from "./schemas";
 import {
   callModerate,
   callReport,
+  callResubmit,
   callSubmitResource,
   listCardsForReview,
   listMySubmissions,
@@ -72,6 +73,31 @@ export const reportCard = defineAction({
     }
 
     return ok({ reported: true } as const);
+  },
+});
+
+/** Correcting a rejected submission and sending it back. */
+export const resubmitResource = defineAction({
+  name: "content.resubmitResource",
+  access: "account",
+  input: resubmitInput,
+  rateLimit: rateLimitRules.submissionPerUser,
+  handler: async ({ contentId, ...fields }) => {
+    const failure = await callResubmit(contentId, fields);
+
+    if (failure) {
+      if (failure.includes("not your submission")) {
+        return failWithDefault("FORBIDDEN");
+      }
+
+      if (failure.includes("only a rejected submission")) {
+        return fail("CONFLICT", "Only a rejected submission can be corrected.");
+      }
+
+      return failWithDefault("UNAVAILABLE");
+    }
+
+    return ok({ status: "pending" as const });
   },
 });
 

@@ -325,6 +325,30 @@ export async function callModerate(
   return error ? error.message : null;
 }
 
+export async function callResubmit(
+  contentId: string,
+  fields: {
+    title: string;
+    summary: string;
+    takeaways: string[];
+    nextStep: string;
+    sourceName: string;
+  },
+): Promise<string | null> {
+  const supabase = await createRequestClient();
+
+  const { error } = await supabase.rpc("resubmit_content", {
+    p_content_id: contentId,
+    p_title: fields.title,
+    p_summary: fields.summary,
+    p_takeaways: fields.takeaways,
+    p_next_step: fields.nextStep,
+    p_source_name: fields.sourceName,
+  });
+
+  return error ? error.message : null;
+}
+
 export async function callReport(
   contentId: string,
   reason: string,

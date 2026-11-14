@@ -8,6 +8,9 @@ import { Disclosure } from "@/components/ui/disclosure";
 import { PageHeader } from "@/components/ui/page-header";
 import { FoundationNotice } from "@/components/ui/foundation-notice";
 import { EmptyState, ErrorState, LoadingRegion, Skeleton } from "@/components/ui/states";
+import { SubmitForm } from "@/components/submissions/submit-form";
+import { DataRights } from "@/components/account/data-rights";
+import { seedCategories } from "@/modules/content";
 
 export const metadata = { title: "Component gallery" };
 
@@ -94,6 +97,24 @@ export default function ComponentGalleryPage() {
             milestone="Milestone 4"
             summary="This notice marks a destination that exists but is not finished."
           />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg text-white">Submission and data rights</h2>
+        <p className="mt-2 text-sm text-silver-dim">
+          The two Milestone 6 surfaces, rendered with the approved taxonomy and no account. They
+          are here so the layout can be reviewed and checked for accessibility in an environment
+          with no service; neither form can do anything without one.
+        </p>
+        <div className="mt-3 space-y-6">
+          <SubmitForm
+            groups={seedCategories.map((category) => ({
+              category: category.name,
+              topics: category.topics.map((topic) => ({ id: topic.slug, name: topic.name })),
+            }))}
+          />
+          <DataRights />
         </div>
       </section>
 

@@ -208,3 +208,41 @@ begin
     'the moderation record survives with the actor anonymised');
 end;
 $$;
+
+-- A version cannot be edited, but removing its card removes it: an
+-- append-only table must not block someone deleting their own account.
+do $$
+declare
+  v_mod uuid;
+  v_topic uuid;
+  v_card uuid;
+begin
+  perform test.reset();
+  v_mod := test.create_user('version-mod@example.com');
+
+  perform test.become_service();
+  insert into public.user_roles (user_id, role) values (v_mod, 'moderator');
+  insert into public.categories (id, slug, name, description)
+  values ('66666666-6666-4666-8666-666666666667', 'productivity', 'Productivity', 'Doing what matters.');
+  v_topic := gen_random_uuid();
+  insert into public.topics (id, category_id, slug, name)
+  values (v_topic, '66666666-6666-4666-8666-666666666667', 'focus', 'Focus');
+
+  perform test.become(v_mod);
+  v_card := public.create_card('version-cascade-card', v_topic, 'https://example.com/vc',
+    'Example Publisher', 'A card whose version should cascade',
+    'A summary that is long enough to satisfy the minimum length rule applied to every version.',
+    array['Something worth taking away.'], 'Try it for one week.');
+
+  perform test.refuses(
+    format('update public.content_versions set title = ''Changed'' where content_id = %L', v_card),
+    'a version still cannot be edited');
+
+  perform test.become_owner();
+  delete from public.content_items where id = v_card;
+
+  perform test.equals(
+    (select count(*)::int from public.content_versions where content_id = v_card), 0,
+    'removing the card removes its versions');
+end;
+$$;

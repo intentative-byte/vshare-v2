@@ -92,6 +92,17 @@ export const submitResourceInput = z
 
 export type SubmitResourceInput = z.infer<typeof submitResourceInput>;
 
+export const resubmitInput = z
+  .object({
+    contentId: z.string().uuid(),
+    title: z.string().trim().min(10).max(120),
+    summary: z.string().trim().min(40).max(600),
+    takeaways: takeawaysSchema,
+    nextStep: z.string().trim().min(10).max(300),
+    sourceName: z.string().trim().min(2).max(120),
+  })
+  .strict();
+
 export const moderateInput = z
   .object({
     contentId: z.string().uuid(),

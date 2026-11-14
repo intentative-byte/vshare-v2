@@ -38,7 +38,7 @@ declare
   v_old_guest uuid;
   v_new_guest uuid;
   v_member uuid;
-  v_deleted integer;
+  v_result jsonb;
 begin
   perform test.reset();
   v_old_guest := test.create_user(null, true);
@@ -48,9 +48,16 @@ begin
   update auth.users set created_at = now() - interval '45 days' where id = v_old_guest;
   update auth.users set created_at = now() - interval '45 days' where id = v_member;
 
-  v_deleted := app.purge_stale_guests();
+  -- A dry run reports and changes nothing.
+  v_result := app.purge_stale_guests(interval '30 days', true);
+  perform test.equals((v_result ->> 'eligible')::int, 1, 'the dry run finds one eligible guest');
+  perform test.equals((v_result ->> 'deleted')::int, 0, 'and deletes nothing');
+  perform test.equals(
+    (select count(*)::int from auth.users where id = v_old_guest), 1,
+    'the stale guest is still there after a dry run');
 
-  perform test.equals(v_deleted, 1, 'one stale guest is purged');
+  v_result := app.purge_stale_guests(interval '30 days', false);
+  perform test.equals((v_result ->> 'deleted')::int, 1, 'one stale guest is purged');
   perform test.equals(
     (select count(*)::int from auth.users where id = v_old_guest), 0, 'the stale guest is gone');
   perform test.equals(
@@ -71,7 +78,7 @@ begin
   perform test.become(v_user);
 
   perform test.refuses(
-    'select app.purge_stale_guests()',
+    'select app.purge_stale_guests(interval ''30 days'', false)',
     'a viewer cannot purge guest accounts');
 end;
 $$;

@@ -101,15 +101,28 @@ export default async function YouPage() {
       </Card>
 
       <Card className="mt-6">
+        <CardTitle>Contribute</CardTitle>
+        <CardBody className="mt-2">
+          Recommend a resource that taught you something. A person reads every submission.
+        </CardBody>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <ButtonLink href="/you/submit">Submit a resource</ButtonLink>
+          <ButtonLink href="/you/submissions" variant="secondary">
+            My submissions
+          </ButtonLink>
+        </div>
+      </Card>
+
+      <Card className="mt-6">
         <CardTitle>Your data</CardTitle>
         <CardBody className="mt-2">
-          Export everything held about you, or delete your account and its data.
+          Take a copy of everything held about you, or delete your account.
         </CardBody>
-        <FoundationNotice
-          className="mt-4"
-          milestone="Milestone 6"
-          summary="Self-service export and deletion are built once there is learning data to export."
-        />
+        <div className="mt-5">
+          <ButtonLink href="/you/data" variant="secondary">
+            Export or delete
+          </ButtonLink>
+        </div>
       </Card>
 
       <Card className="mt-6">

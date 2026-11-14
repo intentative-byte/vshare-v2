@@ -213,8 +213,12 @@ create table public.content_versions (
 comment on table public.content_versions is
   'Immutable snapshots of what a card said. Insert only: a correction is a new version.';
 
+-- Guards edits only. A version is removed only when its card is, and no
+-- user-scoped client holds a delete grant on either. Blocking deletion here
+-- would stop someone deleting their own account once they had submitted
+-- anything, which is the opposite of what an append-only table is for.
 create trigger content_versions_no_update
-before update or delete on public.content_versions
+before update on public.content_versions
 for each row execute function app.append_only_except_actor('created_by');
 
 alter table public.content_items

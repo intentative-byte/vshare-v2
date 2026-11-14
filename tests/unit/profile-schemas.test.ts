@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { handleSchema, signInInput, updateProfileInput } from "@/modules/profiles/schemas";
 import { updatePreferencesInput } from "@/modules/personalisation/schemas";
+import {
+  resubmitInput,
+  sourceUrlSchema,
+  submitResourceInput,
+} from "@/modules/content/schemas";
 
 describe("handle validation", () => {
   it("accepts a well-formed handle and normalises case", () => {
@@ -84,5 +89,106 @@ describe("preferences update", () => {
 
   it("rejects an empty change", () => {
     expect(updatePreferencesInput.safeParse({}).success).toBe(false);
+  });
+});
+
+describe("submission validation", () => {
+  it("accepts a well-formed submission", () => {
+    const valid = {
+      sourceUrl: "https://example.com/a-useful-page",
+      sourceName: "Example Publisher",
+      title: "Something genuinely useful",
+      summary: "A summary long enough to satisfy the minimum length rule applied on the server.",
+      takeaways: ["Something worth remembering from it."],
+      nextStep: "Try the first suggestion this week.",
+      topicId: "11111111-1111-4111-8111-111111111111",
+      format: "article" as const,
+      level: "beginner" as const,
+      estimatedMinutes: 10,
+    };
+
+    expect(submitResourceInput.safeParse(valid).success).toBe(true);
+  });
+
+  it.each([
+    ["an http address", "http://example.com/page"],
+    ["a loopback address", "https://localhost/page"],
+    ["a private range", "https://192.168.0.5/page"],
+    ["another private range", "https://10.1.2.3/page"],
+    ["the carrier range", "https://172.16.0.1/page"],
+    ["a bare IP address", "https://93.184.216.34/page"],
+    ["a link-local address", "https://169.254.1.1/page"],
+    ["a hostname with no dot", "https://intranet/page"],
+    ["a .local name", "https://printer.local/page"],
+    ["not a URL at all", "example dot com"],
+  ])("refuses %s as a source", (_label, sourceUrl) => {
+    expect(sourceUrlSchema.safeParse(sourceUrl).success).toBe(false);
+  });
+
+  it("refuses a submission that smuggles in a status", () => {
+    expect(
+      submitResourceInput.safeParse({
+        sourceUrl: "https://example.com/a",
+        sourceName: "Example",
+        title: "A title long enough",
+        summary: "A summary long enough to satisfy the minimum length rule applied on the server.",
+        takeaways: ["Something worth remembering."],
+        nextStep: "Try it this week.",
+        topicId: "11111111-1111-4111-8111-111111111111",
+        format: "article",
+        level: "beginner",
+        estimatedMinutes: 10,
+        status: "published",
+      }).success,
+    ).toBe(false);
+  });
+
+  it("holds takeaways to between one and three, each saying something", () => {
+    const base = {
+      sourceUrl: "https://example.com/a",
+      sourceName: "Example",
+      title: "A title long enough",
+      summary: "A summary long enough to satisfy the minimum length rule applied on the server.",
+      nextStep: "Try it this week.",
+      topicId: "11111111-1111-4111-8111-111111111111",
+      format: "article" as const,
+      level: "beginner" as const,
+      estimatedMinutes: 10,
+    };
+
+    expect(submitResourceInput.safeParse({ ...base, takeaways: [] }).success).toBe(false);
+    expect(submitResourceInput.safeParse({ ...base, takeaways: ["too short"] }).success).toBe(false);
+    expect(
+      submitResourceInput.safeParse({ ...base, takeaways: ["a", "b", "c", "d"].map((x) => x.repeat(20)) })
+        .success,
+    ).toBe(false);
+  });
+});
+
+describe("resubmission validation", () => {
+  it("requires the submission it corrects", () => {
+    expect(
+      resubmitInput.safeParse({
+        title: "A corrected title here",
+        summary: "A corrected summary long enough to satisfy the minimum length rule applied.",
+        takeaways: ["A corrected takeaway."],
+        nextStep: "Try the corrected thing.",
+        sourceName: "Example",
+      }).success,
+    ).toBe(false);
+  });
+
+  it("rejects a status smuggled alongside a correction", () => {
+    expect(
+      resubmitInput.safeParse({
+        contentId: "11111111-1111-4111-8111-111111111111",
+        title: "A corrected title here",
+        summary: "A corrected summary long enough to satisfy the minimum length rule applied.",
+        takeaways: ["A corrected takeaway."],
+        nextStep: "Try the corrected thing.",
+        sourceName: "Example",
+        status: "published",
+      }).success,
+    ).toBe(false);
   });
 });

@@ -458,3 +458,92 @@ Nothing in this milestone is reported as passing that has not run.
 
 Unchanged in kind, larger in number: 36 live-service tests. `docs/VSHARES_SUPABASE_SETUP.md`
 gives the exact steps to clear them, needs only the publishable key, and costs nothing.
+
+## 2026-11-14 — Milestone 6 (submissions, sharing, data rights and account lifecycle)
+
+Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalled Chromium, no auth service and no outbound network.
+
+| Check | Command | Result |
+|---|---|---|
+| Repository hygiene | `npm run check:hygiene` | pass — 222 tracked files |
+| Lint | `npm run lint` | pass (0 warnings) |
+| Types | `npm run typecheck` | pass (strict) |
+| Unit tests | `npm test` | **157 passed, 0 failed** (11 files; 7 new on log and error-message privacy) |
+| Database policies and functions | `npm run test:db` | **20 files, 305 assertions, 0 failed** (57 new) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **82 passed, 46 skipped, 0 failed** |
+| Production build | `npm run build` | pass — **20 routes** |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+### Live versus simulated — stated plainly
+
+| Layer | Status |
+|---|---|
+| Export contents, erasure, retention exceptions, purge eligibility | **Real.** PostgreSQL 16, the real migrations, policies evaluated against the same request claims the API layer sets |
+| Submission rules, review gating, URL validation, rate limits | **Real.** Database functions plus unit tests on the schemas |
+| Rendered journeys with content (submit → see it in My Submissions → export → delete) | **Not verified.** Written as end-to-end tests and skipped for want of an auth service |
+| Source links | **Not verified.** No outbound network here |
+
+**Account erasure is verified at the database layer and not end to end.** The directive asks that full erasure not be claimed until the whole process is verified, so it is not claimed: what is proven is that `delete_my_account` empties or anonymises every column the data inventory lists, leaves no orphan, and refuses without a confirmation and a recent sign-in. The same sequence driven through a real auth service is one of the skipped tests.
+
+### Data rights coverage (33 assertions, `190_data_rights.sql`)
+
+- The export carries the account, profile, preferences, consent history, roles, topics, interactions, sessions, recommendations, submissions, own reports, analytics events and merge records — each checked for presence, not assumed.
+- **It carries nothing belonging to anyone else**, including another account's reports on the same card.
+- It omits the internal moderation trail and other people's identities.
+- Deletion refuses without the typed confirmation.
+- Deletion refuses when the last sign-in is older than 15 minutes, and proceeds when it is recent.
+- A guest can delete without re-authenticating, having nothing to re-authenticate with.
+- After deletion: every cascading table is empty, every anonymising column is null, **no orphaned identifier remains anywhere**, and the published card the person submitted is still published and still readable by a stranger.
+- The audit entry exists, names no actor, and holds a digest rather than the account id.
+- Another account's data is untouched by the whole operation.
+
+### Guest lifecycle coverage (24 assertions, `200_guest_lifecycle.sql`)
+
+- An old abandoned guest is eligible; a new one is not.
+- **An old guest with a recent interaction or a recent session is kept.** Both paths tested separately.
+- A converted account is out of scope whatever its age.
+- The dry run changes nothing and reports the same counts the real run would act on.
+- A second real run finds nothing: the job is idempotent.
+- Neither `anon` nor `authenticated` may execute it.
+- A real run is audited; so is one that deletes nothing.
+
+### Submission and sharing coverage (new assertions in `130_submissions.sql`, `150_public_visibility.sql`)
+
+- A submission lands as a draft. There is no parameter that could make it published.
+- A finance or health submission is marked high-impact by category and needs a second reviewer.
+- A rejected submission can be corrected once and returns to review as a new version, keeping its moderation history.
+- A submitter cannot read other people's submissions, nor the moderation notes on their own.
+- An unpublished slug is invisible to everyone, **including its own submitter's share link**.
+- Reporting the same card twice is refused rather than recorded twice.
+
+### Against the Milestone 6 acceptance criteria
+
+| # | Requirement | Status |
+|---|---|---|
+| 1 | Submission with validation and rate limiting | **Implemented and tested** (URL protocol rules, strict schemas, pipeline rate limit) |
+| 2 | No submission bypasses review or source verification | **Tested** — the function cannot produce a published row |
+| 3 | My Submissions with status and correction | **Implemented**; the rendered journey is a skipped test |
+| 4 | Reporting with duplicate protection | **Tested** |
+| 5 | Sharing that cannot expose unpublished content | **Tested** at the database layer and end to end (404 on an unpublished slug) |
+| 6 | Export containing the stated categories and nothing else | **Tested** — 33 assertions |
+| 7 | Deletion with recent authentication and typed confirmation | **Tested** at the database layer; **not** verified end to end through a real sign-in |
+| 8 | Guest lifecycle policy, implemented, not scheduled | **Implemented, tested, documented, deliberately not scheduled** |
+| 9 | No sensitive data in logs or error messages | **Tested** — 7 new unit tests drive the pipeline with an email address, a note and a token, on success, validation failure, handler failure and an exception, and assert that none of those values appears in any line written or in the envelope returned. The caller is recorded as a digest, never as an account id. The readiness endpoint leaks no configuration |
+| 10 | Documentation and evidence updated | This report, the data inventory, the guest lifecycle policy, the decision log, the register and the progress log |
+
+### Defects found and fixed during the milestone
+
+| What | How found | Fix |
+|---|---|---|
+| **`account_merges.guest_user_id` held a user identifier with no foreign key.** Deleting that guest would have left a personal identifier behind for ever | Doing the data inventory against the live schema instead of reading the data model document | A nullable foreign key that nulls on deletion, plus an assertion that no orphan remains |
+| Account deletion failed with a foreign-key violation: the audit row referenced the account being deleted | Running the new deletion test | The audit entry is written first, with no actor and a digest instead of the id |
+| The append-only guard refused the cascade through `account_merges` | Running the new deletion test | `app.append_only_except_actor` extended to that table, which permits exactly one change: the named actor column moving to null |
+| Two versions of `purge_stale_guests` existed, so a call was ambiguous | Running the new purge test | The single-argument version dropped; the remaining one defaults to a dry run |
+| A component called `setState` synchronously inside an effect | Lint rule | Restructured with a cancellation flag and an attempt counter |
+| Nothing was testing the "no sensitive data in logs" rule; it held by construction only | Writing this report and declining to call it tested | `tests/unit/log-privacy.test.ts`, which fails if a future change (or a dependency's error wording) starts echoing input |
+
+### Still not verified
+
+**46 live-service tests** remain skipped, up from 36: the ten new ones cover the submission, export, deletion and share journeys through a real sign-in. `docs/VSHARES_SUPABASE_SETUP.md` gives the exact steps; it needs only the publishable key and costs nothing.
+
+Also outstanding and unchanged: source links cannot be checked here, so no card can be published; and the owner's editorial review of batch 1 is pending.

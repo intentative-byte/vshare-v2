@@ -1,22 +1,20 @@
-# VSHARES — Progress Log
-
 ## Current state
 
-- **Phase:** 3 Value Feed. Milestones 1 to 5 are built and tested; Milestone 6 (submission, sharing and data rights) is next and has not started.
+- **Phase:** 3 Value Feed, complete. Milestones 1 to 6 are built and tested; Milestone 7 (essential analytics) is next and has not started.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
-- **What works:** the application shell and design system; the identity schema with row-level security on every table; profiles, roles, preferences, guest accounts, guest upgrade and collision handling; sign-in and sign-out surfaces. 76 unit tests, 89 database assertions and 54 end-to-end tests pass.
-- **What is implemented but not verified here:** the auth service journeys (magic link, code exchange, anonymous session, identity linking). This environment has PostgreSQL but no container runtime, so the auth service cannot run. See the test report.
-- **What also works:** the catalogue — database-driven categories and topics, value cards with version history, moderation, reporting, the admin queue, public card pages with attribution, and an audit log. 166 database assertions pass.
-- **Awaiting review:** the first 10 value cards, in `VSHARES_CATALOGUE_BATCH_1.md`. Seeded as drafts; none can be published because their links are unchecked.
-- **What also works:** the Value Feed — VAI's deterministic ranker, finite seven-card sessions, "Why this?" explanations from logged evidence, interactions, preference memory and session summaries. 119 unit tests and 220 database assertions pass.
-- **What also works:** the first learning win (home → topic → one useful card → completion → win summary, with no account), the saved library with filtering and sorting, the progress dashboard where every number carries its definition, PATH's next best move, and consent-first measurement.
-- **What does not exist yet:** resource submission from the interface, data export and account deletion. Every destination has a real route.
+- **Verified this session:** 157 unit tests, 305 database assertions over 20 files against real PostgreSQL 16, 82 end-to-end tests passing and 46 skipped, lint and types clean, 20 routes built, 0 production-dependency advisories.
+- **What works:** the shell and design system; identity with row-level security on every table, profiles, roles, preferences, guest accounts and in-place upgrade; the catalogue with versions, moderation, reporting and an audit log; the Value Feed with VAI's deterministic ranker, finite seven-card sessions and explanations generated from logged evidence; the first learning win with no account; the saved library; the progress dashboard; consent-first measurement; resource submission with correction and resubmission; sharing; data export; account deletion; and a guest purge job.
+- **What is implemented but not verified here:** the auth-service journeys — magic link, code exchange, anonymous session, identity linking — and the rendered journeys that depend on them. This environment has PostgreSQL but no container runtime and no outbound network, so the auth service cannot run. 46 tests are written and skipped with stated reasons.
+- **Deliberately not enabled:** the guest purge is not scheduled. Its policy is in `VSHARES_GUEST_LIFECYCLE.md` and automatic deletion needs owner approval.
+- **Not claimed:** full account erasure is proven at the database layer, not end to end through a real sign-in.
+- **Awaiting review:** the first 10 value cards in `VSHARES_CATALOGUE_BATCH_1.md`. Seeded as drafts; none can publish because their links are unchecked.
+- **Still missing for the MVP:** essential analytics screens (M7), an admin catalogue and taxonomy interface, library free-text search, and Google sign-in (needs an OAuth client).
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
-| D17 | **32 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of five milestones' worth of journeys |
+| D17 | **46 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of six milestones' worth of journeys |
 | D15 | **Review the first 10 value cards** in `VSHARES_CATALOGUE_BATCH_1.md`, checking each summary against the live page — I could not open any of them | Correct the house style now, before the remaining ninety | The rest of the catalogue |
 | D16 | **Network access is needed to check source links.** No card can be published without it; the database enforces this | Run `npm run check:links` where the web is reachable, or allow the source hosts here | Publishing anything |
 | D14 | **An auth service is needed to finish verifying Milestone 2.** Either enable a container runtime in this environment for the local stack, or create a Supabase project (the free tier is enough) and share its URL and anon key — never the service-role key | Create a project; it costs nothing and unblocks live verification | Completing Milestone 2 verification |
@@ -32,6 +30,33 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 6: submissions, sharing, data rights and account lifecycle
+
+Done:
+- Produced a personal-data inventory by querying the live schema for every reference to a user, then reading each table (`VSHARES_DATA_INVENTORY.md`). It found a defect the data model document did not show: `account_merges.guest_user_id` held a user identifier with no foreign key, so deleting that guest would have orphaned it for ever. Fixed, with an assertion that no orphan remains.
+- Migration 5 (`20261114170000_data_rights.sql`): consent events, `export_my_data()`, `delete_my_account()`, `app.last_authenticated_at()`, `app.purge_stale_guests()` and `resubmit_content()`.
+- Submission: `/you/submit`, validated and rate limited. A submission enters as a draft and takes the same review, high-impact and link-check rules as anything we write. There is no parameter that could publish one.
+- `/you/submissions`: status, moderator feedback where given, and a correction form that resubmits once as a new version, keeping the moderation history.
+- Reporting and sharing on the card page: a share sheet with a clipboard fallback, and a report form that refuses a duplicate. An unpublished slug answers 404 to everyone, its own submitter included.
+- `/you/data`: a JSON export of the thirteen categories in the inventory, and account deletion requiring a typed confirmation and a sign-in within the last fifteen minutes.
+- The guest lifecycle policy (`VSHARES_GUEST_LIFECYCLE.md`), implemented with the dry run as the default argument, audited on every real run, and **not scheduled**.
+- 57 new database assertions (305 total), 7 new unit tests on log and error-message privacy (157 total), 10 new end-to-end tests for the live journeys and 3 that run without a service.
+- Brought the feature register up to date. It had not been updated since Milestone 2, so Milestones 3 to 6 were showing as "not started" — corrected row by row against the code, including two rows corrected *downwards*: there is no admin catalogue or taxonomy interface, and the library filters and sorts but has no free-text search.
+- Corrected the roadmap's Milestone 3 line, which claimed admin taxonomy management that does not exist.
+
+Found and fixed:
+- Account deletion failed on a foreign key: the audit row referenced the account being deleted. The entry is now written first, with no actor and a digest instead of the id.
+- The append-only guard refused the cascade through `account_merges`.
+- Two overloads of `purge_stale_guests` made a call ambiguous.
+- Nothing was testing the "no sensitive data in logs" rule — it held by construction only. Now seven tests drive the pipeline with an email address, a note and a token and assert that none of them appears in any line written or in any envelope returned.
+
+Not done / limitations:
+- **Full erasure is verified at the database layer, not end to end.** The directive asks that it not be claimed until the whole process is verified, so it is not claimed.
+- 46 live-service tests remain skipped. `VSHARES_SUPABASE_SETUP.md` has the steps; it needs only the publishable key.
+- No screenshots of the new screens with content: they need an account and a published card, which need the auth service and network access respectively.
+- The guest purge is not scheduled, by decision.
+
 
 ### 2026-11-14 — Milestone 5: first learning win, library and progress
 
