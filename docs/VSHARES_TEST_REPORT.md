@@ -161,6 +161,20 @@ The 8 skipped tests are the live auth journeys in `tests/e2e/auth-live.spec.ts`.
 | The sign-in and You pages had no `h1` in their unavailable state | End-to-end run | Both states carry a heading |
 | The proxy imported the vendor SDK directly, crossing the architecture boundary | Lint rule added in Milestone 1 | Session refresh moved into `src/platform/auth/session.ts` |
 
+### Continuous integration
+
+Run `43618418559` on commit `7f91944` (the Milestone 2 code), pull request #8:
+
+| Job | Result |
+|---|---|
+| Hygiene, lint, types, unit tests, build | **pass** |
+| **Database policies and functions** (PostgreSQL 16 service container) | **pass** — 89 assertions |
+| End-to-end, accessibility and security headers | **pass** |
+| Dependency audit | **pass** |
+| Secret scan (gitleaks, full history) | **pass** |
+
+The database suite now runs on every push and pull request against a real PostgreSQL service, so a policy regression fails the build.
+
 ### Still not verified
 
 | Item | What is needed |
