@@ -105,6 +105,8 @@ Assumptions: adults (18+), UK launch, free service, owner is the data controller
 | Topic | Position |
 |---|---|
 | Lawful bases | Account and service delivery: contract. Personalised ranking from the user's own activity: contract / legitimate interests, with an off switch. Product analytics: legitimate interests for strictly first-party, pseudonymous measurement, with opt-out; **owner to confirm, or switch to consent**. |
+| Aggregate measurement | **Implemented and tested (M7).** `analytics_daily` holds no identifier of any kind, so it is recorded for everyone including people who have consented to nothing. Breakdowns below five are withheld by the database. Staff can read aggregates and cannot read one person's events or one person's first-win timing at all. Four end-to-end checks confirm no tracking cookie, no tracking key in browser storage and no third-party request on any route |
+| Anonymity claims | We do not call the identified event stream anonymous, because it is not: it carries a user id until the account is deleted, at which point it is nulled. We do call `analytics_daily` identifier-free, because it has no column that could identify anyone |
 | Device storage (PECR) | Only strictly necessary cookies (session, guest session, CSRF, consent choice) are set without consent. No advertising or third-party cookies. The analytics session ID is held in memory/sessionStorage; whether it is "strictly necessary" is a judgement call, so the default until confirmed is: **no analytics identifiers before the user accepts** — aggregate, identifier-free counts only. |
 | Personal data inventory | `VSHARES_DATA_INVENTORY.md`, produced by querying the live schema rather than from the data model document. It found and fixed one defect: an orphaned user identifier in `account_merges`. |
 | Data minimisation | Email, handle, optional name and avatar, topics, interaction history. No date of birth, location, contacts or device fingerprint. No sensitive-trait inference. |
@@ -136,8 +138,8 @@ Upgrade approach: stay within current majors (Next 16.2.9 → 16.4.6, React 19.2
 | Layer | What | When |
 |---|---|---|
 | Static | TypeScript strict, ESLint (incl. import boundaries, no `dangerouslySetInnerHTML`), gitleaks, npm audit | Every push (CI) |
-| Unit | Validation schemas, redirect sanitiser, URL rules, ranking, log and error-message privacy | Every push |
-| Database | RLS isolation per table with two users, guest restrictions, append-only guards, export contents, erasure completeness, purge eligibility | Every push (PostgreSQL service in CI; 305 assertions) |
+| Unit | Validation schemas, redirect sanitiser, URL rules, ranking, log and error-message privacy, metric definitions | Every push |
+| Database | RLS isolation per table with two users, guest restrictions, append-only guards, export contents, erasure completeness, purge eligibility, rollup replay protection, suppression, staff isolation | Every push (PostgreSQL service in CI; 378 assertions) |
 | Integration | Each server action as visitor, guest, user, moderator, admin | Every push |
 | E2E | Auth flows, protected routes, headers, CSP | Every push |
 | Manual review | ASVS L2 checklist walk-through; results in `VSHARES_TEST_REPORT.md` | M7 |

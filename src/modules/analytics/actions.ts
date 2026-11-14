@@ -6,7 +6,7 @@ import { failWithDefault, ok } from "@/platform/result";
 import { rateLimitRules } from "@/platform/rate-limit";
 import { createRequestClient } from "@/platform/db/server";
 import { eventNames } from "./events";
-import { loadFirstWinMetrics, recordEvent } from "./repository";
+import { loadFirstWinMetrics, recordEvent, recordFirstCompletionSeconds } from "./repository";
 
 /**
  * Event recording from the browser.
@@ -64,4 +64,23 @@ export const getFirstWinMetrics = defineAction({
   access: "moderator",
   input: z.object({ days: z.number().int().min(1).max(90).optional() }).strict(),
   handler: async ({ days }) => ok(await loadFirstWinMetrics(days ?? 30)),
+});
+
+/**
+ * The first-win timer.
+ *
+ * Open to anyone with an account, including a guest — a completion always
+ * creates one. The database refuses a second report and refuses one from
+ * someone who has completed nothing, so this cannot be used to manufacture
+ * a benchmark.
+ */
+export const reportFirstWinSeconds = defineAction({
+  name: "analytics.reportFirstWinSeconds",
+  access: "viewer",
+  input: z.object({ seconds: z.number().int().min(0).max(86_400) }).strict(),
+  rateLimit: rateLimitRules.eventsPerSession,
+  handler: async ({ seconds }) => {
+    await recordFirstCompletionSeconds(seconds);
+    return ok({ reported: true } as const);
+  },
 });

@@ -23,8 +23,11 @@ export const eventNames = [
 export type EventName = (typeof eventNames)[number];
 
 /**
- * What each metric means. These definitions are shown to the owner in the
- * admin reports, so a number is never read as something it is not.
+ * What each event means.
+ *
+ * These are *reported* events: a browser said so, and nothing can verify it.
+ * The numbers the dashboard leads with are derived from the product tables
+ * instead — see ./metrics.ts and docs/VSHARES_METRICS_DICTIONARY.md.
  */
 export const eventDefinitions: Record<EventName, string> = {
   visit_started: "Someone loaded a page of the application for the first time in a browser session.",
@@ -35,7 +38,7 @@ export const eventDefinitions: Record<EventName, string> = {
   card_saved: "A card was added to the saved library.",
   card_skipped: "A card was skipped in a session.",
   first_completion_seconds:
-    "Seconds from arriving to completing a first card, reported by the browser. A product benchmark, not a claim about how long learning takes.",
+    "Superseded in Milestone 7 and no longer written. The browser now reports a first-win time through its own action, which the database records once per account, so a reload cannot report a second and faster first win. The name is kept because events recorded under it still exist.",
   session_completed: "A session was worked through to its summary.",
   account_created: "A guest account became a registered one.",
   return_visit_with_completion:

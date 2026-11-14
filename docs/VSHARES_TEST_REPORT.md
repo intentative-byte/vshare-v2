@@ -551,3 +551,119 @@ Run `43648259310` on commit `349b4ce`, pull request #8: **all five jobs passed**
 **46 live-service tests** remain skipped, up from 36: the ten new ones cover the submission, export, deletion and share journeys through a real sign-in. `docs/VSHARES_SUPABASE_SETUP.md` gives the exact steps; it needs only the publishable key and costs nothing.
 
 Also outstanding and unchanged: source links cannot be checked here, so no card can be published; and the owner's editorial review of batch 1 is pending.
+
+## 2026-11-14 — Milestone 7 (essential analytics and product intelligence)
+
+Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalled Chromium, no auth service and no outbound network.
+
+| Check | Command | Result |
+|---|---|---|
+| Repository hygiene | `npm run check:hygiene` | pass |
+| Lint | `npm run lint` | pass (0 warnings) |
+| Types | `npm run typecheck` | pass (strict) |
+| Unit tests | `npm test` | **177 passed, 0 failed** (12 files; 20 new) |
+| Database policies and functions | `npm run test:db` | **22 files, 378 assertions, 0 failed** (73 new) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **90 passed, 62 skipped, 0 failed** |
+| Production build | `npm run build` | pass — **21 routes** |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+### Query performance — measured, not assumed
+
+`scripts/measure-analytics-performance.mjs`, against 2,000 cards, 2,000 accounts, 80,000 interactions and 4,809 sessions spread over 60 days:
+
+| Query | Median |
+|---|---|
+| **Rollup, one day (what a nightly job runs)** | **93.6 ms** |
+| Rollup, all 61 days in one statement | 4,014 ms |
+| Reconcile one day | 58.7 ms |
+| Dashboard: overview, 30 days | 34.2 ms |
+| Dashboard: topic breakdown, 30 days | 31.0 ms |
+| Dashboard: moderation trends | 33.1 ms |
+| Dashboard: median time to first win | 29.8 ms |
+
+Each dashboard figure includes about 30 ms of `psql` start-up, so they are upper bounds.
+
+**No learner-facing query reads any analytics table.** The feed, a card page and the progress screen touch `content_items`, `content_interactions` and `recommendations` only. The rollup runs out of band and the dashboard reads what it wrote.
+
+#### A 6.6× regression, found by measuring
+
+The first working version took **702 ms** for one day. The cause was not a missing index: `app.day_of()` carried `set search_path = ''`, and **a SQL function with a SET clause cannot be inlined**, so it was evaluated per row and the index could not be used.
+
+Measured directly on 80,000 rows: `app.day_of(completed_at) = ...` took **95.5 ms**, the identical inline expression **6.4 ms**. Removing the SET clause — safe only because the body names no objects — took a day's rollup from **702 ms to 106 ms**.
+
+#### Three indexes written, measured, and removed
+
+Three indexes were added for the rollup, then measured: **73–77 ms with them, 72–77 ms without**. They changed nothing, because `content_interactions_completed_idx` already covers the only scan large enough to matter and `feed_sessions` is small. They were removed. The directive asks for indexes only where measurement justifies them, and this measurement did not.
+
+### Reconciliation — results
+
+`reconcile_day()` counts the product tables afresh and compares, per metric.
+
+| Case | Result |
+|---|---|
+| After a rollup | **0 mismatches** across all ten reconciled metrics |
+| Before any rollup | Reports `rolled_up: false` and mismatches, rather than agreeing with an empty day |
+| A stored count tampered with by hand | **1 mismatch**, reported and not corrected |
+| After recomputing | Back to 0 |
+| After an account deletion | Mismatches reported, **all in one direction** (stored higher than a fresh count), with `erasures_since_rollup` from the audit log naming the cause |
+
+### Accessibility of the new components
+
+`npm run check:gallery-a11y` runs axe over the component gallery, where the chart marks are rendered, at 412px and 1280px: **0 violations** at both.
+
+It is a separate script rather than part of the end-to-end suite on purpose. The gallery is not served in production, and `security-headers.spec.ts` asserts it answers 404 there; adding it to the routine accessibility list meant turning dev tools on for the whole run, which made that security check pass for the wrong reason. Caught by running the suite and watching that test fail, then reverted.
+
+### Database coverage added (73 assertions)
+
+`210_analytics_rollup.sql` (34) and `220_analytics_integrity.sql` (39):
+
+- **Replay cannot move a derived number.** A completion recorded three times and announced to the event endpoint twenty times still counts as one; the reported count faithfully records twenty, in a separate row that is never merged with it.
+- **Re-running the rollup three times gives the same answer**, and records the day once.
+- **The reporting day is UTC.** A completion at 23:30 UTC and one at 00:30 UTC land on different days when read from a session set to `Pacific/Auckland`.
+- **A session crossing midnight is split**: started on one day, completed on the next, and neither day is told it had a whole session. An abandoned session is never counted as completed.
+- **A day that was never computed is absent**; a computed day with nothing in it is a genuine zero and carries the time it was computed. A mean with nothing to average is null, never zero.
+- **A future day is refused.**
+- **Groups below five are withheld** and marked suppressed rather than vanishing.
+- **Access**: a learner cannot compute, reconcile, or read any aggregate. Staff can read aggregates but cannot compute one, and still cannot read one person's events or one person's first-win timing.
+- **The first-win timer** is refused from someone who has completed nothing, accepted once, ignored on every later call, range-checked, carried in the export, and removed on deletion.
+- **Conversion** is dated where it happens and cannot be double counted.
+- **Withdrawing consent** clears identified events and stops further ones, while the identifier-free aggregate keeps every count.
+
+### Defects found and fixed during the milestone
+
+| What | How found | Fix |
+|---|---|---|
+| **The first-win timing and the conversion date were written to `profiles`, which has a policy making a public profile readable by anyone and another letting any moderator read every row.** Row-level security has no column granularity, so both would have been readable by the world and by staff | Writing a test that asserted staff could not read an individual timing — and watching it fail | A separate `learner_milestones` table whose only policy is "the person reading it owns it". Six assertions hold the line |
+| A day's rollup took 702 ms | Measuring before writing the performance section | `app.day_of()` could not be inlined while it carried a SET clause. 6.6× faster without it |
+| Three indexes that did nothing | Measuring with and without them | Removed |
+| The test harness did not clear the new tables between cases | Running the new tests | `test.reset()` now truncates `analytics_rollups` and `learner_milestones` |
+| `rollup_day` was revoked from everyone including the service role | Running the first rollup test | Granted to `service_role` only, which is the intended caller |
+| The applied-learning tile read "Not enough data", which invites the reader to wait for a number that is never coming | Looking at the captured screenshot | A separate `emptyLabel`, so "Not measured" and "Not enough data" are different statements |
+| Adding the gallery to the accessibility suite required dev tools on, which made the "gallery is not reachable in production" security check pass for the wrong reason | Running the suite | Reverted; the gallery is checked by its own script instead |
+
+### Against the Milestone 7 requirements
+
+| Requirement | Status |
+|---|---|
+| Essential metrics (first win, time to first win, sessions, cards, saves, topics, repeat activity, submissions, reports, conversion) | **Implemented and tested.** Journeys across PATH / LEARN / EXPLORE are covered only as surfaces on reported events; the derived metrics are not yet split by surface |
+| Every metric defined precisely | **Done** — `VSHARES_METRICS_DICTIONARY.md`, generated into the dashboard from one source |
+| Observed behaviour distinguished from inferred learning | **Done** — every completion metric prints "not a measure of understanding, never evidence of mastery" |
+| Value framework with four separate tiers | **Done** — `VSHARES_VALUE_FRAMEWORK.md`. Application and outcome are empty and say so |
+| No speculative improvement scores | **Done**, and a unit test fails if the words appear |
+| Admin dashboard | **Implemented** at `/admin/metrics`; the rendered page with data is a skipped live check |
+| No identifiable learning history in aggregates | **Tested** — staff cannot read individual events or timings at all |
+| Small-group suppression | **Tested** — threshold of five, enforced in the database |
+| Consent preserved | **Tested** — identifier-free before consent, identified only after, cleared on withdrawal, gone on deletion |
+| No shadow tracking identities | **Tested** — four end-to-end checks find no tracking cookie, no tracking key in browser storage, and no third-party request on any route |
+| Event deduplication, completion counting, session boundaries, aggregate accuracy, consent withdrawal, deletion effects, rollup reconciliation, time zones, missing data, staff isolation, replay protection | **All tested.** See the coverage list above |
+| Performance measured on a representative dataset | **Done**, with a regression found and fixed |
+| Indexes only where justified | **Done** — three added, measured, removed |
+| Guest purge dry run approved, destructive purge not | **Documented, not scheduled** — `VSHARES_SCHEDULED_JOBS.md` |
+| Consolidated live-verification checklist | **Done** — `VSHARES_LIVE_VERIFICATION.md`, 62 checks |
+| Admin catalogue interface recorded as outstanding | **Done** — marked a release blocker in the register, not claimed as implemented |
+
+### Still not verified
+
+**62 live-service checks**, up from 46: the sixteen new ones cover the dashboard, the suppression behaviour and the first-win timer through a real sign-in. Three of them also need a privileged client. `VSHARES_LIVE_VERIFICATION.md` lists every one and the order to clear them in.
+
+Also unchanged: no source link has been checked, so no card can be published; and the owner's editorial review of batch 1 is pending.

@@ -12,5 +12,18 @@
  * Reserved: the flow map, Platform Alignment Score and value-leak detection.
  */
 
-export { track, setAnalyticsConsent, getFirstWinMetrics } from "./actions";
+export { track, setAnalyticsConsent, getFirstWinMetrics, reportFirstWinSeconds } from "./actions";
 export { eventNames, eventDefinitions, type EventName } from "./events";
+
+export {
+  metrics,
+  findMetric,
+  metricsByTier,
+  valueTiers,
+  suppressionThreshold,
+  rate,
+  describeSeconds,
+  type MetricDefinition,
+  type MetricSource,
+  type ValueTier,
+} from "./metrics";

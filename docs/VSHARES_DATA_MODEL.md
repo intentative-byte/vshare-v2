@@ -134,7 +134,16 @@ The saved library is `saved_at is not null`; history is `completed_at is not nul
 (`day`, `name`, `dimension`, `dimension_key`) PK; `events`. **Holds no identifier of any kind**, so it is recorded for everyone including people who have consented to nothing, and a deletion cannot affect it. Staff select; written by `record_event`. This is what the earlier draft called `event_rollups_daily`.
 
 ### `first_win_metrics`
-A view over `analytics_daily` for the activation question. Added in M5.
+A view over `analytics_daily` for the activation question. Added in M5, superseded by `analytics_overview` in M7 and kept for continuity.
+
+### `analytics_rollups`
+`day` PK; `computed_at`; `rows_written`; `duration_ms`. Which days have been computed. A day absent here has no data; a day present with no counts genuinely had none. Staff select; written only by `rollup_day`.
+
+### `learner_milestones`
+`user_id` PK → auth.users (cascade); `first_completion_seconds` (written once); `converted_at`; `created_at`. Two per-person measurements. **The only policy is "the person reading it owns it"** — not staff, not the public. They were briefly columns on `profiles`, which would have exposed them through the public-profile and moderator policies; see D-079.
+
+### Views added in M7
+`analytics_overview` (one row per computed day, derived metrics only), `analytics_breakdown` (dimension breakdowns with groups below five withheld), `moderation_trends` (approval and quality from the catalogue itself), `first_win_timing` (median and ninetieth percentile; the one view that runs as its owner, with `app.is_staff()` guarding it from inside).
 
 ### `audit_log`
 Append-only: `id` bigint; `actor_id` (**set null** on deletion — the earlier draft said "kept as opaque ID", which is not what the schema does); `action`; `target_type`; `target_id`; `diff` jsonb; `created_at`. Staff select; server-only insert; update and delete revoked and guarded by trigger, which permits exactly one change: the actor moving to null.
@@ -192,9 +201,15 @@ through the API layer by the roles named.
 | `export_my_data()` | JSON of everything held about the caller. **No argument**, so it cannot describe anyone else | The account itself |
 | `delete_my_account(confirm)` | Deletes the account after a typed confirmation and a recent sign-in; anonymises what survives; audits with a digest | The account itself |
 | `app.purge_stale_guests(interval, dry_run)` | Removes abandoned guest accounts. Reports by default; **not scheduled** | Privileged client only |
+| `app.day_of(ts)` | The reporting day in UTC. One definition, used by every metric. Carries no `search_path` setting, deliberately, so the planner can inline it (D-073) | Everywhere |
+| `app.suppression_threshold()` | Five. The floor below which a breakdown is withheld | Views |
+| `record_first_completion_seconds(seconds)` | The browser's first-win timing, written once per account and only for someone who has completed something | The account itself |
+| `rollup_day(day)` | Recomputes one day's derived metrics from the product tables. Idempotent | **Privileged client only** |
+| `reconcile_day(day)` | Counts the product tables afresh and reports disagreement, with erasures since the rollup as the one legitimate cause of drift | **Privileged client only** |
 
-Planned and **not yet created**: `rollup_events(day)` and `purge_rate_limits()`.
-Rate limiting currently runs in the application layer.
+`rollup_events(day)` from the Phase 1 draft became `rollup_day(day)`, above.
+Planned and **not yet created**: `purge_rate_limits()`. Rate limiting currently runs
+in the application layer.
 
 ## A9. Retention and deletion
 
@@ -208,7 +223,8 @@ produced by querying the schema. This is the summary.
 | Submitted cards that were published | Until archived | Kept; `submitted_by` nulled |
 | Pending / rejected submissions | 90 days after decision (proposed; not yet automated) | Deleted |
 | `analytics_events` | 13 months (proposed; not yet automated) | `user_id` nulled |
-| `analytics_daily`, `content_stats` | Indefinite — aggregates that never held an identifier | Unaffected |
+| `analytics_daily`, `content_stats`, `analytics_rollups` | Indefinite — aggregates that never held an identifier | Unaffected. A historical figure is **not** rewritten when someone erases their account: it holds nothing about them, and rewriting it would lose a true record (D-077) |
+| `learner_milestones` | Life of account | Deleted (cascade) |
 | `audit_log`, `moderation_actions`, `content_versions`, `content_reports` | 24 months (proposed) | **Actor nulled.** Earlier drafts of this document said the actor was kept as an opaque id; it is not kept at all |
 
 Periods marked proposed still need owner confirmation, and none of them is

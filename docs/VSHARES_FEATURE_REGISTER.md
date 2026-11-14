@@ -45,7 +45,7 @@ Date: 2026-11-14. Targets revised after the owner's Phase 0 decisions; statuses 
 | ID | Feature | Purpose | Evidence | Pri | Depends on | Status | Tests | Target |
 |---|---|---|---|---|---|---|---|---|
 | F-020 | Database-driven categories, subcategories, topics, tags | Flexible taxonomy | BRANCH PR #1 (`topics` table); CODE uses a hardcoded list | P0 | — | **implemented** in the database (8 categories, 40 topics, seeded from the approved taxonomy) | **tested** (12 database assertions + 6 unit tests) | MVP |
-| F-021 | Admin taxonomy management (add, edit, archive, reorder) | Curate the catalogue | OWNER-P | P0 | F-020, F-009 | not started — cards and taxonomy are managed by audited server functions, not a screen | the functions are **tested** (database); no interface exists | MVP |
+| F-021 | Admin taxonomy management (add, edit, archive, reorder) | Curate the catalogue | OWNER-P | P0 | F-020, F-009 | **not started — RELEASE BLOCKER.** Cards and taxonomy are managed by audited server functions called by hand, not by a screen | the functions are **tested** (database); no interface exists, and none is claimed | MVP, before public release |
 | F-022 | Category merge | Taxonomy hygiene | OWNER-P | P2 | F-021 | not started | none | R3 |
 | F-023 | Content items with versions and publish workflow | Reviewed, auditable content | OWNER-P; CODE has unversioned link posts | P1 | F-020 | **implemented** (content items, immutable versions, draft → review → published) | **tested** (22 database assertions) | R3 |
 | F-024 | Value cards: curated external resources with original summary, takeaways and attribution | The unit of the MVP feed | OWNER-H; BRANCH PR #5 (local catalogue) | P0 | F-023 | **implemented**; the first 10 cards are seeded as drafts and cannot publish until their links are checked | **tested** (lifecycle, visibility, attribution) | MVP |
@@ -115,14 +115,14 @@ Date: 2026-11-14. Targets revised after the owner's Phase 0 decisions; statuses 
 
 | ID | Feature | Purpose | Evidence | Pri | Depends on | Status | Tests | Target |
 |---|---|---|---|---|---|---|---|---|
-| F-090 | First-party event collection | Measure the product | BRANCH PR #1 (`content_events`); OWNER-H (PostHog/Mixpanel considered) | P0 | consent design | **implemented** (own tables: aggregate counts with no identifier for everyone, identified events only on granted consent; no third-party analytics) | **tested** (18 database assertions incl. consent gating and automatic deletion on withdrawal) | MVP |
-| F-091 | First-session funnel report | Fix activation | OWNER-H (problem) | P0 | F-090 | partial: the `first_win_metrics` view exists; no report screen | **tested** (database view) | MVP |
-| F-092 | Content flow funnel IMPRESSION → … → SHARE | Content intelligence | OWNER-H | P0 | F-090 | not started | none | MVP (to COMPLETE/SAVE/SHARE); R2 (QUIZ, PASS, APPLY) |
+| F-090 | First-party event collection | Measure the product | BRANCH PR #1 (`content_events`); OWNER-H (PostHog/Mixpanel considered) | P0 | consent design | **implemented** (derived rollups from the product tables, plus identifier-free reported counts; identified events only on granted consent; no third-party analytics) | **tested** (63 database assertions + 4 end-to-end checks that no third-party request or tracking identifier exists) | MVP |
+| F-091 | First-session funnel report | Fix activation | OWNER-H (problem) | P0 | F-090 | **implemented** (`/admin/metrics`: first-win rate, median and ninetieth-percentile time to first win, completions, session and saved rates) | **tested** (20 unit tests on the dictionary and the rate rules; the rendered dashboard is a skipped live check) | MVP |
+| F-092 | Content flow funnel IMPRESSION → … → SHARE | Content intelligence | OWNER-H | P0 | F-090 | partial: opened → completed → saved is measured per day and per topic; share is not yet counted | **tested** (rollup and reconciliation assertions) | MVP (to COMPLETE/SAVE/SHARE); R2 (QUIZ, PASS, APPLY) |
 | F-093 | Flow map (`/admin/flow-map`) | Journeys and drop-offs | OWNER-H | P1 | F-092 | not started | none | R3 |
 | F-094 | Platform Alignment Score (configurable) | Mission indicator | OWNER-H | P1 | F-092 | not started | none | R3 |
 | F-095 | Value-leak detection with recommendations | Find wasted attention | OWNER-P | P1 | F-092 | not started | none | R3 |
-| F-096 | Admin: catalogue and taxonomy management | Operate the catalogue | OWNER-P | P0 | F-009 | not started — see F-021; the moderation queue is the only admin screen | n/a | MVP |
-| F-097 | Admin: overview metrics | Operate the platform | OWNER-H | P0 | F-090 | not started | none | MVP (validation metrics) |
+| F-096 | Admin: catalogue and taxonomy management | Operate the catalogue | OWNER-P | P0 | F-009 | **not started — RELEASE BLOCKER.** The moderation queue and the measurement dashboard are the only admin screens | n/a — nothing to test | MVP, before public release |
+| F-097 | Admin: overview metrics | Operate the platform | OWNER-H | P0 | F-090 | **implemented** (the measurement dashboard, with every figure carrying its definition and its limit) | **tested** (unit + live checks written and skipped) | MVP (validation metrics) |
 | F-098 | Admin audit log | Accountability | OWNER-P | P0 | F-009 | **implemented** (audit log written by server functions, append-only, anonymising on erasure) | **tested** (16 database assertions) | MVP |
 | F-099 | Feature flags | Controlled rollout | OWNER-P | P0 | F-009 | **implemented** (server-side flags in the platform layer) | **tested** (unit) | MVP |
 | F-100 | Admin: VAI intelligence (quality, errors, cost) | Operate VAI | OWNER-H | P1 | F-063, F-065 | not started | none | R3 |
@@ -149,6 +149,22 @@ Date: 2026-11-14. Targets revised after the owner's Phase 0 decisions; statuses 
 | F-123 | Discussions, peer learning, group quests | Community | OWNER-P | P3 | F-102 | not started | none | X |
 | F-130 | Marketplace: paid content, subscriptions, payouts | Commercial model | OWNER-P (Stripe considered) | P3 | approved commercial and legal spec | not started | none | X |
 | F-131 | Opportunity intelligence | Learning → opportunity | OWNER-P | P3 | real listing sources | not started | none | X |
+
+## Outstanding before public release
+
+These are not done, are not claimed as done, and must be completed and tested
+before VSHARES is open to the public. Listed here so they cannot be lost in a
+table of a hundred rows.
+
+| # | What | Why it blocks | Tracked as |
+|---|---|---|---|
+| 1 | **Admin catalogue and taxonomy interface.** Cards, categories and topics can only be managed by calling audited database functions by hand | Operating the catalogue should not require a database session. A moderator cannot add a topic today | F-021, F-096 |
+| 2 | **62 live-service checks**, covering every milestone's real journeys | Nothing that needs a sign-in has ever been exercised. Full account erasure is proven at the database layer only | `VSHARES_LIVE_VERIFICATION.md` |
+| 3 | **Source link checking and editorial review of the first ten cards** | The database refuses to publish a card whose link is unchecked, so the catalogue is empty | D15, D16 |
+| 4 | **The 60-second first-win benchmark, measured on a real journey** | It is the product's own acceptance criterion and has never been measured | Live check 5.6 |
+| 5 | **Google sign-in** | Needs an OAuth client in the owner's Google account | F-005 |
+| 6 | **Library free-text search and history** | Specified for the MVP; only filtering and sorting exist | F-082 |
+| 7 | **A privileged scheduler for the rollup**, and a decision on the guest purge | Without it the dashboard has no figures. The destructive purge stays unscheduled either way | `VSHARES_SCHEDULED_JOBS.md` |
 
 ## Historical vs proposed vs new — summary
 

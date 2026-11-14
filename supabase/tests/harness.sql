@@ -197,7 +197,9 @@ begin
     public.categories,
     public.audit_log,
     public.analytics_events,
-    public.analytics_daily
+    public.analytics_daily,
+    public.analytics_rollups,
+    public.learner_milestones
   restart identity cascade;
 end;
 $$;

@@ -11,6 +11,8 @@ import { EmptyState, ErrorState, LoadingRegion, Skeleton } from "@/components/ui
 import { SubmitForm } from "@/components/submissions/submit-form";
 import { DataRights } from "@/components/account/data-rights";
 import { seedCategories } from "@/modules/content";
+import { ColumnChart, RankedBars, StatTile } from "@/components/admin/charts";
+import { findMetric } from "@/modules/analytics";
 
 export const metadata = { title: "Component gallery" };
 
@@ -115,6 +117,66 @@ export default function ComponentGalleryPage() {
             }))}
           />
           <DataRights />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg text-white">Charts</h2>
+        <p className="mt-2 text-sm text-silver-dim">
+          The marks the measurement dashboard is built from, drawn here with{" "}
+          <strong className="text-text">made-up numbers so the shapes can be reviewed</strong>.
+          Nobody has used VSHARES, so there are no real figures to show: these describe no
+          person and no activity, and the dashboard itself shows nothing at all until a day has
+          been computed.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <StatTile
+            label="Cards completed"
+            value="1,284"
+            definition={findMetric("cards_completed")?.definition ?? ""}
+            limit={findMetric("cards_completed")?.limit ?? ""}
+          />
+          <StatTile
+            label="Median time to first win"
+            value="1m 12s"
+            definition="Median of 240 timings. Ninetieth percentile 4m 30s."
+            limit={findMetric("first_completion_seconds")?.limit ?? ""}
+          />
+          <StatTile
+            label="Session completion rate"
+            value={null}
+            unit="%"
+            definition="No sessions were started in this period."
+            limit="A rate with no denominator reads as missing, never as nought per cent."
+          />
+          <StatTile
+            label="Applied learning"
+            value={null}
+            emptyLabel="Not measured"
+            definition="Nothing in VSHARES collects this yet, so no number is shown and none is coming until something does."
+            limit="It is not estimated from activity, because that would be activity wearing a different name."
+          />
+        </div>
+        <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-surface p-4">
+          <ColumnChart
+            points={[9, 14, 11, 21, 18, 24, 31, 27, 19, 22, 35, 29, 26, 33].map((value, i) => ({
+              label: `${i + 1} Nov`,
+              value,
+            }))}
+            caption="Columns: one series, no legend, only the peak labelled, 2px gaps and hairline gridlines."
+          />
+        </div>
+        <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-surface p-4">
+          <RankedBars
+            points={[
+              { label: "Learning how to learn", value: 212 },
+              { label: "Personal finance", value: 164 },
+              { label: "Communication", value: 97 },
+              { label: "Health & wellbeing", value: 41 },
+              { label: "Entrepreneurship", value: null, suppressed: true },
+            ]}
+            caption="Ranked bars: one hue, largest first. The last row is below the suppression threshold, so it keeps its place and says it was withheld rather than vanishing."
+          />
         </div>
       </section>
 

@@ -1,7 +1,21 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const routes = ["/", "/path", "/learn", "/explore", "/explore/personal-finance", "/saved", "/you"];
+const routes = [
+  "/",
+  "/path",
+  "/learn",
+  "/explore",
+  "/explore/personal-finance",
+  "/saved",
+  "/you",
+];
+
+// The component gallery is deliberately absent: a production build answers
+// 404 for it, which security-headers.spec.ts asserts, and turning dev tools
+// on for this suite would make that check pass for the wrong reason. The
+// chart marks it carries are checked by scripts/check-gallery-accessibility.mjs
+// against a build with dev tools on; the result is in the test report.
 
 for (const route of routes) {
   test(`no accessibility violations on ${route}`, async ({ page }) => {

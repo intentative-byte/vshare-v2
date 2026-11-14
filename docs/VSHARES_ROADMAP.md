@@ -12,7 +12,7 @@
 | 2 | Core application: shell, auth, profiles, categories, content, navigation | MVP (M1–M3) | **done** |
 | 3 | Value Feed: discovery, ranking, saves, shares, interactions | MVP (M4–M6) | **done (M4–M6 built)** |
 | 5 (foundation only) | VAI: deterministic ranking and Next Best | MVP (M4) | **done** |
-| 7 (essentials only) | Event analytics and funnels | MVP (M7) | planned |
+| 7 (essentials only) | Event analytics and funnels | MVP (M7) | **done** |
 | 11 (MVP level) | Security review, accessibility, release preparation | MVP (M8) | planned |
 | 4 | Learning engine: paths, quizzes, progress, quests, mastery | R2 | planned |
 | 5 | VAI: next best move, mentor, memory | R2 | planned |
@@ -37,24 +37,37 @@ Size is given in focused engineering sessions (one session ≈ one working block
 | M4 ✅ | **Value Feed and VAI foundation** — built 2026-11-14 | Migration 3: interactions, user topics, recommendations, ranking config; ranker v1; finite sessions; "Why this?"; Next Best; topic selection and preference memory (M-03, M-04, M-05) | Met. 43 ranker and session tests, 54 new database assertions, recommendations logged with their component breakdown, and query performance measured | 3 |
 | M5 ✅ | **First Learning Win, library, progress** — built 2026-11-14 | Home → topic → card → "Got it" → win state as a guest; SAVED; progress summary; PATH tab (M-01, M-06, M-07) | Built and covered by tests. The first-win end-to-end checks are written and skipped until a service exists, so the 60-second benchmark is not yet measured against a real journey | 2 |
 | M6 ✅ | **Submission, sharing, data rights** — built 2026-11-14 | Migration 5: consent events, export, deletion, guest purge; submit a resource; my submissions; correction and resubmission; reports; share; export; account deletion (M-08, M-10) | Met. 57 new database assertions: the export carries every category and nothing of anyone else's; deletion needs a confirmation and a recent sign-in; no orphan rows remain; the purge is idempotent and keeps active guests. **Open:** the guest purge is deliberately not scheduled, and the live journeys remain skipped | 2 |
-| M7 | **Essential analytics** | Event ingestion, consent handling, rollups, funnel and validation-metrics views (M-12) | Rollups reconcile with raw events on fixtures; no identifiers recorded before consent | 1–2 |
+| M7 ✅ | **Essential analytics** — built 2026-11-14 | Migration 6: derived rollups, reconciliation, suppression, learner milestones; the metrics dictionary and value framework; the admin measurement dashboard (M-12) | Met. 73 new database assertions; reconciliation exact after a rollup and reporting drift it cannot explain; nothing identifying recorded before consent, proven in the database and in the browser. **Open:** the rollup is not scheduled, because no deployment platform is chosen |
 | M8 | **Hardening and release preparation** | ASVS L2 walk-through; accessibility audit incl. manual screen-reader pass; performance budget check; runbook; backup and restore drill; privacy notice and terms drafts; release checklist | `VSHARES_TEST_REPORT.md` and `VSHARES_SECURITY.md` updated with results; no open critical or high defects; owner go/no-go | 2 |
 
 Total: roughly 16–19 sessions plus catalogue curation and owner reviews.
 
 Deployment to any shared or public environment happens only after M8 and only on explicit owner authorisation.
 
-## 3. Next development milestone — M7 in detail
+## 3. Next development milestone — M8 in detail
 
-1. Event ingestion through the action pipeline with a closed vocabulary, rejecting any name not in it.
-2. Consent handling end to end: the switch, the consent record, and the automatic deletion of events collected under a withdrawn consent (all three exist; M7 adds the screens and the reconciliation).
-3. Daily rollups, reconciled against raw events on fixtures.
-4. The first-session funnel and the validation-metrics view, with every number carrying its definition.
-5. No identifier recorded before consent — proven by a test that reads the tables as a privileged client after an unconsented session.
+1. Clear the live-verification checklist (`VSHARES_LIVE_VERIFICATION.md`): 62 checks, which need a development project and, for three of them, a privileged client.
+2. Build the admin catalogue and taxonomy interface — a release blocker recorded in the feature register, not claimed as done.
+3. ASVS L2 walk-through; accessibility audit including a manual screen-reader pass.
+4. Performance budget check on the learner-facing path (the analytics path is already measured).
+5. Runbook, backup and restore drill, privacy notice and terms drafts, release checklist.
+6. Decide the deployment platform, then configure the scheduler in `VSHARES_SCHEDULED_JOBS.md` — the rollup and the approved guest dry run, never the destructive purge.
 
-Exit criteria: rollups reconcile with raw events, and the validation metrics in spec §B1 can be read for a date range.
+Exit criteria: the test report and the security document carry real results, no open critical or high defects, and an owner go/no-go.
 
-## 4. Earlier milestone detail — M2 (complete)
+## 4. Earlier milestone detail — M7 (complete)
+
+1. Event ingestion through the action pipeline with a closed vocabulary, rejecting any name not in it. **Done in M5; kept, and now clearly labelled as reported rather than measured.**
+2. Consent handling end to end. **Done**, with the dashboard and the reconciliation added here.
+3. Daily rollups, reconciled. **Done — but not as planned.** The plan said "reconciled against raw events"; that is not possible and would have been misleading, because raw events exist only for people who granted consent, so the two can never agree. Reconciliation is against the **product tables** instead — `content_interactions`, `feed_sessions`, the catalogue — which is both exact and the thing worth checking. The consented event count is still reported alongside, to show the gap rather than to reconcile against it.
+4. The funnel and the validation metrics, each carrying its definition. **Done**, at `/admin/metrics`, generated from one dictionary.
+5. No identifier recorded before consent. **Done**, proven both in the database and from the browser.
+
+Exit criteria met, with that one correction recorded. The validation metrics in spec §B1 can be read for a 7, 30 or 90 day window.
+
+Not in this milestone, and still open: the rollup is not scheduled, because no deployment platform has been chosen.
+
+## 5. Earlier milestone detail — M2 (complete)
 
 1. First product migration: `profiles`, `user_roles`, `preferences`, with row-level security on each and the handle generator, plus `has_role()`.
 2. Supabase auth adapter behind `platform/auth`, registered with the action pipeline's viewer resolver.
@@ -66,7 +79,7 @@ Exit criteria: rollups reconcile with raw events, and the validation metrics in 
 
 Exit criteria: a person can sign in with a magic link against the local stack, a guest's work survives registration, and no table lets one account read another's rows.
 
-## 5. First development milestone — M1 in detail (complete)
+## 6. First development milestone — M1 in detail (complete)
 
 1. Create `src/` structure, module skeletons for the eight MVP modules (index files and boundary lint rule only), remove legacy `app/`, `components/`, `lib/`, `middleware.ts`, `scripts/smoke-test.mjs` and the legacy migration and seed (kept in git history and on `main`).
 2. `platform/env.ts` with a Zod schema; `.env.example` listing every variable by name.
@@ -80,7 +93,7 @@ Exit criteria: a person can sign in with a magic link against the local stack, a
 
 Needs from the owner before M1 starts: sign-off of the Phase 1 documents, and approval to replace the legacy application code on the rebuild branch.
 
-## 6. After the MVP
+## 7. After the MVP
 
 | Release | Theme | Gate to start |
 |---|---|---|

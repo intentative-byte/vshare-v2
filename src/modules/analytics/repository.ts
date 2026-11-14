@@ -64,3 +64,15 @@ export async function loadFirstWinMetrics(days = 30): Promise<FirstWinRow[]> {
     meanSecondsToFirstCompletion: row.mean_seconds_to_first_completion as number | null,
   }));
 }
+
+/**
+ * Reports how long a first learning win took, as timed by the browser.
+ *
+ * The database writes it once per account and only for someone who has
+ * actually completed something, so repeating this call changes nothing.
+ */
+export async function recordFirstCompletionSeconds(seconds: number): Promise<void> {
+  const supabase = await createRequestClient();
+
+  await supabase.rpc("record_first_completion_seconds", { p_seconds: seconds });
+}

@@ -1,20 +1,20 @@
 ## Current state
 
-- **Phase:** 3 Value Feed, complete. Milestones 1 to 6 are built and tested; Milestone 7 (essential analytics) is next and has not started.
+- **Phase:** 7 essentials, complete. Milestones 1 to 7 are built and tested; Milestone 8 (hardening and release preparation) is next and has not started.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
-- **Verified this session:** 157 unit tests, 305 database assertions over 20 files against real PostgreSQL 16, 82 end-to-end tests passing and 46 skipped, lint and types clean, 20 routes built, 0 production-dependency advisories.
-- **What works:** the shell and design system; identity with row-level security on every table, profiles, roles, preferences, guest accounts and in-place upgrade; the catalogue with versions, moderation, reporting and an audit log; the Value Feed with VAI's deterministic ranker, finite seven-card sessions and explanations generated from logged evidence; the first learning win with no account; the saved library; the progress dashboard; consent-first measurement; resource submission with correction and resubmission; sharing; data export; account deletion; and a guest purge job.
-- **What is implemented but not verified here:** the auth-service journeys — magic link, code exchange, anonymous session, identity linking — and the rendered journeys that depend on them. This environment has PostgreSQL but no container runtime and no outbound network, so the auth service cannot run. 46 tests are written and skipped with stated reasons.
-- **Deliberately not enabled:** the guest purge is not scheduled. Its policy is in `VSHARES_GUEST_LIFECYCLE.md` and automatic deletion needs owner approval.
-- **Not claimed:** full account erasure is proven at the database layer, not end to end through a real sign-in.
-- **Awaiting review:** the first 10 value cards in `VSHARES_CATALOGUE_BATCH_1.md`. Seeded as drafts; none can publish because their links are unchecked.
-- **Still missing for the MVP:** essential analytics screens (M7), an admin catalogue and taxonomy interface, library free-text search, and Google sign-in (needs an OAuth client).
+- **Verified this session:** 177 unit tests, 378 database assertions over 22 files against real PostgreSQL 16, 90 end-to-end tests passing and 62 skipped, lint and types clean, 21 routes built, 0 production-dependency advisories.
+- **What works:** the shell and design system; identity with row-level security on every table; the catalogue with versions, moderation, reporting and an audit log; the Value Feed with VAI's deterministic ranker and explanations from logged evidence; the first learning win with no account; the saved library and progress; submissions, sharing, export and account deletion; and now measurement — derived daily rollups, reconciliation, suppression, a metrics dictionary and an admin dashboard where every figure carries what it does not mean.
+- **What is implemented but not verified here:** everything that needs an auth service. 62 end-to-end checks are written and skipped with stated reasons, listed in `VSHARES_LIVE_VERIFICATION.md`.
+- **Deliberately not enabled:** the guest purge is not scheduled (the dry run is approved, the destructive run is not), and the analytics rollup is not scheduled because no deployment platform has been chosen. `VSHARES_SCHEDULED_JOBS.md` has the configuration for both.
+- **Not claimed:** full account erasure is proven at the database layer, not end to end. The 60-second first-win benchmark has never been measured on a real journey.
+- **Awaiting review:** the first 10 value cards. Seeded as drafts; none can publish because their links are unchecked.
+- **Release blockers:** listed in the feature register under "Outstanding before public release" — chiefly the missing admin catalogue and taxonomy interface, the 62 live checks, and the unchecked source links.
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
-| D17 | **46 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of six milestones' worth of journeys |
+| D17 | **62 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of seven milestones' worth of journeys |
 | D15 | **Review the first 10 value cards** in `VSHARES_CATALOGUE_BATCH_1.md`, checking each summary against the live page — I could not open any of them | Correct the house style now, before the remaining ninety | The rest of the catalogue |
 | D16 | **Network access is needed to check source links.** No card can be published without it; the database enforces this | Run `npm run check:links` where the web is reachable, or allow the source hosts here | Publishing anything |
 | D14 | **An auth service is needed to finish verifying Milestone 2.** Either enable a container runtime in this environment for the local stack, or create a Supabase project (the free tier is enough) and share its URL and anon key — never the service-role key | Create a project; it costs nothing and unblocks live verification | Completing Milestone 2 verification |
@@ -30,6 +30,34 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 7: essential analytics and product intelligence
+
+Done:
+- **Changed how measurement works.** Milestone 6 counted what the browser reported. Anything decisions rest on is now *derived*: `rollup_day()` recomputes a day from `content_interactions`, `feed_sessions` and the catalogue, so replaying an event cannot move it. Reported events survive in their own rows, labelled, for the things only a browser can see.
+- Migration 6: the rollup, reconciliation, the suppression threshold, `learner_milestones`, the overview and breakdown views, and the staff-only first-win timing view.
+- The metrics dictionary (`VSHARES_METRICS_DICTIONARY.md`) and the value framework (`VSHARES_VALUE_FRAMEWORK.md`): four tiers never added together, two of them measured and two deliberately empty.
+- `/admin/metrics`: headline tiles, daily completions, sessions, returning learners, most completed topics, contributions and moderation — every figure printed with what it does not mean, every chart paired with a table of the same numbers.
+- Chart colours chosen by measuring: the interface gold and blue sit outside the lightness band for a dark chart surface, so two new tokens were validated against all six checks before use.
+- `VSHARES_LIVE_VERIFICATION.md`: all 62 skipped checks in one list, with what each needs and the order to clear them.
+- `VSHARES_SCHEDULED_JOBS.md`: the configuration for the nightly rollup and the approved guest dry run. Neither is switched on, because no deployment platform is chosen; the destructive purge is documented and explicitly not approved.
+- 73 new database assertions (378 total), 20 new unit tests (177 total), 16 new end-to-end checks.
+- Recorded the missing admin catalogue and taxonomy interface as a release blocker in the register rather than letting it sit as a quiet "not started" row.
+
+Found and fixed:
+- **A privacy leak I had just introduced.** The first-win timing and the conversion date were columns on `profiles`, which has a policy making a public profile readable by anyone and another letting any moderator read every row. Row-level security has no column granularity, so both would have been readable by the world and by staff. Caught by writing the test that asserted the opposite and watching it fail. They live in `learner_milestones` now, readable only by the person.
+- **A 6.6× performance regression.** A day's rollup took 702 ms. Not a missing index: `app.day_of()` carried a `search_path` setting, and a SQL function with a SET clause cannot be inlined, so it ran per row and the index went unused. 95 ms against 6 ms on 80,000 rows. Removing it took the rollup to 106 ms.
+- **Three indexes that did nothing.** Written for the rollup, then measured: 73–77 ms with them, 72–77 ms without. Removed.
+
+Corrected a plan rather than following it:
+- The roadmap said rollups would be "reconciled against raw events". They cannot be, and saying so would have been misleading: raw events exist only for people who consented, so the two can never agree. Reconciliation is against the product tables instead, which is exact. The consented count is reported alongside to show the gap.
+
+Not done / limitations:
+- Nothing is scheduled. The dashboard will have no figures until a rollup runs, and it says so rather than showing zeros.
+- Learning journeys across PATH, LEARN and EXPLORE are measured only as surfaces on reported events; the derived metrics are not yet split by surface.
+- Guest conversion is a ratio of two counts in the same window, not a cohort. Stated wherever it appears.
+- 62 live checks remain skipped, 3 of which also need a privileged client.
+
 
 ### 2026-11-14 — Milestone 6: submissions, sharing, data rights and account lifecycle
 

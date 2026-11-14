@@ -10,6 +10,7 @@ export const metadata = { title: "Admin" };
 const sections = [
   { href: "/admin/queue", label: "Moderation queue" },
   { href: "/admin/queue?status=published", label: "Published" },
+  { href: "/admin/metrics", label: "Measurement" },
 ];
 
 /**

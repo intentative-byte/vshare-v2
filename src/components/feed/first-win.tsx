@@ -6,7 +6,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/states";
 import { HighImpactNotice } from "@/components/catalogue/high-impact-notice";
-import { track } from "@/modules/analytics";
+import { track, reportFirstWinSeconds } from "@/modules/analytics";
 import { setInteraction } from "@/modules/progress";
 import type { Card as ValueCard } from "@/modules/content";
 
@@ -77,7 +77,10 @@ export function FirstWin({
         dimensionKey: topicName,
         contentId: card.id,
       });
-      void track({ name: "first_completion_seconds", value: Math.min(seconds, 86_400) });
+      // Reported through its own action, not as an event: the database
+      // writes it once against the account, so a reload cannot report a
+      // second, faster first win.
+      void reportFirstWinSeconds({ seconds: Math.min(seconds, 86_400) });
     }
 
     setBusy(false);

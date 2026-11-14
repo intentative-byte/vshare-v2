@@ -27,6 +27,17 @@
   --color-danger: #f87171;
   --color-blue: #5b9dff;
 
+  /*
+   * Chart marks. Not the interface gold and blue: those are too light to
+   * sit on a dark chart surface. These two steps were chosen by running the
+   * design system's six checks against #141416 and pass all of them,
+   * including a worst-pair colour-blind separation of 28.1 (protan) where
+   * the floor is 8. Recorded in docs/VSHARES_DESIGN_SYSTEM.md.
+   */
+  --color-chart-1: #b8892b;
+  --color-chart-2: #4a86e8;
+  --color-chart-grid: #2a2a30;
+
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 

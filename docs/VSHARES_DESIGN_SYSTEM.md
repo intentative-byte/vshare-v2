@@ -154,3 +154,36 @@ Documentation: a `/dev/ui` route, available only outside production, renders eve
 - Logo and wordmark: none available. A simple typographic wordmark will be used until the owner supplies or commissions one.
 - Font pairing and exact gold, silver and blue values: to be confirmed by the owner on the Milestone 1 reference screens.
 - Light theme: not planned.
+
+
+## Chart colours (added Milestone 7)
+
+The interface gold (`#e8b84a`) and blue (`#5b9dff`) are **not** used as chart
+marks. Measured against the chart surface `#141416`, both sit outside the
+lightness band a dark chart needs (gold L 0.806, blue L 0.697; the band is
+0.48–0.67), which makes them glare rather than read.
+
+Two steps were validated instead, against all six checks:
+
+| Token | Value | Use |
+|---|---|---|
+| `--color-chart-1` | `#b8892b` | The first and usually only series |
+| `--color-chart-2` | `#4a86e8` | A second series, where one is needed |
+| `--color-chart-grid` | `#2a2a30` | Hairline gridlines, one step off the surface |
+
+Results: both inside the lightness band, both above the chroma floor, contrast
+against the surface above 3:1, and a worst-pair separation under simulated
+colour blindness of **28.1** (protan) and **24.5** (tritan) where the floor is 8
+and the target is 8.
+
+Rules that go with them:
+
+- A single series takes **no legend** — the heading says what is plotted — and
+  only the peak is labelled. A number on every column goes unread.
+- Columns are capped at 24px with a 4px rounded cap and a 2px gap; gridlines are
+  1px, solid, recessive; text never wears the data colour.
+- **Every chart is paired with a table of the same numbers**, so nothing is
+  available only to someone who can see it. A withheld row keeps its place and
+  says "withheld" rather than disappearing.
+- Native SVG `<title>` elements carry per-mark values, so hover works with no
+  client JavaScript and no charting dependency.
