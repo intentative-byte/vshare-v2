@@ -16,7 +16,7 @@
 
 ## 2. Colour tokens
 
-Dark theme only in R1. Contrast ratios below were computed with the WCAG 2.x formula for this document.
+Dark theme only in the MVP. Contrast ratios below were computed with the WCAG 2.x formula for this document.
 
 | Token | Hex | Use | Contrast on `bg` | on `surface` | on `raised` |
 |---|---|---|---|---|---|
@@ -153,4 +153,4 @@ Documentation: a `/dev/ui` route, available only outside production, renders eve
 
 - Logo and wordmark: none available. A simple typographic wordmark will be used until the owner supplies or commissions one.
 - Font pairing and exact gold, silver and blue values: to be confirmed by the owner on the Milestone 1 reference screens.
-- Light theme: not planned for R1.
+- Light theme: not planned.
