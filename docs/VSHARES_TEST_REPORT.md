@@ -198,6 +198,10 @@ checks that need a database with the seed applied (6). Both sets run
 automatically once a service is reachable; neither was replaced by a weaker
 check that would pass without one.
 
+### Continuous integration
+
+Run `43626705022` on commit `8b3e44d`, pull request #8: **all five jobs passed** — hygiene/lint/types/unit/build, database policies and functions, end-to-end and accessibility, dependency audit, and the full-history secret scan.
+
 ### Database coverage added (77 new assertions)
 
 | File | Proves |
