@@ -45,8 +45,12 @@ const config = [
                 "Import the vendor SDK only in src/platform or a module repository.ts. Use the platform interfaces instead.",
             },
             {
-              group: ["@/modules/*/*"],
-              message: "Import another module only through its index.ts (its public API).",
+              // A module has two entry points: index.ts, which is safe for a
+              // client component, and server.ts for database reads. Nothing
+              // else is anyone's business.
+              group: ["@/modules/*/*", "!@/modules/*/server"],
+              message:
+                "Import another module through its index.ts, or its server.ts for database reads.",
             },
           ],
         },

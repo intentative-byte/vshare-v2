@@ -30,8 +30,11 @@ stable
 security invoker
 set search_path = ''
 as $$
+  -- The setting is absent for an unauthenticated request and an empty
+  -- string for a privileged one, so it is emptied to null before the cast:
+  -- casting '' to jsonb raises.
   select nullif(
-    current_setting('request.jwt.claims', true)::jsonb ->> 'sub',
+    nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub',
     ''
   )::uuid;
 $$;
@@ -48,7 +51,7 @@ security invoker
 set search_path = ''
 as $$
   select coalesce(
-    (current_setting('request.jwt.claims', true)::jsonb ->> 'is_anonymous')::boolean,
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'is_anonymous')::boolean,
     false
   );
 $$;

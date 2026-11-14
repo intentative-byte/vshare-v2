@@ -52,6 +52,8 @@ All must be true, and recorded in `VSHARES_TEST_REPORT.md`:
 1. Every MVP acceptance criterion (spec §B5) has a passing automated test.
 2. CI green on the release commit: lint, typecheck, unit, database, integration, E2E, accessibility, audit, secret scan.
 3. Security: ASVS L2 walk-through complete; no open critical or high findings.
+3a. **Release blocker:** the eight live authentication tests pass against a real auth service. Procedure in `VSHARES_VERIFICATION_PROCEDURE.md`. Until then authentication is implemented, not verified.
+3b. **Release blocker:** every published card has a recorded successful link check. Enforced by the database, so it cannot be skipped.
 4. Privacy: privacy notice and terms approved by the owner; consent behaviour verified; export and deletion verified on the preview environment.
 5. Content: launch catalogue reviewed and approved by the owner; every link checked within 7 days of launch.
 6. Operations: backups enabled and one restore drill performed; health and readiness checks monitored; runbook written; first admin account bootstrapped.

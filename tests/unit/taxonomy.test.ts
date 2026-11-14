@@ -5,11 +5,11 @@ import {
   featuredTopicSlugs,
   findCategory,
   findTopic,
-} from "@/modules/content";
+} from "@/modules/content/taxonomy";
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-describe("launch taxonomy", () => {
+describe("launch taxonomy (the seed source for the database)", () => {
   it("holds the eight approved categories", () => {
     expect(categories).toHaveLength(8);
     expect(categories.map((category) => category.name)).toEqual([

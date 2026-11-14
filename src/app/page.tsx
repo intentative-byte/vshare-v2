@@ -2,14 +2,14 @@ import Link from "next/link";
 import { BrandLockup } from "@/components/shell/brand";
 import { ButtonLink } from "@/components/ui/button";
 import { TopicChip } from "@/components/ui/topic-chip";
-import { featuredTopicSlugs, findTopic } from "@/modules/content";
+import { featuredTopicSlugs, findSeedTopic } from "@/modules/content";
 
 export const metadata = {
   title: "Stop doomscrolling. Start value scrolling.",
 };
 
 const featuredTopics = featuredTopicSlugs
-  .map((slug) => findTopic(slug))
+  .map((slug) => findSeedTopic(slug))
   .filter((topic): topic is NonNullable<typeof topic> => topic !== undefined);
 
 /**

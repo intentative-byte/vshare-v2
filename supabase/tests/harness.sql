@@ -53,13 +53,14 @@ as $$
 declare
   v_is_anonymous boolean;
 begin
+  execute 'reset role';
+
   select is_anonymous into v_is_anonymous from auth.users where id = p_user_id;
 
   if v_is_anonymous is null then
     raise exception 'test.become: no such user %', p_user_id;
   end if;
 
-  execute 'reset role';
   perform set_config(
     'request.jwt.claims',
     json_build_object('sub', p_user_id::text, 'is_anonymous', v_is_anonymous)::text,
@@ -181,6 +182,20 @@ as $$
 begin
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
+
   delete from auth.users;
+
+  -- Catalogue rows do not belong to an account, so they survive the delete
+  -- above and would leak between test blocks.
+  truncate table
+    public.content_reports,
+    public.moderation_actions,
+    public.content_topics,
+    public.content_versions,
+    public.content_items,
+    public.topics,
+    public.categories,
+    public.audit_log
+  restart identity cascade;
 end;
 $$;

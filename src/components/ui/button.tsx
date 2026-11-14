@@ -53,7 +53,13 @@ export type ButtonLinkProps = CommonProps & {
   prefetch?: boolean;
 };
 
-/** A link styled as a button. Navigation stays a link, so it behaves like one. */
+/**
+ * A link styled as a button. Navigation stays a link, so it behaves like one.
+ *
+ * An external address opens in a new tab with no referrer and no window
+ * handle back to us, and is marked as a link we do not endorse for ranking
+ * purposes (docs/VSHARES_SECURITY.md T8).
+ */
 export function ButtonLink({
   href,
   variant = "primary",
@@ -62,6 +68,21 @@ export function ButtonLink({
   children,
   ...rest
 }: ButtonLinkProps) {
+  const isExternal = /^https?:\/\//i.test(href);
+
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer nofollow ugc"
+        className={cn(base, variants[variant], sizes[size], className)}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return (
     <Link
       href={href}

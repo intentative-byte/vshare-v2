@@ -1,33 +1,47 @@
 /**
  * Content module — the catalogue.
  *
- * Owns categories, topics, value cards, submissions, reports and source
- * attribution. The only module that reads or writes catalogue tables.
+ * Owns categories, topics, value cards and their version history,
+ * submissions, moderation and source attribution. The only module that
+ * reads or writes catalogue tables.
  *
- * Implemented so far: the approved taxonomy (served from a typed constant
- * until the database arrives).
+ * Implemented: database-backed taxonomy, published card reads, submissions,
+ * reporting, the moderation queue and moderation actions.
  *
- * Planned public API (docs/VSHARES_API_CONTRACTS.md section 3):
- *   listCategoriesWithTopics()      Milestone 3
- *   getCard(slug)                   Milestone 3
- *   listCardsByTopic(slug, cursor)  Milestone 3
- *   searchCards(query, cursor)      Milestone 3
- *   submitResource(input)           Milestone 6
- *   listMySubmissions(cursor)       Milestone 6
- *   reportCard(input)               Milestone 6
- *
- * Reserved for later releases: content versions, media assets, original
- * creator content and authorised ingestion. `content_items.kind` and
- * `origin` already carry the values these need, so they add rows rather than
- * a second content system.
+ * Reserved for later releases: content versions already exist, so original
+ * creator content and authorised ingestion add rows rather than a second
+ * content system.
  */
 
+// Database reads live in ./server, which is server-only. This barrel stays
+// safe for a client component to import.
+
 export {
-  categories,
+  submitResource,
+  reportCard,
+  getMySubmissions,
+  getModerationQueue,
+  moderateCard,
+} from "./actions";
+
+export {
+  submitResourceInput,
+  moderateInput,
+  reportInput,
+  sourceUrlSchema,
+  slugSchema,
+  takeawaysSchema,
+  type SubmitResourceInput,
+} from "./schemas";
+
+export type { Card, CardSummary, CardStatus, Category, Topic } from "./types";
+
+// The approved launch taxonomy. The database is seeded from this, and the
+// home page uses it to offer entry points before anyone has signed in.
+export {
+  categories as seedCategories,
   featuredTopicSlugs,
-  findCategory,
-  findTopic,
-  allTopics,
-  type Category,
-  type Topic,
+  findTopic as findSeedTopic,
+  allTopics as allSeedTopics,
+  findCategory as findSeedCategory,
 } from "./taxonomy";

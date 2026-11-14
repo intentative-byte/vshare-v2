@@ -2,16 +2,20 @@
 
 ## Current state
 
-- **Phase:** 2 Core application. Milestones 1 and 2 are complete and tested; Milestone 3 (catalogue and moderation) is next and has not started.
+- **Phase:** 2 Core application complete. Milestones 1, 2 and 3 are built and tested; Milestone 4 (Value Feed and VAI ranking) is next and has not started.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
 - **What works:** the application shell and design system; the identity schema with row-level security on every table; profiles, roles, preferences, guest accounts, guest upgrade and collision handling; sign-in and sign-out surfaces. 76 unit tests, 89 database assertions and 54 end-to-end tests pass.
 - **What is implemented but not verified here:** the auth service journeys (magic link, code exchange, anonymous session, identity linking). This environment has PostgreSQL but no container runtime, so the auth service cannot run. See the test report.
-- **What does not exist yet:** catalogue, feed, saving, progress. Every destination has a real route; unfinished ones say so on the page.
+- **What also works:** the catalogue — database-driven categories and topics, value cards with version history, moderation, reporting, the admin queue, public card pages with attribution, and an audit log. 166 database assertions pass.
+- **Awaiting review:** the first 10 value cards, in `VSHARES_CATALOGUE_BATCH_1.md`. Seeded as drafts; none can be published because their links are unchecked.
+- **What does not exist yet:** the ranked feed, saving and progress. Every destination has a real route; unfinished ones say so on the page.
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
+| D15 | **Review the first 10 value cards** in `VSHARES_CATALOGUE_BATCH_1.md`, checking each summary against the live page — I could not open any of them | Correct the house style now, before the remaining ninety | The rest of the catalogue |
+| D16 | **Network access is needed to check source links.** No card can be published without it; the database enforces this | Run `npm run check:links` where the web is reachable, or allow the source hosts here | Publishing anything |
 | D14 | **An auth service is needed to finish verifying Milestone 2.** Either enable a container runtime in this environment for the local stack, or create a Supabase project (the free tier is enough) and share its URL and anon key — never the service-role key | Create a project; it costs nothing and unblocks live verification | Completing Milestone 2 verification |
 | D11 | Review the Milestone 1 reference screens (`docs/evidence/milestone-1/`) and confirm the visual direction, or say what to change | Confirm | M2 polish |
 | D12 | Confirm the font pairing: Sora for headings, Inter for body, both self-hosted | Confirm | M2 |
@@ -25,6 +29,22 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 3: catalogue, content management and moderation
+
+Done:
+- Catalogue migration: categories, topics, content items, immutable content versions, secondary topics, moderation actions, content reports and the audit log, with row-level security on all of them.
+- Publication rules enforced in the database: a review is required, the source link must have been checked by the privileged link checker, high-impact content needs a reviewer who did not submit it, and the high-impact flag is inherited from the category so it cannot be forgotten.
+- Functions for the whole lifecycle: taxonomy management, card creation and versioning, public submission, moderation, reporting and report resolution — each role-checked and audited.
+- Content module split into a client-safe barrel and a server-only read module; Explore and category pages now read from the database; public card pages at `/c/[slug]` with full attribution; the admin area with a moderation queue, answering 404 to accounts without a role.
+- A link checker that records real results, and the launch taxonomy plus the first 10 value cards as seed data.
+- 77 new database assertions, bringing the suite to 166.
+
+Four defects were found by the tests; three would have failed in production. They are in the test report.
+
+Not done:
+- Source links are unverified: this environment refuses every outbound request. No card can be published until the checker passes somewhere with network access.
+- The rendered catalogue and the live authentication journeys need a configured service; 14 tests are written and skipped with stated reasons.
 
 ### 2026-11-14 — Milestone 2: identity, authentication and profiles
 

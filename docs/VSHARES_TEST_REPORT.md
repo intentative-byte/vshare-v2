@@ -181,3 +181,64 @@ The database suite now runs on every push and pull request against a real Postgr
 |---|---|
 | Magic-link sign-in end to end, code exchange, anonymous session creation, identity linking, sign-out | A running auth service: a container runtime for the local stack, or a Supabase project. Owner decision; no paid tier required |
 | The JavaScript-to-database path (module repositories) | The same. The SQL those repositories call is covered by the database suite |
+
+## 2026-11-14 — Milestone 3 (catalogue, content management and moderation)
+
+| Check | Command | Result |
+|---|---|---|
+| Database policies and functions | `npm run test:db` | **15 files, 166 assertions, 0 failed** |
+| Unit tests | `npm test` | **76 passed, 0 failed** |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **62 passed, 14 skipped, 0 failed** |
+| Hygiene, lint, types, build | — | pass (16 routes) |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+| Link check of the seeded catalogue | `npm run check:links` | **0 of 10 reachable** — this environment refuses every outbound request at DNS. The checker itself works and recorded each failure |
+
+The 14 skips are the live authentication journeys (8) and the catalogue
+checks that need a database with the seed applied (6). Both sets run
+automatically once a service is reachable; neither was replaced by a weaker
+check that would pass without one.
+
+### Database coverage added (77 new assertions)
+
+| File | Proves |
+|---|---|
+| `100_taxonomy.sql` | A plain account can neither create a category through the function nor insert one directly; an administrator can create and edit categories and topics and every change is audited; the taxonomy is readable by signed-in and signed-out visitors; archiving hides a category from the public but not from staff |
+| `110_card_lifecycle.sql` | Only staff create cards; a new card starts as a draft with its first version; **publication is refused while the source link is unchecked**; a moderator cannot record a link check by hand; approval records the reviewer and the time; rejection and archiving need a reason; a version cannot be edited in place and a correction becomes a second version; a published card survives the deletion of the account that reviewed it, keeping the fact of review and losing the person |
+| `120_high_impact.sql` | The high-impact flag follows the category automatically; the author of high-impact content cannot approve their own work; a second moderator can; ordinary content needs no second reviewer |
+| `130_submissions.sql` | A guest cannot submit; a submission is always created pending and marked user-submitted whatever the caller asks for; a submitter cannot approve, publish by direct update, or mark their own link checked; a submitter sees their own pending submission and its rejection reason, another account and a signed-out visitor see neither it nor its text, and a moderator sees it in the queue |
+| `140_reports_and_audit.sql` | A guest cannot report; a registered account can, once per card; a reporter cannot resolve their own report and a moderator can; reports are private to reporter and staff; audit entries are written with the actor, cannot be edited or deleted, and are readable only by an administrator |
+| `150_public_visibility.sql` | A published card, its current version, its publisher and its author are all readable by a signed-out visitor, so attribution can always be shown; archiving removes both the card and its text from public view; the same source link cannot be added twice while a card for it is live |
+
+### Defects found and fixed during the milestone
+
+All four were found by the tests, and three would have caused failures in production.
+
+| What | Consequence if shipped | Fix |
+|---|---|---|
+| The append-only guard blocked the `set null` that erasure performs on actor columns | **Deleting any account that had created a content version, moderation action or audit entry would have failed** | A guard that permits exactly one change — a named actor column moving to null — and refuses every other edit |
+| The publication constraint required the reviewer reference | **Deleting a moderator's account would have failed** once they had published anything | The constraint names the review *time*, not the reviewer; who reviewed what lives in the moderation trail, which anonymises the same way |
+| `app.current_user_id()` cast an empty claims setting to JSON | Any request with an empty claims setting, which is how a privileged client arrives, **would have raised instead of reporting no user** | The setting is emptied to null before the cast |
+| The module barrel reached server-only code | The database client was pulled into a browser bundle and the build failed | Modules now have two entry points: `index.ts`, safe for a client component, and `server.ts` for database reads. The lint rule enforces it |
+
+### Against the Milestone 3 acceptance criteria
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Categories and topics load from PostgreSQL | **Implemented.** Explore and category pages read from the database; the typed taxonomy is now only the seed source. Proven by the database suite; the rendered page with data needs a configured database |
+| 2 | Admins can create, edit and review cards | **Implemented and tested** at the function layer: create, version, approve, reject, archive, restore. The admin queue is built |
+| 3 | Non-admins cannot access privileged actions | **Tested** at every layer: the action pipeline refuses, the database functions refuse, the policies refuse, and the admin routes return 404 |
+| 4 | Submissions cannot bypass moderation | **Tested.** Status and origin are set by the database function, not the caller |
+| 5 | Publication requires approval | **Tested**, and additionally requires a checked link |
+| 6 | High-impact content requires a second reviewer | **Tested** |
+| 7 | Versions and moderation actions are auditable | **Tested.** Versions are insert-only, the moderation trail runs submit to approve, and the audit log is append-only and admin-only |
+| 8 | Public card pages display correct attribution | **Implemented.** Publisher, author and source link are readable by anyone and shown on the page, with an AI-assisted label where it applies. Rendering with data needs a configured database |
+| 9 | Database isolation and access tests pass | **166 assertions, 0 failed** |
+| 10 | The first 10 cards ready for review | **Ready** in `docs/VSHARES_CATALOGUE_BATCH_1.md`, seeded as drafts. **Their links are unverified** — see below |
+
+### Still not verified
+
+| Item | What is needed |
+|---|---|
+| Every source link in batch 1 | Network access. The checker is written and works; this environment refuses all outbound requests. **No card can be published until it passes**, enforced by the database |
+| The rendered catalogue with real data | A configured database; 6 tests are written and skipped |
+| Live authentication journeys | Unchanged from Milestone 2; 8 tests written and skipped. Procedure in `VSHARES_VERIFICATION_PROCEDURE.md` |
