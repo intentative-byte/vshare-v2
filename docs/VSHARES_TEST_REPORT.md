@@ -474,6 +474,10 @@ Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalle
 | Production build | `npm run build` | pass — **20 routes** |
 | Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
 
+### Continuous integration
+
+Run `43648259310` on commit `349b4ce`, pull request #8: **all five jobs passed** — hygiene, lint, types, unit tests and build; database policies and functions against a PostgreSQL service; end-to-end and accessibility; dependency audit; full-history secret scan.
+
 ### Live versus simulated — stated plainly
 
 | Layer | Status |

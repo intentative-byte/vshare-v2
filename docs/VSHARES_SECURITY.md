@@ -54,7 +54,7 @@ Boundaries: browser ↔ application (all input untrusted) · application ↔ dat
 | T8 | Malicious submitted links — phishing, malware, `javascript:` (A03/A10) | `https` only; public hostnames only; moderation before publication; links open with `rel="noopener noreferrer nofollow ugc"`; report flow; server does not fetch submitted URLs in the MVP (no SSRF surface) | Validation tests; moderation tests |
 | T9 | Spam and low-quality submissions (A04) | Registered users only; 5/day; duplicate detection; moderation queue | Rate-limit and duplicate tests |
 | T10 | Mass assignment / over-posting (A04) | `.strict()` schemas; partial updates touch only named columns; column-level grants | Tests posting extra fields |
-| T11 | Information leakage in errors and logs (A09/A05) | Uniform error envelope; DB errors never returned; logs carry IDs, not emails or content | Tests asserting error shape; log review |
+| T11 | Information leakage in errors and logs (A09/A05) | Uniform error envelope; DB errors never returned; logs carry a digest of the account id, never emails, content or input values | **Tested (M6):** 7 unit tests drive the pipeline with an email address, a note and a token on every outcome — success, validation failure, handler failure, exception — and assert that none of those values reaches a written line or a returned envelope. Previously this held by construction only |
 | T12 | Secret exposure (A05) | Env-only secrets validated at boot; service key server-only (`server-only` import guard); gitleaks in CI; `.gitignore` | CI secret scan; build test that client bundles contain no service key name |
 | T13 | Vulnerable dependencies (A06) | Pinned versions; `npm ci`; audit in CI — zero tolerance in production deps, no high/critical in dev deps | CI audit job |
 | T14 | Missing security headers, clickjacking (A05) | CSP, HSTS, `frame-ancestors 'none'`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` | Header test |
@@ -106,11 +106,12 @@ Assumptions: adults (18+), UK launch, free service, owner is the data controller
 |---|---|
 | Lawful bases | Account and service delivery: contract. Personalised ranking from the user's own activity: contract / legitimate interests, with an off switch. Product analytics: legitimate interests for strictly first-party, pseudonymous measurement, with opt-out; **owner to confirm, or switch to consent**. |
 | Device storage (PECR) | Only strictly necessary cookies (session, guest session, CSRF, consent choice) are set without consent. No advertising or third-party cookies. The analytics session ID is held in memory/sessionStorage; whether it is "strictly necessary" is a judgement call, so the default until confirmed is: **no analytics identifiers before the user accepts** — aggregate, identifier-free counts only. |
+| Personal data inventory | `VSHARES_DATA_INVENTORY.md`, produced by querying the live schema rather than from the data model document. It found and fixed one defect: an orphaned user identifier in `account_merges`. |
 | Data minimisation | Email, handle, optional name and avatar, topics, interaction history. No date of birth, location, contacts or device fingerprint. No sensitive-trait inference. |
 | Age | Sign-up requires confirming 18+. No age verification technology in the MVP. Content is general-audience. |
 | Transparency | Privacy notice; "Why this?" on recommendations; preference-memory page. |
-| Rights | Access and portability: self-service JSON export. Erasure: self-service deletion with cascade. Rectification: editable profile and preferences. Objection: personalisation and analytics switches. |
-| Retention | Table in `VSHARES_DATA_MODEL.md` §A9. |
+| Rights | **Implemented and tested at the database layer (M6).** Access and portability: `export_my_data()`, which takes no argument and so can only describe its caller. Erasure: `delete_my_account()`, requiring a typed confirmation and a sign-in within the last fifteen minutes; three categories survive anonymised, listed in `VSHARES_DATA_INVENTORY.md`. Rectification: editable profile and preferences, plus correction and resubmission of a rejected contribution. Objection: personalisation and analytics switches. End-to-end verification through a real sign-in is still outstanding, so full erasure is not yet claimed as production-verified. |
+| Retention | Table in `VSHARES_DATA_MODEL.md` §A9. Guest accounts: `VSHARES_GUEST_LIFECYCLE.md` — 30 days measured against last activity, implemented, tested, audited, and **deliberately not scheduled** pending owner approval. |
 | Processors | Supabase (database, auth, storage), the hosting provider, Google (only for users who choose Google sign-in), an email delivery provider for magic links. Each needs a DPA and a region decision. |
 | Residency | Choose a UK or EU Supabase region. International transfers to be listed in the privacy notice once providers are fixed. |
 | Automated decisions | Ranking has no legal or similarly significant effect; explained and switchable. |
@@ -135,8 +136,8 @@ Upgrade approach: stay within current majors (Next 16.2.9 → 16.4.6, React 19.2
 | Layer | What | When |
 |---|---|---|
 | Static | TypeScript strict, ESLint (incl. import boundaries, no `dangerouslySetInnerHTML`), gitleaks, npm audit | Every push (CI) |
-| Unit | Validation schemas, redirect sanitiser, URL rules, ranking | Every push |
-| Database | RLS isolation per table with two users, guest restrictions, append-only guards | Every push (local Supabase in CI) |
+| Unit | Validation schemas, redirect sanitiser, URL rules, ranking, log and error-message privacy | Every push |
+| Database | RLS isolation per table with two users, guest restrictions, append-only guards, export contents, erasure completeness, purge eligibility | Every push (PostgreSQL service in CI; 305 assertions) |
 | Integration | Each server action as visitor, guest, user, moderator, admin | Every push |
 | E2E | Auth flows, protected routes, headers, CSP | Every push |
 | Manual review | ASVS L2 checklist walk-through; results in `VSHARES_TEST_REPORT.md` | M7 |

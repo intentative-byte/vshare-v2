@@ -38,6 +38,10 @@ Policies: owner select/update (not `user_id`); others select only where `is_publ
 ### `preferences`
 `user_id` PK; `personalisation_enabled` bool default true; `analytics_consent` enum (`unset`, `granted`, `denied`); `session_minutes` int 5–60 default 10. Owner select/update.
 
+### `consent_events`
+
+One row per consent decision, with the choice and when it was made. Cascades on account deletion, and withdrawing consent deletes the events collected under it by trigger.
+
 ### `user_topics` — declared interests and preference memory
 | Column | Type | Notes |
 |---|---|---|
@@ -57,8 +61,8 @@ Policies: owner select; owner may set `declared`, `level`; `affinity` server onl
 ### `topics`
 `id`; `category_id` → categories (restrict); `slug` unique; `name`; `description`; `sort_order`; `archived_at`. Same policies.
 
-### `topic_adjacency`
-(`topic_id`, `adjacent_topic_id`) — curated neighbours used for the feed's discovery slot. Public select; admin write.
+### `topic_adjacency` — **not created**
+(`topic_id`, `adjacent_topic_id`) — curated neighbours for the feed's discovery slot. The discovery slot shipped in M4 using the category instead, so this table was not needed and was not created. It returns if curated neighbours prove better than the category.
 
 ## A3. Content
 
@@ -126,17 +130,17 @@ The saved library is `saved_at is not null`; history is `completed_at is not nul
 ### `analytics_events`
 `id` bigint; `occurred_at`; `name` text (check against the vocabulary); `user_id` null (**set null** on user deletion); `session_id` uuid; `content_id`, `topic_id`, `category_id` null; `source` text null; `device_class` enum; `props` jsonb. No client policies: insert via server only; read via rollups.
 
-### `event_rollups_daily`
-(`day`, `name`, `dimension`, `dimension_id`) PK; `events`; `unique_users`. Admin select. Built by a scheduled SQL function.
+### `analytics_daily`
+(`day`, `name`, `dimension`, `dimension_key`) PK; `events`. **Holds no identifier of any kind**, so it is recorded for everyone including people who have consented to nothing, and a deletion cannot affect it. Staff select; written by `record_event`. This is what the earlier draft called `event_rollups_daily`.
 
-### `feature_flags`
-`key` PK; `enabled`; `description`; `updated_by`. Server read; admin write.
+### `first_win_metrics`
+A view over `analytics_daily` for the activation question. Added in M5.
 
 ### `audit_log`
-Append-only: `id` bigint; `actor_id` (kept as opaque ID after deletion); `action`; `target_type`; `target_id`; `diff` jsonb; `created_at`. Admin select; server-only insert; update/delete revoked and guarded by trigger.
+Append-only: `id` bigint; `actor_id` (**set null** on deletion — the earlier draft said "kept as opaque ID", which is not what the schema does); `action`; `target_type`; `target_id`; `diff` jsonb; `created_at`. Staff select; server-only insert; update and delete revoked and guarded by trigger, which permits exactly one change: the actor moving to null.
 
-### `rate_limits`
-(`bucket_key`, `window_start`) PK; `count`. Fixed-window counters used by `platform/rate-limit`; server only; purged hourly. Kept in Postgres so no extra service is needed at MVP scale.
+### Not created
+`feature_flags` and `rate_limits` are **not in the database**. Flags are server-side configuration in `src/platform`, and rate limiting runs in the application layer with an in-process store. Both move to the database when a second instance exists; until then a table would imply a guarantee we do not have.
 
 ## A6. Relationships
 
@@ -162,35 +166,53 @@ categories ─< topics ─< content_items >─< content_topics
 - `recommendations (user_id, shown_at desc)`.
 - `analytics_events (occurred_at)`, `(name, occurred_at)`, `(content_id, name)`.
 
-## A8. Server functions (privileged, each with tests)
+## A8. Server functions
+
+Read from the built schema on 2026-11-14, not from intent. Everything here
+exists and has tests. `app.*` functions are internal; the rest are callable
+through the API layer by the roles named.
 
 | Function | Does | Callable by |
 |---|---|---|
-| `handle_new_user()` trigger | Creates `profiles` (generated unique handle) and `preferences` | Auth insert |
-| `app.current_user_id()`, `app.is_guest()` | The only place policies touch the auth provider | Policies |
+| `app.handle_new_user()` trigger | Creates `profiles` (generated unique handle) and `preferences` | Auth insert |
+| `app.current_user_id()`, `app.is_guest()`, `app.is_staff()` | The only place policies touch the auth provider | Policies |
+| `app.last_authenticated_at()` | Reads the token's authentication record, for operations that need a recent sign-in | `delete_my_account` |
 | `has_role(role)` | Role check for policies | Policies, server |
-| `set_interaction(content_id, kind, value)` | Validated state change + affinity update + event | Authenticated incl. guests |
-| `record_impressions(content_ids[], session_id)` | Batch impression counters | Authenticated incl. guests |
-| `moderate_content(content_id, action, fields, reason)` | Approve / reject / edit / archive + `moderation_actions` + `audit_log` | Moderator, admin |
-| `grant_role` / `revoke_role` | Role changes + audit | Admin |
-| `merge_guest_into(user_id)` | Moves a guest's interactions to an existing account, earliest timestamps win | Server, after verified sign-in |
-| `export_user_data(user_id)` | JSON of all user-owned rows | Server, for the owner only |
-| `delete_user(user_id)` | Deletes auth user (cascade), nulls authorship, audits | Server, for the owner only |
-| `rollup_events(day)` , `purge_stale_guests()`, `purge_rate_limits()` | Scheduled maintenance | `pg_cron` |
+| `app.append_only_except_actor(col)` | Permits exactly one change on an append-only table: the named actor column moving to null | Erasure |
+| `set_declared_topics`, `set_topic_level`, `reset_learned_preferences` | Preference memory | Authenticated incl. guests |
+| `set_interaction(content_id, kind, value)` | Validated state change, affinity update, counters | Authenticated incl. guests |
+| `record_impressions`, `start_feed_session`, `record_recommendations`, `end_feed_session` | Feed sessions and the recommendation log | Authenticated incl. guests |
+| `record_event`, `forget_my_events` | Consent-gated measurement, and self-service deletion of it | Authenticated |
+| `create_card`, `add_card_version`, `record_link_check` | Catalogue authoring; a card cannot publish with an unchecked link | Privileged client |
+| `upsert_category`, `upsert_topic`, `set_category_archived`, `set_topic_archived` | Taxonomy | Admin |
+| `submit_resource`, `resubmit_content` | A contribution enters as a draft; a rejected one can be corrected once as a new version | Authenticated |
+| `report_content`, `resolve_report`, `moderate_content` | Reporting and moderation, each audited | Authenticated / moderator |
+| `grant_role`, `revoke_role` | Role changes, audited | Admin |
+| `merge_guest_into(guest, target)` | Moves a guest's work to an existing account, earliest timestamps win | Server, after verified sign-in |
+| `export_my_data()` | JSON of everything held about the caller. **No argument**, so it cannot describe anyone else | The account itself |
+| `delete_my_account(confirm)` | Deletes the account after a typed confirmation and a recent sign-in; anonymises what survives; audits with a digest | The account itself |
+| `app.purge_stale_guests(interval, dry_run)` | Removes abandoned guest accounts. Reports by default; **not scheduled** | Privileged client only |
+
+Planned and **not yet created**: `rollup_events(day)` and `purge_rate_limits()`.
+Rate limiting currently runs in the application layer.
 
 ## A9. Retention and deletion
 
+The authoritative, column-by-column version is `VSHARES_DATA_INVENTORY.md`,
+produced by querying the schema. This is the summary.
+
 | Data | Retention | On account deletion |
 |---|---|---|
-| Profile, preferences, topics, interactions, recommendations, reports | Life of account | Deleted |
-| Guest accounts | 30 days after last activity | Deleted |
+| Profile, preferences, consent history, topics, interactions, sessions, recommendations | Life of account | Deleted (cascade) |
+| Guest accounts | 30 days, measured against last activity — `VSHARES_GUEST_LIFECYCLE.md` | Deleted; **the job is implemented and deliberately not scheduled** |
 | Submitted cards that were published | Until archived | Kept; `submitted_by` nulled |
-| Pending / rejected submissions | 90 days after decision | Deleted |
-| `analytics_events` | 13 months | `user_id` nulled |
-| Rollups | Indefinite (aggregate) | Unaffected |
-| `audit_log`, `moderation_actions` | 24 months | Actor kept as opaque ID |
+| Pending / rejected submissions | 90 days after decision (proposed; not yet automated) | Deleted |
+| `analytics_events` | 13 months (proposed; not yet automated) | `user_id` nulled |
+| `analytics_daily`, `content_stats` | Indefinite — aggregates that never held an identifier | Unaffected |
+| `audit_log`, `moderation_actions`, `content_versions`, `content_reports` | 24 months (proposed) | **Actor nulled.** Earlier drafts of this document said the actor was kept as an opaque id; it is not kept at all |
 
-Periods are proposals pending owner confirmation.
+Periods marked proposed still need owner confirmation, and none of them is
+enforced by a scheduled job yet.
 
 ---
 
