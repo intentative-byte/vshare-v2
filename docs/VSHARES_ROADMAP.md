@@ -1,25 +1,67 @@
 # VSHARES — Roadmap
 
-Status key: `done` · `in progress` · `blocked` · `planned`
+- Date: 2026-11-14 · Supersedes the Phase 0 roadmap.
+- Status key: `done` · `in progress` · `next` · `planned` · `blocked`
 
-Scope below assumes the recommended defaults in `VSHARES_PROJECT_DISCOVERY.md` §9. It will be revised once the owner answers Q1–Q9.
+## 1. Master phases (owner's directive) mapped to releases
 
-| Phase | Goal | Exit criteria | Status |
+| Phase | Name | Release | Status |
 |---|---|---|---|
-| 0 Discovery | Understand what exists and what is intended. | Discovery document written; owner decisions listed. | **done** (awaiting answers) |
-| 1 Architecture | Fix the stack, schema, API contracts and standards. | `VSHARES_PRODUCT_SPEC.md` and `VSHARES_ARCHITECTURE.md` approved; schema v1 and API contract reviewed; ADRs recorded. | blocked on Q1–Q6, Q9 |
-| 2 Foundation | A clean, tested, reproducible skeleton. | New structure in place; pinned dependencies with zero high/critical audit findings; env validation; local Supabase with migrations; Vitest + Playwright running; CI green on lint, typecheck, test, build, audit, secret scan. | planned |
-| 3 Design system | Reusable UI and app shell. | Tokens, primitives, form controls, loading/empty/error states, responsive nav; documented in `VSHARES_DESIGN_SYSTEM.md`; axe checks pass. | planned (needs Q2) |
-| 4 Core product | One complete user journey. | Sign up → topics → ranked feed → save/like/skip/done → saved library → share resource → profile, export, delete account. Each step has validation, authorisation, tests and docs. | planned |
-| 5 Integrations | Required third parties behind documented adapters. | Transactional email, OAuth providers, error tracking, rate-limit store — each either live-verified or clearly labelled mocked. | planned |
-| 6 QA | Prove it works. | Unit, integration, RLS, E2E, accessibility and security review complete; `VSHARES_TEST_REPORT.md` and `VSHARES_SECURITY_REVIEW.md` published; no open critical defects. | planned |
-| 7 Production prep | Ready to run, not yet deployed. | Deployment config, backups and restore drill, monitoring, runbook, release checklist. Deployment itself requires explicit authorisation. | planned |
-| 8 Expansion | Evidence-led growth. | Candidate features (streaks, learning paths, creators, goals, assistant) prioritised from real usage. | planned |
+| 0 | Reconstruction | — | **done** |
+| 1 | Product foundation: spec, architecture, data, contracts, security, design | — | **done in draft — awaiting owner sign-off** |
+| 2 | Core application: shell, auth, profiles, categories, content, navigation | MVP (M1–M3) | next |
+| 3 | Value Feed: discovery, ranking, saves, shares, interactions | MVP (M4–M6) | planned |
+| 5 (foundation only) | VAI: deterministic ranking and Next Best | MVP (M4) | planned |
+| 7 (essentials only) | Event analytics and funnels | MVP (M7) | planned |
+| 11 (MVP level) | Security review, accessibility, release preparation | MVP (M8) | planned |
+| 4 | Learning engine: paths, quizzes, progress, quests, mastery | R2 | planned |
+| 5 | VAI: next best move, mentor, memory | R2 | planned |
+| 6 | User development: User DNA, Applied Learning, dashboards, review | R2 | planned |
+| 7 | Platform intelligence: flow map, alignment score, value leaks | R3 | planned |
+| 8 | Creator systems | R3 | planned |
+| 9 | Retention and optimisation | R3 | planned |
+| 10 | Expansion: marketplace, opportunities, audio, community, monetisation | Each needs an approved spec | planned |
+| 11 | Production readiness at scale: load testing, external security test | Before growth beyond the first cohort | planned |
 
-## First five engineering tasks (once decisions land)
+## 2. MVP milestones
 
-1. **Secret remediation and guardrail** — after owner rotates the Alpaca keys and approves removal (Q7): remove the trading script and its notes, add secret scanning to CI so it cannot recur.
-2. **Product spec v1** — write `VSHARES_PRODUCT_SPEC.md`: personas, the MVP journey, per-feature requirements and acceptance criteria, explicit out-of-scope list.
-3. **Architecture and data design** — write `VSHARES_ARCHITECTURE.md`: schema v1 (topics, content, interactions, memory, saved, reports), RLS matrix, feed-ranking query design, API contracts, threat model outline, ADRs in `VSHARES_DECISIONS.md`.
-4. **Foundation build** — restructure to `src/`, pin dependencies and clear the audit, validated environment config, local Supabase workflow, Vitest + Playwright, GitHub Actions CI.
-5. **Auth and API baseline** — remove the demo-cookie bypass, safe post-login redirects, validated request layer with uniform errors and rate limiting, RLS tests proving cross-user isolation.
+Each milestone ends with working code, passing tests, updated docs and a VSHARES ENGINEERING REPORT. A milestone is not started until the previous one's exit criteria are met.
+
+Size is given in focused engineering sessions (one session ≈ one working block of this kind of collaboration). These are estimates, not commitments; owner review time between milestones is extra.
+
+| # | Milestone | Delivers (spec IDs) | Exit criteria | Size |
+|---|---|---|---|---|
+| M1 | **Foundation and shell** | Legacy app replaced by the new structure; platform layer (env validation, db clients, action pipeline, rate limit, logger, errors, flags); security headers; design tokens and core primitives; five-tab app shell with empty states; local Supabase; Vitest, Playwright, axe; CI extended to run them; `/api/health`, `/api/ready` (M-13, M-14) | CI green including unit, E2E and accessibility checks on the shell; reference screens reviewed by the owner; no demo-mode code remains | 2–3 |
+| M2 | **Identity and profiles** | Migration 1: profiles, roles, preferences; magic link, Google, guest accounts and upgrade; safe redirects; profile editing; role checks (M-02, M-09) | RLS isolation tests pass for every table; auth E2E passes against local Supabase; Google verified against a real OAuth client when the owner provides one | 2 |
+| M3 | **Catalogue and moderation** | Migration 2: taxonomy, value cards, reports, moderation log, audit log; admin catalogue and taxonomy management; moderation queue; public card page; **launch catalogue curated and loaded** (M-11, part of M-08) | Admin-only access proven by tests; catalogue meets the content standard in the spec §B3; owner has reviewed the catalogue | 2–3 (+ curation time) |
+| M4 | **Value Feed and VAI foundation** | Migration 3: interactions, user topics, recommendations, ranking config; ranker v1; finite sessions; "Why this?"; Next Best; topic selection and preference memory (M-03, M-04, M-05) | Ranking unit tests cover every component and tie-break; repetition avoidance integration-tested; recommendations logged | 3 |
+| M5 | **First Learning Win, library, progress** | Home → topic → card → "Got it" → win state as a guest; SAVED; progress summary; PATH tab (M-01, M-06, M-07) | The first-win E2E passes on a mobile viewport in under the 60-second budget for scripted input; progress derives only from completions | 2 |
+| M6 | **Submission, sharing, data rights** | Submit a resource; my submissions; reports; share; export; account deletion; guest purge job (M-08, M-10) | Export and deletion tests pass (no orphan rows); submission rate limits and URL rules tested | 2 |
+| M7 | **Essential analytics** | Event ingestion, consent handling, rollups, funnel and validation-metrics views (M-12) | Rollups reconcile with raw events on fixtures; no identifiers recorded before consent | 1–2 |
+| M8 | **Hardening and release preparation** | ASVS L2 walk-through; accessibility audit incl. manual screen-reader pass; performance budget check; runbook; backup and restore drill; privacy notice and terms drafts; release checklist | `VSHARES_TEST_REPORT.md` and `VSHARES_SECURITY.md` updated with results; no open critical or high defects; owner go/no-go | 2 |
+
+Total: roughly 16–19 sessions plus catalogue curation and owner reviews.
+
+Deployment to any shared or public environment happens only after M8 and only on explicit owner authorisation.
+
+## 3. First development milestone — M1 in detail
+
+1. Create `src/` structure, module skeletons for the eight MVP modules (index files and boundary lint rule only), remove legacy `app/`, `components/`, `lib/`, `middleware.ts`, `scripts/smoke-test.mjs` and the legacy migration and seed (kept in git history and on `main`).
+2. `platform/env.ts` with a Zod schema; `.env.example` listing every variable by name.
+3. `platform/action.ts` pipeline with unit tests for each stage; `platform/errors.ts` result envelope; Postgres-backed rate limiter.
+4. Security headers and CSP in `next.config.ts`, with a test.
+5. `tokens.css`, fonts self-hosted, primitives: Button, IconButton, TextField, ChoiceChip, Card, Skeleton, EmptyState, ErrorState, Toast, Dialog.
+6. App shell: bottom tab bar and side rail for PATH / LEARN / EXPLORE / SAVED / YOU; public home with the brand line and static topic chips; `/dev/ui` component gallery (non-production only).
+7. Supabase CLI config for local development; empty baseline migration; CI job that boots it.
+8. Vitest and Playwright set up; first E2E: home renders, tabs navigate, axe passes at 360px and 1280px; keyboard traversal test.
+9. Extend CI: unit, E2E, accessibility. Update docs and progress log.
+
+Needs from the owner before M1 starts: sign-off of the Phase 1 documents, and approval to replace the legacy application code on the rebuild branch.
+
+## 4. After the MVP
+
+| Release | Theme | Gate to start |
+|---|---|---|
+| R2 | Learning engine (one complete path, quizzes, mastery), Applied Learning, quests, Next Best Move, User DNA view, spaced repetition, collections, optional LLM mentor | MVP validation metrics reviewed; R2 spec approved; LLM provider and budget approved if the mentor is included |
+| R3 | Creator publishing and analytics, flow map, Platform Alignment Score, value-leak detection, consent-based retention, hosted media | Evidence of demand for contributed content; moderation capacity; R3 spec approved |
+| Expansion | Opportunities, marketplace and payments, audiobooks, community | Separate commercial, legal and product approval for each |

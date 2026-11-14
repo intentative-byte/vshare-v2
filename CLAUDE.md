@@ -1,14 +1,24 @@
 # VSHARES rebuild — engineering instructions
 
-VShare is a personalised learning-feed platform (topics → ranked feed → memory of what was seen → sharing). It is being rebuilt in controlled phases. Read `docs/VSHARES_PROGRESS.md` first to see the current phase and blockers.
+VSHARES is a value acquisition and human capability platform: "Stop doomscrolling. Start value scrolling." The MVP validates value-curated scrolling with ~100 users. Read `docs/VSHARES_PROGRESS.md` first for the current phase, blockers and pending owner decisions.
 
-## Project documents (`docs/`)
+## Documents (`docs/`)
 
-- `VSHARES_PROJECT_DISCOVERY.md` — what exists, defects, open owner decisions
-- `VSHARES_ROADMAP.md` — phases and exit criteria
-- `VSHARES_PROGRESS.md` — running log; update at the end of every working session
-- `VSHARES_DECISIONS.md` — decision log; add an entry for any architectural choice
-- Created in later phases: `VSHARES_PRODUCT_SPEC.md`, `VSHARES_ARCHITECTURE.md`, `VSHARES_DESIGN_SYSTEM.md`, `VSHARES_TEST_REPORT.md`, `VSHARES_SECURITY_REVIEW.md`
+| File | Use it for |
+|---|---|
+| `VSHARES_MASTER_SPEC.md` | Vision (Part A) and MVP scope with acceptance criteria (Part B) |
+| `VSHARES_FEATURE_REGISTER.md` | Every feature: evidence, priority, status, target release |
+| `VSHARES_ARCHITECTURE.md` | Modules, request pipeline, auth design, feed ranking spec |
+| `VSHARES_DATA_MODEL.md` | Tables, policies, functions, retention |
+| `VSHARES_API_CONTRACTS.md` | Server actions and route handlers |
+| `VSHARES_DESIGN_SYSTEM.md` | Tokens, components, navigation, voice, accessibility |
+| `VSHARES_SECURITY.md` | Threat model, incident record, privacy, dependency status |
+| `VSHARES_ROADMAP.md` | Phases, MVP milestones M1–M8 and exit criteria |
+| `VSHARES_RELEASE_PLAN.md` | Environments, gates, rollout |
+| `VSHARES_TEST_REPORT.md` | Only results that were actually produced |
+| `VSHARES_DECISIONS.md` | Decision log — add an entry for every architectural choice |
+| `VSHARES_PROGRESS.md` | Running log — update at the end of every session |
+| `VSHARES_PR_DISPOSITION.md`, `VSHARES_PROJECT_DISCOVERY.md` | Historical audit |
 
 ## Commands
 
@@ -16,23 +26,28 @@ VShare is a personalised learning-feed platform (topics → ranked feed → memo
 npm ci
 npm run lint
 npm run typecheck
-npm run test:smoke   # legacy copy-grep only; not a behavioural test
+npm run test:smoke   # legacy copy-grep only; replaced in M1
 npm run build
+npm audit --omit=dev # must report 0
 ```
 
 ## Rules
 
-- Do not write application code for a phase until the previous phase's exit criteria in the roadmap are met and required owner decisions are recorded.
-- Never commit secrets. Configuration comes from environment variables; `.env.example` holds names only.
-- Never bypass authentication or authorisation, including for demos. Authorisation is enforced server-side and by Postgres RLS; every new table gets RLS and a test proving cross-user isolation.
-- Validate all external input with a schema at the boundary. Never return raw database errors to clients. Never log personal data.
-- Pin dependency versions; do not use `latest`. Add a dependency only when it clearly earns its place.
-- A feature is done only when requirements are documented, it works end to end, tests pass, errors are handled, and docs are updated.
-- Report status using these words precisely: implemented, tested, mocked, blocked, production-verified. Never claim a check passed without having run it.
-- Ask the owner before: deleting existing material, destructive database changes, anything that costs money, deploying, touching production data, rewriting git history.
+- Build only what the current milestone in the roadmap calls for. MVP scope is spec Part B; everything else is roadmap. Reserved modules get no code or tables early.
+- One modular application. Modules import each other only through `index.ts`; only `repository.ts` touches the database; the browser never does.
+- Every mutation goes through the platform action pipeline: rate limit → authenticate → validate (Zod, strict) → authorise → execute → record → uniform result.
+- Every table has RLS and a test proving cross-user isolation. Integrity-critical tables are server-write-only.
+- No authentication bypass of any kind, including for demos or tests.
+- No secrets in the repository. Never print, copy or transmit credential values, including the historical leak (SEC-2026-001).
+- No fabricated functionality, content or metrics. Catalogue items are real, attributed, link-checked resources. Scores must be computed from recorded data and explainable.
+- No engagement manipulation: finite feed sessions, no guilt or urgency copy, no streak pressure.
+- Pin dependency versions; justify each new dependency in the decision log.
+- Report status precisely: implemented, tested, mocked, blocked, production-verified. Never claim a check passed without running it.
+- End each milestone with a VSHARES ENGINEERING REPORT (format in the owner's directive) and update the progress log, test report and feature register.
+- Ask the owner before: deleting existing material, closing PRs or deleting branches, destructive database changes, anything that costs money, deploying, touching production data, rewriting git history or force-pushing.
 
-## Known hazards in the legacy code
+## Hazards
 
-- `DAX_GOLD_PLUS_v7_LEARNING_READY.py` and `CLEANUP_NOTES.md` are unrelated to VShare and the script contains leaked credentials. Do not copy from, run, or extend them; removal awaits owner approval.
-- The branch `cursor/optional-supabase-demo-791a` is an idea archive of mock heuristics. Do not port code from it.
-- Legacy `main` has an open redirect in `app/auth/callback/route.ts` and a cookie-based auth bypass in `middleware.ts`; neither pattern may be reused.
+- Legacy application code (`app/`, `components/`, `lib/`, `middleware.ts`) is scheduled for replacement in M1. It still contains a cookie-based auth bypass; do not reuse its patterns.
+- Branch `cursor/optional-supabase-demo-791a` (PR #5) is a concept archive of browser-local heuristics. Do not port code from it.
+- Git history on `main` contains leaked third-party credentials in commit `5db2911`. Do not reproduce them anywhere.
