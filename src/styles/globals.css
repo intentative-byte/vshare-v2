@@ -119,7 +119,8 @@
   background-image: linear-gradient(
     135deg,
     var(--color-gold-bright) 0%,
-    var(--color-gold) 55%,
+    var(--color-gold) 45%,
+    var(--color-gold) 78%,
     var(--color-gold-deep) 100%
   );
 }
