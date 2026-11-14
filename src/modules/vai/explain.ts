@@ -22,6 +22,13 @@ type ExplainContext = {
   personalisationEnabled: boolean;
 };
 
+/**
+ * Below this many impressions, the engagement component is mostly the prior
+ * rather than a measurement, so there is nothing truthful to say about how
+ * other readers got on. It matches the prior weight in the configuration.
+ */
+const minimumEngagementSample = 20;
+
 const phrasing: Record<string, (context: ExplainContext) => string> = {
   declaredInterest: (context) => `You chose ${context.topicName}.`,
   learnedAffinity: (context) => `You have been spending time on ${context.topicName}.`,
@@ -42,8 +49,13 @@ export function explain(
   weights: Record<string, number>,
   context: ExplainContext,
 ): Explanation {
+  const sample = components.engagementSample ?? 0;
+
   const contributions = Object.entries(components)
     .filter(([name]) => name in phrasing)
+    // Say nothing about other readers until enough of them have been shown
+    // the card for the number to mean anything.
+    .filter(([name]) => name !== "engagementQuality" || sample >= minimumEngagementSample)
     .map(([name, value]) => ({
       name,
       contribution: (weights[name] ?? 0) * (value ?? 0),

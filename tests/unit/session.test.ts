@@ -284,3 +284,55 @@ describe("explanations come from the ranking itself", () => {
     expect(result.reasons.length).toBeGreaterThan(0);
   });
 });
+
+describe("explanations never overstate the evidence", () => {
+  const weights = config.weights as unknown as Record<string, number>;
+
+  it("says nothing about other readers when a card has no history", () => {
+    const scored = rankCandidates(
+      [card("a", { stats: { impressions: 0, completions: 0 } })],
+      learner(),
+      config,
+    )[0]!;
+
+    const result = explain(scored.components, weights, {
+      topicName: "Focus",
+      isDiscovery: false,
+      personalisationEnabled: true,
+    });
+
+    expect(result.reasons.some((reason) => reason.includes("finished it"))).toBe(false);
+  });
+
+  it("still says nothing when the sample is too small to mean anything", () => {
+    const scored = rankCandidates(
+      [card("a", { stats: { impressions: 3, completions: 3 } })],
+      learner(),
+      config,
+    )[0]!;
+
+    const result = explain(scored.components, weights, {
+      topicName: "Focus",
+      isDiscovery: false,
+      personalisationEnabled: true,
+    });
+
+    expect(result.reasons.some((reason) => reason.includes("finished it"))).toBe(false);
+  });
+
+  it("says it once there is a real measurement behind it", () => {
+    const scored = rankCandidates(
+      [card("a", { stats: { impressions: 400, completions: 330 } })],
+      learner(),
+      config,
+    )[0]!;
+
+    const result = explain(scored.components, weights, {
+      topicName: "Focus",
+      isDiscovery: false,
+      personalisationEnabled: true,
+    });
+
+    expect(result.reasons.some((reason) => reason.includes("finished it"))).toBe(true);
+  });
+});

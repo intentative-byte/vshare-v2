@@ -87,6 +87,15 @@ export type LearnerContext = {
 export type ScoreComponents = Record<keyof RankingWeights, number> & {
   impressionPenalty: number;
   sameSourcePenalty: number;
+  /**
+   * How many impressions the engagement component was computed from.
+   *
+   * Not a weighted component. It is recorded so an explanation can tell the
+   * difference between a measured completion rate and the prior that stands
+   * in for one: with a small sample there is nothing true to say about how
+   * other people got on, and the explanation must not pretend otherwise.
+   */
+  engagementSample: number;
 };
 
 export type ScoredCandidate = {
@@ -206,6 +215,7 @@ export function scoreCandidate(
     timeFit: personalised ? timeFitComponent(candidate, context) : 0,
     impressionPenalty: 0,
     sameSourcePenalty: 0,
+    engagementSample: Math.max(0, candidate.stats.impressions),
   };
 
   if (personalised) {

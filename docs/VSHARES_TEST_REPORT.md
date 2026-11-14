@@ -251,7 +251,7 @@ All four were found by the tests, and three would have caused failures in produc
 
 | Check | Command | Result |
 |---|---|---|
-| Unit tests | `npm test` | **119 passed, 0 failed** (8 files; 43 new for the ranker, session and explanations) |
+| Unit tests | `npm test` | **128 passed, 0 failed** (9 files; 52 new for the ranker, session, explanations and a worked example) |
 | Database policies and functions | `npm run test:db` | **17 files, 220 assertions, 0 failed** (54 new) |
 | End-to-end, accessibility, headers | `npm run test:e2e` | **66 passed, 22 skipped, 0 failed** |
 | Hygiene, lint, types, build | — | pass (16 routes) |
@@ -345,9 +345,41 @@ personalisation is off, and always give at least one sentence.
 
 | What | How found | Fix |
 |---|---|---|
+| **An explanation claimed "most people who started this finished it" for a card nobody had been shown.** The engagement component falls back to a stated prior with no data, and the explainer treated that as a measurement | Reading the output of the worked example | The sample size is now recorded alongside the component, and the sentence only appears above twenty impressions. Three tests hold the line |
 | The all-topics candidate query did a sequential scan over the whole catalogue | Performance measurement | A partial index on publication date; 5.15 ms → 0.60 ms |
 | The feed client set state synchronously inside an effect, risking cascading renders | Lint rule | Restructured with a cancellation flag and an attempt counter |
 | My own synthetic performance loader was refused by the publication constraint | Running it | The constraint was right; the loader now creates drafts, versions them, then publishes |
+
+### Worked example
+
+`npx vitest run tests/unit/worked-example.test.ts` ranks the ten batch-1
+cards for several learner profiles, asserts the behaviour and prints the
+result with the reason given for each card. It is a test, so it cannot drift
+from the code, and it is readable evidence of what the ranker does.
+
+For someone who chose Budgeting and Avoiding scams:
+
+```
+  pos  score   card
+    1  0.743  The pause that stops most financial scams
+         why: You chose avoiding scams. Our reviewers rated this highly. It matches the level you are working at.
+    2  0.726  A budget planner that does the arithmetic for you
+    3  0.453  The handful of security steps that matter most
+    4  0.453  What actually helps when you cannot sleep
+    5  0.443  How to ask an organisation what it knows about you  [discovery]
+         why: Something outside your usual topics, to widen the picture. ...
+    6  0.439  Writing that people understand the first time
+    7  0.429  Preparing for an interview without guessing
+```
+
+The chosen topics lead without crowding everything else out, and position
+five is given to a topic the person did not ask for, labelled as such.
+
+One assertion in this file was wrong and the ranker was right: a 35-minute
+card stays last for someone with a ten-minute session even when the level
+matches, because time fit scores zero at four times the session length. The
+test now records that as intended behaviour, and checks that the same card
+rises for someone with longer to spend.
 
 ### Still not verified
 
