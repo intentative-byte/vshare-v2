@@ -401,6 +401,10 @@ remain unverified and no card can be published until they pass.
 | Hygiene, lint, types, build | — | pass (17 routes) |
 | Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
 
+### Continuous integration
+
+Run `43645447529` on commit `c3f6a46`, pull request #8: **all five jobs passed** — hygiene, lint, types, unit tests and build; database policies and functions; end-to-end and accessibility; dependency audit; full-history secret scan.
+
 ### Live versus simulated — stated plainly
 
 | Layer | Status |
