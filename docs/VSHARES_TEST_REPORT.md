@@ -350,6 +350,10 @@ personalisation is off, and always give at least one sentence.
 | The feed client set state synchronously inside an effect, risking cascading renders | Lint rule | Restructured with a cancellation flag and an attempt counter |
 | My own synthetic performance loader was refused by the publication constraint | Running it | The constraint was right; the loader now creates drafts, versions them, then publishes |
 
+### Continuous integration
+
+Run `43629183346` on commit `743ea30`, pull request #8: **all five jobs passed** — hygiene, lint, types, unit tests and build; database policies and functions; end-to-end and accessibility; dependency audit; full-history secret scan.
+
 ### Worked example
 
 `npx vitest run tests/unit/worked-example.test.ts` ranks the ten batch-1
