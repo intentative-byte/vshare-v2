@@ -31,7 +31,7 @@ Size is given in focused engineering sessions (one session ≈ one working block
 
 | # | Milestone | Delivers (spec IDs) | Exit criteria | Size |
 |---|---|---|---|---|
-| M1 | **Foundation and shell** | Legacy app replaced by the new structure; platform layer (env validation, db clients, action pipeline, rate limit, logger, errors, flags); security headers; design tokens and core primitives; five-tab app shell with empty states; local Supabase; Vitest, Playwright, axe; CI extended to run them; `/api/health`, `/api/ready` (M-13, M-14) | CI green including unit, E2E and accessibility checks on the shell; reference screens reviewed by the owner; no demo-mode code remains | 2–3 |
+| M1 ✅ | **Foundation and shell** — complete 2026-11-14 | Legacy app replaced by the new structure; platform layer (env validation, db clients, action pipeline, rate limit, logger, errors, flags); security headers; design tokens and core primitives; five-tab app shell with empty states; local Supabase; Vitest, Playwright, axe; CI extended to run them; `/api/health`, `/api/ready` (M-13, M-14) | Met, except CI has not executed yet and the reference screens await owner review. 54 unit and 44 end-to-end checks pass locally; no demo-mode code remains | 2–3 |
 | M2 | **Identity and profiles** | Migration 1: profiles, roles, preferences; magic link, Google, guest accounts and upgrade; safe redirects; profile editing; role checks (M-02, M-09) | RLS isolation tests pass for every table; auth E2E passes against local Supabase; Google verified against a real OAuth client when the owner provides one | 2 |
 | M3 | **Catalogue and moderation** | Migration 2: taxonomy, value cards, reports, moderation log, audit log; admin catalogue and taxonomy management; moderation queue; public card page; **launch catalogue curated and loaded** (M-11, part of M-08) | Admin-only access proven by tests; catalogue meets the content standard in the spec §B3; owner has reviewed the catalogue | 2–3 (+ curation time) |
 | M4 | **Value Feed and VAI foundation** | Migration 3: interactions, user topics, recommendations, ranking config; ranker v1; finite sessions; "Why this?"; Next Best; topic selection and preference memory (M-03, M-04, M-05) | Ranking unit tests cover every component and tie-break; repetition avoidance integration-tested; recommendations logged | 3 |
@@ -44,7 +44,19 @@ Total: roughly 16–19 sessions plus catalogue curation and owner reviews.
 
 Deployment to any shared or public environment happens only after M8 and only on explicit owner authorisation.
 
-## 3. First development milestone — M1 in detail
+## 3. Next development milestone — M2 in detail
+
+1. First product migration: `profiles`, `user_roles`, `preferences`, with row-level security on each and the handle generator, plus `has_role()`.
+2. Supabase auth adapter behind `platform/auth`, registered with the action pipeline's viewer resolver.
+3. Magic-link sign-in, the callback route using the tested redirect sanitiser, and sign-out (including everywhere).
+4. Guest accounts: created on first write, carried through the same policies, upgraded in place on registration, with the merge path for an email that already has an account.
+5. Route protection in `src/proxy.ts` for routes that need an account, with the real boundary remaining the action pipeline and the database policies.
+6. Profile screen and editing on the YOU tab; roles readable, grantable only by an audited server function.
+7. Tests: row-level isolation per table with two users; guest restrictions; every action as each caller type; auth end-to-end against the local database; CI runs a Supabase instance.
+
+Exit criteria: a person can sign in with a magic link against the local stack, a guest's work survives registration, and no table lets one account read another's rows.
+
+## 4. First development milestone — M1 in detail (complete)
 
 1. Create `src/` structure, module skeletons for the eight MVP modules (index files and boundary lint rule only), remove legacy `app/`, `components/`, `lib/`, `middleware.ts`, `scripts/smoke-test.mjs` and the legacy migration and seed (kept in git history and on `main`).
 2. `platform/env.ts` with a Zod schema; `.env.example` listing every variable by name.
@@ -58,7 +70,7 @@ Deployment to any shared or public environment happens only after M8 and only on
 
 Needs from the owner before M1 starts: sign-off of the Phase 1 documents, and approval to replace the legacy application code on the rebuild branch.
 
-## 4. After the MVP
+## 5. After the MVP
 
 | Release | Theme | Gate to start |
 |---|---|---|

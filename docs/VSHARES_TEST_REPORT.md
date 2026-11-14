@@ -44,3 +44,58 @@ Before the upgrade the same audit reported 19 vulnerabilities (1 critical, 8 hig
 | Analytics | Vitest + SQL | Vocabulary enforcement, consent gating, rollup reconciliation | M7 |
 | Performance | Lighthouse on home and first card (mobile profile) | Budget set in M1 | M5, M8 |
 | Operational | Manual, recorded | Backup restore drill, runbook walkthrough | M8 |
+
+## 2026-11-14 — Milestone 1 (foundation and shell)
+
+Environment: Node 22, clean `npm ci`, no database. End-to-end suites run against a production build (`next build` then `next start`), with the preinstalled Chromium.
+
+| Check | Command | Result |
+|---|---|---|
+| Repository hygiene | `npm run check:hygiene` | pass — no foreign file types, forbidden packages or unpinned dependencies |
+| Lint | `npm run lint` | pass (0 warnings), including the module-boundary and raw-HTML rules |
+| Types | `npm run typecheck` | pass (strict, `noUncheckedIndexedAccess`) |
+| Unit tests | `npm test` | **54 passed, 0 failed** (5 files) |
+| Production build | `npm run build` | pass — 11 routes |
+| End-to-end, accessibility, security headers | `npm run test:e2e` | **44 passed, 0 failed** (22 tests × mobile and desktop) |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+| Audit, all dependencies | `npm audit` | 8 moderate, development-only (one root advisory; security doc section 7) |
+
+### Unit coverage by area
+
+| File | Tests | What it proves |
+|---|---|---|
+| `tests/unit/action.test.ts` | 15 | The pipeline refuses a signed-out caller, refuses a guest on an account action, refuses a role mismatch, ignores a client-supplied user id, rejects unknown fields, checks access before input, enforces rate limits, and converts an internal error into a safe message with no connection detail |
+| `tests/unit/env.test.ts` | 8 | Configuration is validated or the process fails with a readable message; empty variables are absent, not values |
+| `tests/unit/rate-limit.test.ts` | 8 | Fixed windows, per-subject and per-bucket isolation, retry timing, reset |
+| `tests/unit/redirect.test.ts` | 17 | Twelve hostile redirect inputs all resolve to the same origin |
+| `tests/unit/taxonomy.test.ts` | 6 | The eight approved categories, unique slugs, high-impact marking |
+
+### End-to-end coverage
+
+| File | What it proves |
+|---|---|
+| `tests/e2e/shell.spec.ts` | Home states the promise and offers topics; all five destinations return 200 with the right heading; the current tab is marked; a visitor can walk home → category; unfinished screens display their notice; 404 works; the client layer hydrates with no console errors; health and readiness leak no configuration |
+| `tests/e2e/accessibility.spec.ts` | Zero axe violations (WCAG 2.0/2.1/2.2 A and AA) on all seven routes; keyboard reaches content and navigation with a visible 2px focus ring; navigation tap targets are at least 44px tall; no horizontal scrolling at 360px |
+| `tests/e2e/security-headers.spec.ts` | All security headers present; the policy is strict and nonce-based with no `'unsafe-inline'` for scripts; a fresh nonce per response; the development gallery returns 404 in production |
+
+### Defects found and fixed during the milestone
+
+| What | How it was found | Fix |
+|---|---|---|
+| `z.string().url()` accepted `localhost:54321` as a valid URL | Unit test for malformed database configuration | Protocol is now checked explicitly: http or https only |
+| The strict policy blocked all scripts on prerendered pages, so nothing hydrated | The hydration end-to-end test | Routes render per request so the nonce applies (decision D-030) |
+| The brand mark painted blank in the mobile header | Reviewing the captured screenshots | Each instance gets a unique gradient id |
+
+### Not run / unverified
+
+| Item | Why |
+|---|---|
+| Continuous integration | The workflow has never executed. It triggers on pull requests and on `main`, and this work is on a development branch. **Report as unverified, not as passed.** |
+| gitleaks | Runs in the CI job above; it could not be executed in the local environment |
+| Database, row-level security, authentication | No database exists yet; the first tables arrive in Milestone 2 |
+| Deployed environments | None exist |
+| Screen-reader pass, performance budget | Scheduled for Milestone 8; automated accessibility checks run from now on |
+
+### Visual evidence
+
+`docs/evidence/milestone-1/` holds a screenshot of every route at phone (Pixel 7) and desktop (1280×900) width, regenerated with `scripts/capture-screenshots.mjs`.

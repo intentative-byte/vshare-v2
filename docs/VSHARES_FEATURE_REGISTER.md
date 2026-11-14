@@ -1,6 +1,6 @@
 # VSHARES — Feature Register
 
-Date: 2026-11-14 (targets revised after the owner's Phase 0 decisions). Updated whenever a feature changes status.
+Date: 2026-11-14. Targets revised after the owner's Phase 0 decisions; statuses updated after Milestone 1. Updated whenever a feature changes status.
 
 ## How to read this
 
@@ -26,8 +26,8 @@ Date: 2026-11-14 (targets revised after the owner's Phase 0 decisions). Updated 
 
 | ID | Feature | Purpose | Evidence | Pri | Depends on | Status | Tests | Target |
 |---|---|---|---|---|---|---|---|---|
-| F-001 | Black/gold responsive design system | Premium identity, consistent UI | OWNER-H; BRANCH PR #1 (theme) | P0 | — | not started | none | MVP |
-| F-002 | Five-tab navigation PATH / LEARN / EXPLORE / SAVED / YOU | Core information architecture | OWNER-H; BRANCH PR #5 (feed/explore/saved/profile bottom nav) | P0 | F-001 | not started | none | MVP |
+| F-001 | Black/gold responsive design system | Premium identity, consistent UI | OWNER-H; BRANCH PR #1 (theme) | P0 | — | **implemented** (tokens, primitives, gallery) | **tested** (axe on 7 routes, both viewports) | MVP |
+| F-002 | Five-tab navigation PATH / LEARN / EXPLORE / SAVED / YOU | Core information architecture | OWNER-H; BRANCH PR #5 (feed/explore/saved/profile bottom nav) | P0 | F-001 | **implemented** (five tabs, every route live) | **tested** (routes, active state, keyboard, tap size) | MVP |
 | F-003 | First Learning Win: guest learning without registration | First-session activation | OWNER-H (problem); CODE has a cookie bypass, not a real guest mode | P0 | F-024, F-031 | not started | none | MVP |
 | F-004 | Account creation: magic link | Low-friction secure sign-in | CODE | P0 | — | not started | none | MVP |
 | F-005 | Account creation: Google | Faster sign-up | NEW (CODE has GitHub OAuth behind a flag) | P0 | F-004 | not started | none | MVP |
@@ -43,7 +43,7 @@ Date: 2026-11-14 (targets revised after the owner's Phase 0 decisions). Updated 
 
 | ID | Feature | Purpose | Evidence | Pri | Depends on | Status | Tests | Target |
 |---|---|---|---|---|---|---|---|---|
-| F-020 | Database-driven categories, subcategories, topics, tags | Flexible taxonomy | BRANCH PR #1 (`topics` table); CODE uses a hardcoded list | P0 | — | not started | none | MVP |
+| F-020 | Database-driven categories, subcategories, topics, tags | Flexible taxonomy | BRANCH PR #1 (`topics` table); CODE uses a hardcoded list | P0 | — | partial: 8 approved categories, 40 topics typed and navigable; moves to the database in M3 | **tested** (6 unit tests) | MVP |
 | F-021 | Admin taxonomy management (add, edit, archive, reorder) | Curate the catalogue | OWNER-P | P0 | F-020, F-009 | not started | none | MVP |
 | F-022 | Category merge | Taxonomy hygiene | OWNER-P | P2 | F-021 | not started | none | R3 |
 | F-023 | Content items with versions and publish workflow | Reviewed, auditable content | OWNER-P; CODE has unversioned link posts | P1 | F-020 | not started | none | R3 |

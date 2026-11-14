@@ -2,16 +2,18 @@
 
 ## Current state
 
-- **Phase:** 1 Product foundation — documents complete in draft, awaiting owner sign-off.
-- **Next:** Milestone M1 (foundation and shell) — starts on sign-off.
-- **Rebuild application code written so far:** none. Changes to code so far are limited to security and dependency fixes on the legacy app.
+- **Phase:** 2 Core application. Milestone 1 (foundation and shell) is complete and tested; Milestone 2 (identity and profiles) is next and has not started.
+- **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
+- **What works:** the application shell, five-tab navigation, design system, platform layer, security headers and the test suites. 54 unit tests and 44 end-to-end tests pass.
+- **What does not exist yet:** database, accounts, catalogue, feed, saving, progress. Every destination has a real route; unfinished ones say so on the page.
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
-| D1 | Sign off the Phase 1 documents (spec, architecture, data model, API contracts, security, design system, roadmap) | Approve, with any corrections | M1 |
-| D2 | Approve replacing the legacy application code (`app/`, `components/`, `lib/`, `middleware.ts`, legacy migration, seed, smoke script) on the rebuild branch. It stays in git history and on `main` until you merge | Approve | M1 |
+| D11 | Review the Milestone 1 reference screens (`docs/evidence/milestone-1/`) and confirm the visual direction, or say what to change | Confirm | M2 polish |
+| D12 | Confirm the font pairing: Sora for headings, Inter for body, both self-hosted | Confirm | M2 |
+| D13 | Google sign-in needs an OAuth client created in your Google Cloud account (free). Shall I proceed with magic link only in M2 and add Google when the client exists? | Magic link first, Google as soon as the client exists | M2 |
 | D4 | Does a hosted Supabase project or a live Render service exist? If yes, share the project reference / service URL (not keys) so it can be inventoried | — | M8 planning; nothing before |
 | D5 | Launch catalogue: who curates it and how big? | I draft ~100 value cards across 8 topics from real, link-checked resources, flagged AI-assisted; you review before publication | M3 |
 | D6 | Initial topic list for the MVP | Technology & AI · Career · Entrepreneurship · Personal finance · Productivity · Communication · Health & wellbeing · Learning how to learn | M3 |
@@ -21,6 +23,24 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 1: foundation and shell
+
+Done:
+- Replaced the legacy application. Removed `app/`, `components/`, `lib/`, `middleware.ts`, the copy-grep smoke script, the legacy migration and seed, the Tailwind config and the Render blueprint. All of it remains in git history and on `main`.
+- Built the new structure: `src/app`, `src/modules` (eight live modules plus two reserved), `src/platform`, `src/components`, `src/styles`, `supabase`, `tests`.
+- Platform layer: validated configuration, result envelope, structured logging without personal data, rate limiter, database clients (request, public, privileged), the action pipeline, feature flags, the auth boundary and the redirect sanitiser.
+- Security: all headers set, and a per-request nonce-based Content-Security-Policy with no `'unsafe-inline'` for scripts. The demo-mode authentication bypass is gone with the code that held it.
+- Design system: tokens for black, gold, silver, white and the blue accent, every pairing contrast-measured; Sora and Inter self-hosted; primitives; an original VSHARES mark; a component gallery at `/dev/ui` that is not served in production.
+- Shell: five-tab navigation (PATH, LEARN, EXPLORE, SAVED, YOU) as a bottom bar on phones and a side rail on desktop, with a real route behind every entry. Explore navigates the eight approved categories and their forty topics.
+- Baseline migration with the identity helpers that row-level security will use, so policies never call the vendor's functions directly.
+- Tests: Vitest and Playwright with axe, 54 unit and 44 end-to-end checks; CI extended to run hygiene, lint, types, unit tests, build, end-to-end, audit and the secret scan.
+
+Three defects were found and fixed during the work; they are listed in the test report.
+
+Not done:
+- CI has still never executed (it runs on pull requests and on `main`), so it is unverified rather than passing.
+- No database, accounts, catalogue, feed or progress: those are Milestones 2 to 7.
 
 ### 2026-11-14 — Project separation and platform directive
 

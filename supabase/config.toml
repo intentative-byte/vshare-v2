@@ -1,29 +1,48 @@
-project_id = "vshare-v2"
+project_id = "vshares"
 
 [api]
 enabled = true
 port = 54321
-schemas = ["public", "graphql_public"]
+schemas = ["public"]
 extra_search_path = ["public", "extensions"]
-max_rows = 1000
+max_rows = 200
 
 [db]
 port = 54322
 shadow_port = 54320
-major_version = 15
+major_version = 17
+
+[db.migrations]
+enabled = true
 
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
 additional_redirect_urls = ["http://localhost:3000/auth/callback"]
 jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
 enable_signup = true
+# Passwords are not used: sign-in is a magic link or Google (decision D-011).
+enable_anonymous_sign_ins = true
 
 [auth.email]
 enable_signup = true
+enable_confirmations = true
 double_confirm_changes = true
-enable_confirmations = false
+# Local development only. No password sign-in exists in the product.
+enable_login_with_password = false
+
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = ""
 
 [studio]
 enabled = true
 port = 54323
+
+[inbucket]
+# Local mail catcher, so magic links can be tested without sending email.
+enabled = true
+port = 54324

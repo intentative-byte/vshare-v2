@@ -1,84 +1,96 @@
-# VShare v2
+# VSHARES
 
-VShare v2 is a personalised learning and knowledge-sharing platform that delivers topic-specific content, remembers user preferences, adapts to behaviour, and turns scrolling into continuous growth.
+An AI-powered value discovery, learning and human capability platform.
 
-This repository contains a full Next.js App Router implementation built with TypeScript, Tailwind CSS, Supabase Auth helpers, API routes, and a PostgreSQL schema.
+> Stop doomscrolling. Start value scrolling.
 
-## Tech stack
+VSHARES turns attention into knowledge you can use: short, genuinely useful things to learn, chosen for what you want to get better at, with progress that counts what you actually finished.
 
-- Next.js with the App Router
-- TypeScript
-- Tailwind CSS
-- Supabase SSR/Auth helpers
-- Supabase PostgreSQL with RLS policies
-- Render deployment blueprint
+This repository is the 2.0 rebuild. It is being built milestone by milestone; see `docs/VSHARES_PROGRESS.md` for what is finished and what is not.
 
-## Application routes
+## Status
 
-- `/login` - Supabase magic-link and GitHub OAuth sign-in
-- `/onboarding` - collect topics, goals, and profile details
-- `/feed` - personalised learning feed and resource submission
-- `/explore` - topic discovery and featured resources
-- `/profile` - learner profile and preference summary
+**Milestone 1 — foundation.** The application shell, design system, platform layer, security headers and test suites exist. There is no database, no account system and no catalogue yet: every navigation destination has a real route, and the ones that are not finished say so on the page.
 
-## API routes
+## Stack
 
-- `GET /api/posts` - list feed posts
-- `POST /api/posts` - create a resource post for the signed-in user
-- `GET /api/profile` - fetch the signed-in user's profile
-- `PUT /api/profile` - update onboarding/profile details
-- `GET /api/preferences` - fetch the signed-in user's preferences
-- `PUT /api/preferences` - update onboarding preferences
+| Layer | Choice |
+|---|---|
+| Application | Next.js (App Router), React, TypeScript |
+| Styling | Tailwind CSS with design tokens |
+| Database | PostgreSQL via Supabase, row-level security on every table |
+| Authentication | Supabase Auth: magic link, Google, guest accounts (Milestone 2) |
+| Validation | Zod at every boundary |
+| Tests | Vitest, Playwright, axe, database policy tests |
+| Intelligence | VAI — our own deterministic ranking; no model provider wired |
 
-## Local setup
+Rationale for each choice is in `docs/VSHARES_ARCHITECTURE.md`.
 
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-2. Create an environment file:
-
-   ```bash
-   cp .env.example .env.local
-   ```
-
-3. Fill in `.env.local` with your Supabase project values:
-
-   ```bash
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-   ```
-
-4. Apply the database schema in Supabase:
-
-   - Hosted Supabase: run `supabase/migrations/0001_initial_schema.sql` in the SQL editor.
-   - Supabase CLI: run `supabase start`, then `supabase db reset` to apply migrations and `supabase/seed.sql`.
-
-5. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-6. Open [http://localhost:3000](http://localhost:3000).
-
-## Verification
-
-Run these checks before shipping:
+## Getting started
 
 ```bash
-npm run lint
-npm run typecheck
-npm run build
+npm ci
 ```
 
-## Deployment
+```bash
+cp .env.example .env.local
+```
 
-`render.yaml` defines a Render web service. Set the three environment variables from `.env.example` in Render before deploying.
+```bash
+npm run dev
+```
 
-## Notes
+Open http://localhost:3000. No database is needed for Milestone 1.
 
-When Supabase environment variables are missing, server-rendered pages use demo content so the app can still lint, typecheck, and build in a fresh environment. Mutating API routes require a configured Supabase project and an authenticated user.
+The component gallery is at `/dev/ui` outside production.
+
+## Checks
+
+```bash
+npm run verify
+```
+
+That runs repository hygiene, lint, types, unit tests and a production build. End-to-end, accessibility and security-header suites run separately against a production build:
+
+```bash
+npm run test:e2e
+```
+
+On a machine with a preinstalled browser, point Playwright at it:
+
+```bash
+PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium npm run test:e2e
+```
+
+## Local database (from Milestone 2)
+
+```bash
+npm run db:start
+```
+
+Copy the API URL and anon key it prints into `.env.local`, then apply migrations:
+
+```bash
+npm run db:reset
+```
+
+## Repository layout
+
+```text
+src/app/        routes: public home, the five tabs, API endpoints
+src/modules/    one folder per domain, each with a documented public API
+src/platform/   env, database clients, action pipeline, auth, rate limit, logging
+src/components/ design-system primitives and the application shell
+src/styles/     design tokens
+supabase/       migrations and local configuration
+tests/          unit and end-to-end suites
+docs/           specification, architecture, security, roadmap, decisions
+```
+
+## Documentation
+
+Start with `CLAUDE.md` for the engineering rules, then `docs/VSHARES_MASTER_SPEC.md` for the product and `docs/VSHARES_ARCHITECTURE.md` for the system.
+
+## Licence
+
+See `LICENSE`.
