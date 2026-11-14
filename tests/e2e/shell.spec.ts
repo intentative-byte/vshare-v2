@@ -35,24 +35,29 @@ test("navigation marks the current destination", async ({ page }) => {
 });
 
 test("a visitor can walk from the home page into a category", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("link", { name: /Budgeting/ }).click();
+  await page.goto("/explore");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Categories");
 
-  await expect(page).toHaveURL(/\/explore\/personal-finance$/);
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-
-  // What the category page then shows depends on the catalogue, which needs
-  // a database; that is covered in catalogue-live.spec.ts.
+  // What Explore then shows depends on the catalogue, which needs a
+  // database; that is covered in catalogue-live.spec.ts.
   const body = (await page.textContent("body")) ?? "";
-  expect(/Personal Finance|unavailable/i.test(body)).toBe(true);
+  expect(/Technology|unavailable|being prepared/i.test(body)).toBe(true);
 });
 
-test("unfinished destinations say so rather than looking complete", async ({ page }) => {
-  // Learn and Explore are built now; Path is not, and says so.
-  await page.goto("/path");
+test("anything unfinished says so, and names when it arrives", async ({ page }) => {
+  // Most destinations are built now. Wherever one is not, it must say so
+  // rather than appearing complete, and name the milestone that delivers it.
+  for (const route of ["/path", "/learn", "/explore", "/saved", "/you"]) {
+    await page.goto(route);
 
-  await expect(page.getByText("Not built yet")).toBeVisible();
-  await expect(page.getByText(/Planned for Milestone/)).toBeVisible();
+    const notices = page.getByText("Not built yet");
+    const count = await notices.count();
+
+    for (let index = 0; index < count; index += 1) {
+      const panel = notices.nth(index).locator("xpath=..");
+      await expect(panel, `${route} notice ${index}`).toContainText(/Planned for Milestone/);
+    }
+  }
 });
 
 test("an unknown page returns 404 with a way back", async ({ page }) => {
@@ -70,15 +75,15 @@ test("the client layer hydrates under the content security policy", async ({ pag
     }
   });
 
-  await page.goto("/path");
+  await page.goto("/you");
 
-  const toggle = page.getByRole("button", { name: "What it will be based on" });
+  const toggle = page.getByRole("button", { name: "What this tab holds" });
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
   await toggle.click();
 
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText(/Topics you choose, what you have finished/)).toBeVisible();
+  await expect(page.getByText(/everything VSHARES has learned about what you want to learn/i)).toBeVisible();
   expect(consoleErrors, consoleErrors.join("\n")).toEqual([]);
 });
 

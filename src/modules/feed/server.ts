@@ -1,3 +1,10 @@
 import "server-only";
 
-export { buildSession, explainRecommendation, finishSession, loadActiveConfig } from "./service";
+export {
+  buildSession,
+  firstWinCard,
+  buildNextBestMove,
+  explainRecommendation,
+  finishSession,
+  loadActiveConfig,
+} from "./service";

@@ -38,4 +38,10 @@ export {
 
 export { assembleSession, type AssembledSession, type SessionItem } from "./session";
 export { explain, type Explanation } from "./explain";
+export {
+  nextBestMove,
+  type NextBestFacts,
+  type NextBestMove,
+  type NextBestRule,
+} from "./next-best";
 export type { ModelProvider, ModelRequest, ModelResponse } from "./model-provider";

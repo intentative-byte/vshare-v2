@@ -15,5 +15,6 @@ export {
   findCategoryWithTopics,
   findPublishedCard,
   findPublishedCardById,
+  findTopicBySlug,
   listPublishedCardsByTopic,
 } from "./repository";

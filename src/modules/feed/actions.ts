@@ -6,7 +6,8 @@ import { fail, failWithDefault, ok } from "@/platform/result";
 import { rateLimitRules } from "@/platform/rate-limit";
 import { createRequestClient } from "@/platform/db/server";
 import { readMyPreferences } from "@/modules/personalisation";
-import { buildSession, explainRecommendation, finishSession } from "./service";
+import { getNextBestFacts } from "@/modules/progress";
+import { buildNextBestMove, buildSession, explainRecommendation, finishSession } from "./service";
 
 /**
  * Feed actions.
@@ -89,6 +90,29 @@ export const whyThis = defineAction({
     );
 
     return ok({ reasons });
+  },
+});
+
+export const getNextBest = defineAction({
+  name: "feed.getNextBest",
+  access: "viewer",
+  input: z.object({}).strict(),
+  handler: async () => {
+    const [preferences, factsResult] = await Promise.all([
+      readMyPreferences(),
+      getNextBestFacts({}),
+    ]);
+
+    const facts = factsResult.ok
+      ? factsResult.data
+      : { startedNotFinished: [], savedNotOpened: [] };
+
+    const move = await buildNextBestMove(facts, {
+      personalisationEnabled: preferences?.personalisationEnabled ?? true,
+      preferredMinutes: preferences?.sessionMinutes ?? 10,
+    });
+
+    return ok(move);
   },
 });
 

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/ui/page-header";
-import { FoundationNotice } from "@/components/ui/foundation-notice";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState, ErrorState } from "@/components/ui/states";
 import { HighImpactNotice } from "@/components/catalogue/high-impact-notice";
@@ -78,12 +77,6 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           ))}
         </ul>
       )}
-
-      <FoundationNotice
-        className="mt-6"
-        milestone="Milestone 4"
-        summary="Browsing every topic and a ranked feed across all of them arrive with the Value Feed."
-      />
 
       <div className="mt-6">
         <ButtonLink href="/explore" variant="secondary">

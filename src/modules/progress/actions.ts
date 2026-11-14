@@ -105,6 +105,60 @@ export const listSaved = defineAction({
   },
 });
 
+/**
+ * The facts behind the next best move: what was started and left, and what
+ * was saved and never opened.
+ */
+export const getNextBestFacts = defineAction({
+  name: "progress.getNextBestFacts",
+  access: "viewer",
+  input: z.object({}).strict(),
+  handler: async () => {
+    const supabase = await createRequestClient();
+
+    const { data, error } = await supabase
+      .from("content_interactions")
+      .select(
+        `content_id, opened_at, completed_at, saved_at,
+         content:content_items (
+           slug,
+           version:content_versions!content_items_current_version_id_fkey ( title )
+         )`,
+      )
+      .is("completed_at", null)
+      .limit(100);
+
+    if (error || !data) {
+      return failWithDefault("UNAVAILABLE");
+    }
+
+    const titleOf = (row: (typeof data)[number]) => {
+      const content = row.content as unknown as { version: { title: string } | null } | null;
+      return content?.version?.title ?? "";
+    };
+
+    const startedNotFinished = data
+      .filter((row) => row.opened_at !== null)
+      .sort((a, b) => String(b.opened_at).localeCompare(String(a.opened_at)))
+      .map((row) => ({
+        contentId: row.content_id as string,
+        title: titleOf(row),
+        openedAt: row.opened_at as string,
+      }));
+
+    const savedNotOpened = data
+      .filter((row) => row.saved_at !== null && row.opened_at === null)
+      .sort((a, b) => String(b.saved_at).localeCompare(String(a.saved_at)))
+      .map((row) => ({
+        contentId: row.content_id as string,
+        title: titleOf(row),
+        savedAt: row.saved_at as string,
+      }));
+
+    return ok({ startedNotFinished, savedNotOpened });
+  },
+});
+
 export const getProgressSummary = defineAction({
   name: "progress.getProgressSummary",
   access: "viewer",
@@ -133,11 +187,33 @@ export const getProgressSummary = defineAction({
       data.map((row) => (row.completed_at as string).slice(0, 10)),
     ).size;
 
+    const savedResult = await supabase
+      .from("content_interactions")
+      .select("content_id, content:content_items ( primary_topic_id )")
+      .not("saved_at", "is", null);
+
+    const topicsResult = await supabase
+      .from("content_interactions")
+      .select("content:content_items ( primary_topic_id )")
+      .not("completed_at", "is", null);
+
+    const topicIds = new Set(
+      (topicsResult.data ?? [])
+        .map((row) => (row.content as unknown as { primary_topic_id: string } | null)?.primary_topic_id)
+        .filter((value): value is string => Boolean(value)),
+    );
+
     // Every number here comes from a completion record. Nothing counts
     // impressions, opens or time on the page.
     return ok({
       week: { completed: completedThisWeek.length, minutes: minutes(completedThisWeek) },
-      allTime: { completed: data.length, minutes: minutes(data), activeDays },
+      allTime: {
+        completed: data.length,
+        minutes: minutes(data),
+        activeDays,
+        topicsExplored: topicIds.size,
+        saved: (savedResult.data ?? []).length,
+      },
     });
   },
 });

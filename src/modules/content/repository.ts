@@ -161,6 +161,30 @@ export async function findPublishedCard(slug: string): Promise<Card | null> {
   return toCard(data as unknown as CardRow);
 }
 
+export async function findTopicBySlug(
+  slug: string,
+): Promise<{ id: string; name: string; categorySlug: string } | null> {
+  const supabase = createPublicClient();
+
+  const { data, error } = await supabase
+    .from("topics")
+    .select("id, name, category:categories ( slug )")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const category = data.category as unknown as { slug: string } | null;
+
+  return {
+    id: data.id as string,
+    name: data.name as string,
+    categorySlug: category?.slug ?? "",
+  };
+}
+
 export async function findPublishedCardById(contentId: string): Promise<Card | null> {
   const supabase = createPublicClient();
 

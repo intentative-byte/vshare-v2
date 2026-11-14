@@ -2,19 +2,21 @@
 
 ## Current state
 
-- **Phase:** 3 Value Feed. Milestones 1 to 4 are built and tested; Milestone 5 (First Learning Win, library and progress) is next and has not started.
+- **Phase:** 3 Value Feed. Milestones 1 to 5 are built and tested; Milestone 6 (submission, sharing and data rights) is next and has not started.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
 - **What works:** the application shell and design system; the identity schema with row-level security on every table; profiles, roles, preferences, guest accounts, guest upgrade and collision handling; sign-in and sign-out surfaces. 76 unit tests, 89 database assertions and 54 end-to-end tests pass.
 - **What is implemented but not verified here:** the auth service journeys (magic link, code exchange, anonymous session, identity linking). This environment has PostgreSQL but no container runtime, so the auth service cannot run. See the test report.
 - **What also works:** the catalogue — database-driven categories and topics, value cards with version history, moderation, reporting, the admin queue, public card pages with attribution, and an audit log. 166 database assertions pass.
 - **Awaiting review:** the first 10 value cards, in `VSHARES_CATALOGUE_BATCH_1.md`. Seeded as drafts; none can be published because their links are unchecked.
 - **What also works:** the Value Feed — VAI's deterministic ranker, finite seven-card sessions, "Why this?" explanations from logged evidence, interactions, preference memory and session summaries. 119 unit tests and 220 database assertions pass.
-- **What does not exist yet:** the guest first-learning-win journey end to end, the saved library screen and the progress dashboard. Every destination has a real route; unfinished ones say so on the page.
+- **What also works:** the first learning win (home → topic → one useful card → completion → win summary, with no account), the saved library with filtering and sorting, the progress dashboard where every number carries its definition, PATH's next best move, and consent-first measurement.
+- **What does not exist yet:** resource submission from the interface, data export and account deletion. Every destination has a real route.
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
+| D17 | **32 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of five milestones' worth of journeys |
 | D15 | **Review the first 10 value cards** in `VSHARES_CATALOGUE_BATCH_1.md`, checking each summary against the live page — I could not open any of them | Correct the house style now, before the remaining ninety | The rest of the catalogue |
 | D16 | **Network access is needed to check source links.** No card can be published without it; the database enforces this | Run `npm run check:links` where the web is reachable, or allow the source hosts here | Publishing anything |
 | D14 | **An auth service is needed to finish verifying Milestone 2.** Either enable a container runtime in this environment for the local stack, or create a Supabase project (the free tier is enough) and share its URL and anon key — never the service-role key | Create a project; it costs nothing and unblocks live verification | Completing Milestone 2 verification |
@@ -30,6 +32,19 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 5: first learning win, library and progress
+
+Done:
+- The first learning win: home topic chips lead straight to one useful card at `/start/[topic]`, readable with no account and no sign-up wall. Pressing "Got it" is the first thing that persists, so that is where a guest account appears; the win summary then states what was completed and offers to keep it without blocking anything.
+- The saved library: filtering by topic, three sorts, removal, attribution, empty states, and isolation enforced by row-level security.
+- The progress dashboard: six numbers, each with its definition on the card, counted from completion records only. An explicit note on what is deliberately absent and why.
+- PATH: next best move from an ordered rule engine, with the rule that fired given as the reason.
+- Consent-first measurement: aggregate counts with no identifier for everyone, identified events only on granted consent, automatic deletion on withdrawal, and a first-win funnel.
+- `VSHARES_SUPABASE_SETUP.md`, so the 32 skipped tests can be cleared without needing anything privileged.
+
+Not done:
+- The rendered journeys still need a service. 32 tests are written and skipped.
 
 ### 2026-11-14 — Milestone 4: the Intelligent Value Feed
 

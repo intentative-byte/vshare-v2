@@ -12,5 +12,11 @@
  * cards, once the learning engine exists.
  */
 
-export { getFeedSession, recordImpressions, whyThis, endFeedSession } from "./actions";
+export {
+  getFeedSession,
+  recordImpressions,
+  whyThis,
+  getNextBest,
+  endFeedSession,
+} from "./actions";
 export type { FeedCard, FeedSession } from "./service";

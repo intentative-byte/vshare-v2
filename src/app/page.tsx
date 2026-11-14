@@ -59,13 +59,13 @@ export default function HomePage() {
             What do you want to get better at?
           </h2>
           <p className="mt-2 text-silver">
-            Pick a topic to begin. No account needed to start.
+            Pick a topic and read one useful thing. No account, no sign-up.
           </p>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {featuredTopics.map((topic) => (
               <li key={topic.slug}>
                 <TopicChip
-                  href={`/explore/${topic.categorySlug}`}
+                  href={`/start/${topic.slug}`}
                   label={topic.name}
                   hint={topic.categoryName}
                 />

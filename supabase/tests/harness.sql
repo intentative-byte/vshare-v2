@@ -195,7 +195,9 @@ begin
     public.content_items,
     public.topics,
     public.categories,
-    public.audit_log
+    public.audit_log,
+    public.analytics_events,
+    public.analytics_daily
   restart identity cascade;
 end;
 $$;

@@ -1,21 +1,16 @@
 /**
- * Analytics module — the event vocabulary and its reports.
+ * Analytics module — measurement, consent first.
  *
- * First-party only: events are written to our own tables, with no
- * third-party collector. Identifiers are never stored for a visitor who has
- * not consented; before consent, counts are aggregate and identifier-free.
- * Every other module records events through track(), and this module imports
- * none of them.
+ * Aggregate counts hold no identifier and are recorded for everyone.
+ * Identified events are written only where consent has been granted, and
+ * are deleted when it is withdrawn. Every module records through track();
+ * this module imports none of them.
  *
- * Implemented so far: nothing.
+ * Implemented: the event vocabulary and its definitions, recording,
+ * consent, and the first-learning-win funnel.
  *
- * Planned public API (docs/VSHARES_ARCHITECTURE.md section 7):
- *   track(event)                   Milestone 7
- *   recordClientEvents(batch)      Milestone 7
- *   getFunnelReport(input)         Milestone 7
- *   getValidationMetrics(input)    Milestone 7
- *
- * Reserved for later releases: flow map, Platform Alignment Score,
- * value-leak detection, retention signals.
+ * Reserved: the flow map, Platform Alignment Score and value-leak detection.
  */
-export {};
+
+export { track, setAnalyticsConsent, getFirstWinMetrics } from "./actions";
+export { eventNames, eventDefinitions, type EventName } from "./events";

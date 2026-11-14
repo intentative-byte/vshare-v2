@@ -15,5 +15,6 @@ export {
   setInteraction,
   listSaved,
   getProgressSummary,
+  getNextBestFacts,
   type InteractionState,
 } from "./actions";

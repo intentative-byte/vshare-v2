@@ -1,7 +1,8 @@
 # VSHARES — Verification procedure for the live authentication tests
 
 - Date: 2026-11-14 · Status: **procedure ready; the tests have not been run.**
-- Release blocker: the eight tests in `tests/e2e/auth-live.spec.ts` must pass before production readiness.
+- Release blocker: the live-service tests must pass before production readiness. As of Milestone 5 there are **32** of them: authentication (8), catalogue (6), feed (8) and the first learning win (10).
+- **Step-by-step setup for a development project is in `VSHARES_SUPABASE_SETUP.md`.**
 
 ## Why they are outstanding
 
@@ -17,8 +18,8 @@ cannot start. The tests are therefore skipped with a stated reason rather than
 replaced by weaker checks that would pass without a service.
 
 ```
-8 skipped
-54 passed
+32 skipped
+74 passed
 ```
 
 They run automatically as soon as a service is reachable. No code change is

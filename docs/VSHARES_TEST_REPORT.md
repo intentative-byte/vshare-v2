@@ -390,3 +390,66 @@ rises for someone with longer to spend.
 Unchanged: live authentication, the rendered catalogue and the rendered feed
 all need a configured service. 22 tests are written and skipped. Source links
 remain unverified and no card can be published until they pass.
+
+## 2026-11-14 — Milestone 5 (First Learning Win, library and progress)
+
+| Check | Command | Result |
+|---|---|---|
+| Unit tests | `npm test` | **135 passed, 0 failed** (10 files; 7 new for Next Best Move) |
+| Database policies and functions | `npm run test:db` | **18 files, 238 assertions, 0 failed** (18 new) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **74 passed, 32 skipped, 0 failed** |
+| Hygiene, lint, types, build | — | pass (17 routes) |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+### Live versus simulated — stated plainly
+
+| Layer | Status |
+|---|---|
+| Database rules, policies and functions | **Real.** PostgreSQL 16, the real migrations, policies evaluated against the same request claims the API layer sets. 238 assertions |
+| Ranking, session assembly, explanations, next best move | **Real.** Pure functions, 135 unit tests, including a worked example on the actual batch-1 cards |
+| Rendered journeys with content | **Not verified.** 32 end-to-end tests written and skipped for want of a service |
+| Source links | **Not verified.** No outbound network here; the database refuses to publish an unchecked card |
+
+Nothing in this milestone is reported as passing that has not run.
+
+### Measurement coverage (18 new assertions)
+
+`180_measurement.sql` proves the consent design behaves as described:
+
+- A signed-out visitor contributes to the aggregate and **nothing identifying them is stored**.
+- A signed-in account that has not granted consent is treated the same way.
+- With consent granted, an identified event appears, and the aggregate still counts exactly once.
+- **Withdrawing consent deletes the events collected under it, without the person having to ask** — a database trigger does it.
+- Events are private to the person: another account cannot read them, and **neither can staff**. Product questions are answered from the aggregate.
+- An event name nobody defined is refused, so a typo cannot create a metric.
+- A person can delete their own events at any time.
+- The first-win funnel computes a mean time to first completion from real recorded values.
+
+### Against the Milestone 5 verification list
+
+| Requirement | Status |
+|---|---|
+| Guest-first learning | **Implemented and tested** at the database layer; the rendered journey is one of the skipped tests |
+| Completion persistence | **Tested** — survives, counts once, keeps the card's length at the time |
+| Saved-library isolation | **Tested** — row-level security, cross-account refusals |
+| Progress calculations | **Tested** — derived from completion records only |
+| Recommendation relevance | **Tested** — 7 rule tests plus the ranker's 52 |
+| Empty states | **Tested** — ranker, session assembly, library, feed and first-win screens each handle nothing-to-show |
+| Session boundaries | **Tested** — 6 tests |
+| Accessibility | **Tested** — axe on every route, both viewports, 0 violations |
+| Mobile responsiveness | **Tested** — no horizontal scroll at 360px, 44px tap targets |
+| Database security | **Tested** — 238 assertions |
+| No duplicate progress counting | **Tested** — completing twice counts once; impressions are never progress |
+
+### Defects found and fixed during the milestone
+
+| What | How found | Fix |
+|---|---|---|
+| The first-win component read the clock during render | Lint rule | The arrival time is set in an effect, so a re-render cannot restart the timer |
+| Test blocks shared analytics rows, and read a staff-only table as a non-staff viewer | Running the new tests | The reset now clears both analytics tables; the assertions read the aggregate as staff |
+| The Explore category page still carried a notice saying the feed would arrive in Milestone 4 | Reviewing after the feed landed | Removed. A test now checks that any remaining "Not built yet" notice names the milestone that delivers it |
+
+### Still not verified
+
+Unchanged in kind, larger in number: 32 live-service tests. `docs/VSHARES_SUPABASE_SETUP.md`
+gives the exact steps to clear them, needs only the publishable key, and costs nothing.

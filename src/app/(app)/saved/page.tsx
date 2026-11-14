@@ -1,29 +1,31 @@
 import { PageHeader } from "@/components/ui/page-header";
-import { EmptyState } from "@/components/ui/states";
-import { FoundationNotice } from "@/components/ui/foundation-notice";
+import { ErrorState } from "@/components/ui/states";
+import { SavedLibrary } from "@/components/library/saved-library";
+import { isDatabaseConfigured } from "@/platform/env";
 
 export const metadata = { title: "Saved" };
 
-export default function SavedPage() {
+export default async function SavedPage() {
+  if (!isDatabaseConfigured()) {
+    return (
+      <>
+        <PageHeader eyebrow="Saved" title="Your knowledge library" />
+        <ErrorState
+          title="Your library is unavailable"
+          body="This instance has no service configured to store anything."
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <PageHeader
         eyebrow="Saved"
         title="Your knowledge library"
-        description="What you saved, and what you have finished."
+        description="What you kept, and what you have finished."
       />
-
-      <EmptyState
-        title="Nothing saved yet"
-        body="When you save something from your feed it will appear here, alongside everything you have completed."
-        action={{ href: "/learn", label: "Go to Learn" }}
-      />
-
-      <FoundationNotice
-        className="mt-4"
-        milestone="Milestone 5"
-        summary="Saving, the completed history and review reminders are built once the feed and progress tracking are in place."
-      />
+      <SavedLibrary />
     </>
   );
 }

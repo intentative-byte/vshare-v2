@@ -5,6 +5,7 @@ import { Disclosure } from "@/components/ui/disclosure";
 import { ButtonLink } from "@/components/ui/button";
 import { ErrorState } from "@/components/ui/states";
 import { ProfileEditor } from "@/components/account/profile-editor";
+import { ProgressDashboard } from "@/components/account/progress-dashboard";
 import { SignOutButtons } from "@/components/account/sign-out-buttons";
 import { isDatabaseConfigured } from "@/platform/env";
 import { readMyProfile } from "@/modules/profiles";
@@ -76,6 +77,8 @@ export default async function YouPage() {
           </div>
         </Card>
       ) : null}
+
+      <ProgressDashboard />
 
       <ProfileEditor profile={profile} />
 

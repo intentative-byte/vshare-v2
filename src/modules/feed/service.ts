@@ -1,6 +1,14 @@
 import "server-only";
 
-import { assembleSession, explain, rankCandidates, type LearnerContext } from "@/modules/vai";
+import {
+  assembleSession,
+  explain,
+  nextBestMove,
+  rankCandidates,
+  type LearnerContext,
+  type NextBestFacts,
+  type NextBestMove,
+} from "@/modules/vai";
 import type { Card } from "@/modules/content";
 import { findPublishedCard, findPublishedCardById } from "@/modules/content/server";
 import {
@@ -113,6 +121,47 @@ export async function buildSession(options: BuildSessionOptions): Promise<FeedSe
   return { sessionId, cards, isShort: assembled.isShort, size };
 }
 
+/**
+ * The one card to show a visitor who has just chosen a topic.
+ *
+ * No session, no account, nothing recorded: this is the reading step, and a
+ * visitor who only reads is still anonymous. An account appears when they
+ * do something that has to survive — which is pressing "Got it".
+ */
+export async function firstWinCard(topicId: string): Promise<Card | null> {
+  const config = await loadActiveConfig();
+
+  if (!config) {
+    return null;
+  }
+
+  const candidates = await loadCandidates({ topicId, excludeIds: [], limit: 50 });
+
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  // A first card should be short, well reviewed and for a beginner. The
+  // ranker already prefers exactly that when nothing is known about anyone.
+  const ranked = rankCandidates(
+    candidates,
+    {
+      declaredTopicIds: [topicId],
+      affinityByTopic: {},
+      levelByTopic: {},
+      impressionsByContent: {},
+      recentSourceNames: [],
+      preferredMinutes: 10,
+      personalisationEnabled: true,
+      now: Date.now(),
+    },
+    config,
+  );
+
+  const best = ranked[0];
+  return best ? findPublishedCardById(best.candidate.contentId) : null;
+}
+
 export async function explainRecommendation(
   sessionId: string,
   contentId: string,
@@ -135,6 +184,64 @@ export async function explainRecommendation(
     isDiscovery: logged.isDiscovery,
     personalisationEnabled,
   }).reasons;
+}
+
+/**
+ * The next best move, built from the same ranker the feed uses plus what
+ * the person has started and saved.
+ */
+export async function buildNextBestMove(
+  facts: Pick<NextBestFacts, "startedNotFinished" | "savedNotOpened">,
+  options: { personalisationEnabled: boolean; preferredMinutes: number },
+): Promise<NextBestMove> {
+  const config = await loadActiveConfig();
+  const memory = config ? await loadViewerMemory(config.params.repeatWindowHours) : null;
+
+  let topCandidate: NextBestFacts["topCandidate"] = null;
+  let completedCount = 0;
+
+  if (config && memory) {
+    completedCount = memory.excludeIds.length;
+
+    const candidates = await loadCandidates({
+      topicId: null,
+      excludeIds: memory.excludeIds,
+      limit: 50,
+    });
+
+    const ranked = rankCandidates(
+      candidates,
+      {
+        ...memory.context,
+        personalisationEnabled: options.personalisationEnabled,
+        preferredMinutes: options.preferredMinutes,
+        now: Date.now(),
+      },
+      config,
+    );
+
+    const best = ranked[0];
+
+    if (best) {
+      const card = await findPublishedCardById(best.candidate.contentId);
+
+      if (card) {
+        topCandidate = {
+          contentId: card.id,
+          title: card.title,
+          topicName: card.topic.name,
+        };
+      }
+    }
+  }
+
+  return nextBestMove({
+    ...facts,
+    topCandidate,
+    declaredTopicCount: memory?.context.declaredTopicIds.length ?? 0,
+    completedCount,
+    now: Date.now(),
+  });
 }
 
 export async function finishSession(sessionId: string) {
