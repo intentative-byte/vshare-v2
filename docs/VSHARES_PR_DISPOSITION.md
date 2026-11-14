@@ -1,17 +1,17 @@
 # VSHARES — Pull Request and Branch Disposition Report
 
 - Date: 2026-11-14 · Repository: `intentative-byte/vshare-v2`
-- Nothing has been merged, closed or deleted. All branches are retained. Actions below are **recommendations awaiting owner approval**.
+- **Carried out 2026-11-14 with owner approval:** PRs #1, #3, #4 and #5 were closed, each with a comment linking to this report. Every branch is retained; nothing was deleted and no history was rewritten.
 
 ## Summary
 
 | PR | Branch | State | Size vs its base | Recommendation |
 |---|---|---|---|---|
-| #1 Build VShare v2 foundation | `cursor/vshare-v2-foundation-b385` | open | separate rebuild, 2 commits | Close without merging; keep branch as reference |
+| #1 Build VShare v2 foundation | `cursor/vshare-v2-foundation-b385` | **closed** | separate rebuild, 2 commits | Closed without merging; branch kept as reference |
 | #2 Rebuild VShare v2 Next.js app | `cursor/rebuild-vshare-v2-069e` | merged | — | No action; branch can be kept or deleted (fully in `main`) |
-| #3 Prepare Render deployment config | `cursor/render-deployment-readiness-ff8e` | open | 4 files, +29 −4 | Close as superseded |
-| #4 Add safe env diagnostics | `cursor/safe-env-diagnostics-0c16` | open | 8 files, +86 −11 | Close without merging; idea carried forward differently |
-| #5 Make Supabase optional for demo deployment | `cursor/optional-supabase-demo-791a` | open | 35 commits, 140 files under `lib/` | Close without merging; keep branch as concept archive |
+| #3 Prepare Render deployment config | `cursor/render-deployment-readiness-ff8e` | **closed** | 4 files, +29 −4 | Closed as superseded; branch kept |
+| #4 Add safe env diagnostics | `cursor/safe-env-diagnostics-0c16` | **closed** | 8 files, +86 −11 | Closed without merging; the idea is carried forward differently; branch kept |
+| #5 Make Supabase optional for demo deployment | `cursor/optional-supabase-demo-791a` | **closed** | 35 commits, 140 files under `lib/` | Closed without merging; branch kept as the concept archive |
 | #6 Remove internal demo copy from live UX | `cursor/remove-internal-demo-copy-fd7e` | merged | — | No action |
 | #7 Add cleaned DAX GOLD PLUS v7 script | branch no longer on remote | merged | — | Content removed on the rebuild branch; see `VSHARES_SECURITY.md` SEC-2026-001 |
 
@@ -80,9 +80,6 @@ Concepts preserved, mapped to the roadmap:
 | `notifications/framework` | Notification intents | Retention intelligence (consent-based) | R3 |
 | `docs/first-user-test-plan.md` | Manual first-user script | Basis for the M-01 E2E test and the pilot test plan | **MVP** |
 
-## Requested approvals
+## Outstanding
 
-1. Close PRs #1, #3, #4 and #5 with a comment linking to this report, keeping their branches.
-2. Optionally delete the two fully merged branches (`cursor/rebuild-vshare-v2-069e`, `cursor/remove-internal-demo-copy-fd7e`).
-
-No action will be taken on either without explicit approval.
+Optionally delete the two fully merged branches (`cursor/rebuild-vshare-v2-069e`, `cursor/remove-internal-demo-copy-fd7e`), whose commits are entirely contained in `main`. Not done: deleting a branch needs its own approval, and keeping them costs nothing.
