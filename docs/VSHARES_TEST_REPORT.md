@@ -396,8 +396,8 @@ remain unverified and no card can be published until they pass.
 | Check | Command | Result |
 |---|---|---|
 | Unit tests | `npm test` | **135 passed, 0 failed** (10 files; 7 new for Next Best Move) |
-| Database policies and functions | `npm run test:db` | **18 files, 238 assertions, 0 failed** (18 new) |
-| End-to-end, accessibility, headers | `npm run test:e2e` | **74 passed, 32 skipped, 0 failed** |
+| Database policies and functions | `npm run test:db` | **18 files, 243 assertions, 0 failed** (23 new) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **74 passed, 36 skipped, 0 failed** |
 | Hygiene, lint, types, build | — | pass (17 routes) |
 | Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
 
@@ -448,8 +448,9 @@ Nothing in this milestone is reported as passing that has not run.
 | The first-win component read the clock during render | Lint rule | The arrival time is set in an effect, so a re-render cannot restart the timer |
 | Test blocks shared analytics rows, and read a staff-only table as a non-staff viewer | Running the new tests | The reset now clears both analytics tables; the assertions read the aggregate as staff |
 | The Explore category page still carried a notice saying the feed would arrive in Milestone 4 | Reviewing after the feed landed | Removed. A test now checks that any remaining "Not built yet" notice names the milestone that delivers it |
+| **A visitor with no account pressing "Start learning" would have hit an error.** The feed required a session, which contradicts browsing without registering | Reviewing the captured home page and following the link by hand | The feed is now open to anyone: a visitor gets the same ranked cards with nothing recorded about them, and an account appears only when they complete, save, like or skip. Five database assertions and two end-to-end checks hold the line |
 
 ### Still not verified
 
-Unchanged in kind, larger in number: 32 live-service tests. `docs/VSHARES_SUPABASE_SETUP.md`
+Unchanged in kind, larger in number: 36 live-service tests. `docs/VSHARES_SUPABASE_SETUP.md`
 gives the exact steps to clear them, needs only the publishable key, and costs nothing.

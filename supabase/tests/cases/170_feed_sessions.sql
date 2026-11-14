@@ -334,3 +334,31 @@ begin
     'an impression is never progress');
 end;
 $$;
+
+-- A visitor with no account leaves no trace until they act.
+do $$
+begin
+  perform test.reset();
+  perform test.become_anonymous();
+
+  -- There is no session to start and no interaction to record without an
+  -- account; both are refused rather than silently creating one.
+  perform test.refuses(
+    'select public.start_feed_session(null, 7)',
+    'a visitor with no account cannot start a recorded session');
+  perform test.refuses(
+    format('select public.set_interaction(%L, ''complete'')', gen_random_uuid()),
+    'a visitor with no account cannot record progress');
+  perform test.refuses(
+    'select public.set_declared_topics(array[]::uuid[])',
+    'a visitor with no account cannot store preferences');
+
+  perform test.become_owner();
+  perform test.equals(
+    (select count(*)::int from public.feed_sessions), 0,
+    'nothing was created on their behalf');
+  perform test.equals(
+    (select count(*)::int from public.content_interactions), 0,
+    'and nothing was recorded about them');
+end;
+$$;

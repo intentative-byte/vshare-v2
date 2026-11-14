@@ -17,22 +17,31 @@ import { buildNextBestMove, buildSession, explainRecommendation, finishSession }
  * something, which is how browsing stays anonymous until it cannot be.
  */
 
+/**
+ * A session for whoever is asking.
+ *
+ * Open to a visitor with no account: they get the same ranked cards, and
+ * nothing is recorded about them. An account appears when they complete,
+ * save, like or skip something.
+ */
 export const getFeedSession = defineAction({
   name: "feed.getFeedSession",
-  access: "viewer",
+  access: "public",
   input: z
     .object({
       topicId: z.string().uuid().nullable().optional(),
       size: z.number().int().min(1).max(20).optional(),
     })
     .strict(),
-  handler: async (input) => {
-    const preferences = await readMyPreferences();
+  handler: async (input, context) => {
+    const hasAccount = context.viewer !== null;
+    const preferences = hasAccount ? await readMyPreferences() : null;
 
     const session = await buildSession({
       topicId: input.topicId ?? null,
       personalisationEnabled: preferences?.personalisationEnabled ?? true,
       preferredMinutes: preferences?.sessionMinutes ?? 10,
+      persist: hasAccount,
       ...(input.size === undefined ? {} : { size: input.size }),
     });
 

@@ -35,7 +35,12 @@ export type FeedCard = Card & {
 };
 
 export type FeedSession = {
-  sessionId: string;
+  /**
+   * Null for a visitor with no account. They still get a ranked session to
+   * read; nothing is recorded about them until they do something that has
+   * to persist.
+   */
+  sessionId: string | null;
   cards: FeedCard[];
   /** Fewer cards than a full session, because the catalogue ran out. */
   isShort: boolean;
@@ -48,6 +53,11 @@ export type BuildSessionOptions = {
   preferredMinutes: number;
   size?: number;
   now?: number;
+  /**
+   * False for a visitor with no account: build and return the session, but
+   * record nothing. Reading is not an action that requires persistence.
+   */
+  persist: boolean;
 };
 
 export async function buildSession(options: BuildSessionOptions): Promise<FeedSession | null> {
@@ -58,7 +68,20 @@ export async function buildSession(options: BuildSessionOptions): Promise<FeedSe
   }
 
   const size = options.size ?? config.params.sessionSize;
-  const memory = await loadViewerMemory(config.params.repeatWindowHours);
+  // With no account there is no memory to load, and asking for it would
+  // create nothing useful.
+  const memory = options.persist
+    ? await loadViewerMemory(config.params.repeatWindowHours)
+    : {
+        context: {
+          declaredTopicIds: options.topicId ? [options.topicId] : [],
+          affinityByTopic: {},
+          levelByTopic: {},
+          impressionsByContent: {},
+          recentSourceNames: [],
+        },
+        excludeIds: [] as string[],
+      };
 
   const candidates = await loadCandidates({
     topicId: options.topicId,
@@ -68,11 +91,9 @@ export async function buildSession(options: BuildSessionOptions): Promise<FeedSe
   // An empty pool is a real answer, not an error: the catalogue may simply
   // have nothing left for this person right now.
   if (candidates.length === 0) {
-    const emptySessionId = await startSession(options.topicId, size);
+    const emptySessionId = options.persist ? await startSession(options.topicId, size) : null;
 
-    return emptySessionId
-      ? { sessionId: emptySessionId, cards: [], isShort: true, size }
-      : null;
+    return { sessionId: emptySessionId, cards: [], isShort: true, size };
   }
 
   const context: LearnerContext = {
@@ -88,23 +109,21 @@ export async function buildSession(options: BuildSessionOptions): Promise<FeedSe
     declaredTopicIds: context.declaredTopicIds,
   });
 
-  const sessionId = await startSession(options.topicId, size);
+  const sessionId = options.persist ? await startSession(options.topicId, size) : null;
 
-  if (!sessionId) {
-    return null;
+  if (sessionId) {
+    await recordRecommendations(
+      sessionId,
+      assembled.items.map((item) => ({
+        contentId: item.candidate.contentId,
+        position: item.position,
+        score: item.score,
+        components: item.components,
+        isDiscovery: item.isDiscovery,
+        surface: "feed",
+      })),
+    );
   }
-
-  await recordRecommendations(
-    sessionId,
-    assembled.items.map((item) => ({
-      contentId: item.candidate.contentId,
-      position: item.position,
-      score: item.score,
-      components: item.components,
-      isDiscovery: item.isDiscovery,
-      surface: "feed",
-    })),
-  );
 
   // The full card text comes from the catalogue module, so the feed never
   // reaches into content tables itself.

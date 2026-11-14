@@ -61,3 +61,28 @@ test.describe("value session with a catalogue", () => {
     await expect(gotIt).not.toHaveText(/✓/);
   });
 });
+
+test.describe("a visitor with no account", () => {
+  test.skip(!configured, "No database configured for this run.");
+
+  test("gets a readable session without anything being stored about them", async ({ page }) => {
+    await page.goto("/learn");
+
+    await expect(page.getByText(/Card 1 of/)).toBeVisible();
+
+    // Reading is not an action that requires persistence, so no session
+    // cookie should have been set.
+    const cookies = await page.context().cookies();
+    expect(cookies.filter((cookie) => cookie.name.includes("auth"))).toHaveLength(0);
+  });
+
+  test("gets an account the moment they complete something", async ({ page }) => {
+    await page.goto("/learn");
+    await page.getByRole("button", { name: "Got it" }).click();
+
+    await expect(page.getByRole("button", { name: /Got it ✓/ })).toBeVisible();
+
+    const cookies = await page.context().cookies();
+    expect(cookies.filter((cookie) => cookie.name.includes("auth")).length).toBeGreaterThan(0);
+  });
+});

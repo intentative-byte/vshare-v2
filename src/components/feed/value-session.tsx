@@ -47,7 +47,9 @@ export function ValueSession({ session, onRestart }: ValueSessionProps) {
 
   // Impressions are recorded once for the whole session, when it is served.
   useEffect(() => {
-    if (session.cards.length === 0) {
+    // No session id means a visitor with no account: there is nothing to
+    // attribute an impression to, and nothing should be recorded about them.
+    if (session.cards.length === 0 || !session.sessionId) {
       return;
     }
 
@@ -59,7 +61,7 @@ export function ValueSession({ session, onRestart }: ValueSessionProps) {
 
   // The summary is produced by the database from what was really completed.
   useEffect(() => {
-    if (!isFinished || summary) {
+    if (!isFinished || summary || !session.sessionId) {
       return;
     }
 
@@ -245,6 +247,13 @@ export function ValueSession({ session, onRestart }: ValueSessionProps) {
             onClick={async () => {
               if (reasons) {
                 setReasons(null);
+                return;
+              }
+
+              if (!session.sessionId) {
+                setReasons([
+                  "This is ranked on quality and recency. Choose some topics and it will be ranked for you.",
+                ]);
                 return;
               }
 
