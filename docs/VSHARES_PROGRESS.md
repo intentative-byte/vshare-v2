@@ -12,16 +12,24 @@
 |---|---|---|---|
 | D1 | Sign off the Phase 1 documents (spec, architecture, data model, API contracts, security, design system, roadmap) | Approve, with any corrections | M1 |
 | D2 | Approve replacing the legacy application code (`app/`, `components/`, `lib/`, `middleware.ts`, legacy migration, seed, smoke script) on the rebuild branch. It stays in git history and on `main` until you merge | Approve | M1 |
-| D3 | Confirm the Alpaca key pair has been revoked and rotated | — | Release gate; recorded in SEC-2026-001 |
 | D4 | Does a hosted Supabase project or a live Render service exist? If yes, share the project reference / service URL (not keys) so it can be inventoried | — | M8 planning; nothing before |
 | D5 | Launch catalogue: who curates it and how big? | I draft ~100 value cards across 8 topics from real, link-checked resources, flagged AI-assisted; you review before publication | M3 |
 | D6 | Initial topic list for the MVP | Technology & AI · Career · Entrepreneurship · Personal finance · Productivity · Communication · Health & wellbeing · Learning how to learn | M3 |
 | D7 | Analytics for visitors before consent: identifier-free aggregate counts only, or pseudonymous first-party measurement under legitimate interests | Identifier-free until consent | M7 |
 | D8 | PR disposition: close #1, #3, #4, #5 with a link to the report, keep branches | Approve | — |
 | D9 | Validation targets in spec §B1 | Accept as proposed | M7 |
-| D10 | Historical brand assets: supply logo / screenshots, or allow this environment to reach `vshare.lovable.app` so the beta can be audited | Supply screenshots if any exist; otherwise proceed with the specified system | M1 reference screens |
+| D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Project separation and platform directive
+
+Done:
+- Recorded the permanent decisions: VSHARES is independent of all trading projects (D-025); Lovable is not used (D-026); deployment to be chosen separately (D-029).
+- Cross-project audit of every remote branch: the only trading-related files anywhere are the two already removed from this branch (still at the tip of `main` until this branch is merged). No Python files, brokerage or Lovable dependencies, shared configuration, imports or environment variables.
+- Added `npm run check:hygiene` and wired it into CI (verified passing, and verified failing on a planted `.py` file).
+- Added the portability and vendor-boundary section to the architecture; RLS policies now specified against our own SQL helpers.
+- Owner confirmed the leaked credentials are revoked; SEC-2026-001 updated.
 
 ### 2026-11-14 — Phase 1
 
@@ -37,7 +45,7 @@ Done:
 Not done / limitations:
 - CI has not executed yet (it runs on pull requests and on `main`); gitleaks could not be run locally.
 - The legacy demo-mode bypass still exists in legacy code until M1/M2 replaces it.
-- The Lovable beta could not be inspected (host blocked from this environment).
+- The earlier Lovable version was not inspected; it is historical reference only and nothing depends on it.
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 

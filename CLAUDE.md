@@ -1,6 +1,15 @@
 # VSHARES rebuild — engineering instructions
 
-VSHARES is a value acquisition and human capability platform: "Stop doomscrolling. Start value scrolling." The MVP validates value-curated scrolling with ~100 users. Read `docs/VSHARES_PROGRESS.md` first for the current phase, blockers and pending owner decisions.
+VSHARES is an AI-powered value discovery, learning, knowledge-sharing and human capability platform: "Stop doomscrolling. Start value scrolling." The MVP validates value-curated scrolling with ~100 users.
+
+## Project identity (permanent owner decisions)
+
+- VSHARES 2.0 is a fresh, independent project built directly in this GitHub repository with Claude Code.
+- **No Lovable.** Do not use Lovable for generation, backend, hosting or deployment, and do not add Lovable SDKs, dependencies, integrations or deployment configuration. The earlier Lovable version is historical product reference only.
+- **No trading.** VSHARES is completely separate from all DAX / trading / brokerage projects. Never import or reuse trading-bot logic, never connect to brokerage APIs (Alpaca, OANDA, Kraken or any other), and never share environment variables, secrets or infrastructure with another project. If such material appears in this repository, stop and report it.
+- Approved stack: Next.js, React, TypeScript, Tailwind CSS, Next.js server architecture, PostgreSQL via Supabase, Supabase Auth, Vitest, Playwright, database security tests. Deployment platform is undecided — keep the build host-agnostic.
+- All application logic stays in this repository. Supabase is infrastructure behind our own interfaces (`src/platform`); see architecture §9 for the portability rules.
+ Read `docs/VSHARES_PROGRESS.md` first for the current phase, blockers and pending owner decisions.
 
 ## Documents (`docs/`)
 
@@ -26,6 +35,7 @@ VSHARES is a value acquisition and human capability platform: "Stop doomscrollin
 npm ci
 npm run lint
 npm run typecheck
+npm run check:hygiene # no foreign files, forbidden packages or unpinned deps
 npm run test:smoke   # legacy copy-grep only; replaced in M1
 npm run build
 npm audit --omit=dev # must report 0
@@ -34,7 +44,7 @@ npm audit --omit=dev # must report 0
 ## Rules
 
 - Build only what the current milestone in the roadmap calls for. MVP scope is spec Part B; everything else is roadmap. Reserved modules get no code or tables early.
-- One modular application. Modules import each other only through `index.ts`; only `repository.ts` touches the database; the browser never does.
+- One modular application. Modules import each other only through `index.ts`; only `repository.ts` touches the database; the browser never does. No Supabase imports outside `src/platform` and `repository.ts` files; RLS policies use our SQL helpers, not vendor functions.
 - Every mutation goes through the platform action pipeline: rate limit → authenticate → validate (Zod, strict) → authorise → execute → record → uniform result.
 - Every table has RLS and a test proving cross-user isolation. Integrity-critical tables are server-write-only.
 - No authentication bypass of any kind, including for demos or tests.
@@ -50,4 +60,4 @@ npm audit --omit=dev # must report 0
 
 - Legacy application code (`app/`, `components/`, `lib/`, `middleware.ts`) is scheduled for replacement in M1. It still contains a cookie-based auth bypass; do not reuse its patterns.
 - Branch `cursor/optional-supabase-demo-791a` (PR #5) is a concept archive of browser-local heuristics. Do not port code from it.
-- Git history on `main` contains leaked third-party credentials in commit `5db2911`. Do not reproduce them anywhere.
+- Git history on `main` contains a misplaced trading script with (now revoked) third-party credentials in commit `5db2911`. Do not reproduce, restore or reference its contents. History is not to be rewritten without owner approval.

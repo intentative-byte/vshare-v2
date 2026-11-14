@@ -12,7 +12,7 @@
 - Length and format limits are `check` constraints mirrored by Zod schemas.
 - **Row-level security is enabled on every table.** "Server only" = no policy lets a user-scoped client write; changes go through server functions.
 - Foreign keys to a user cascade on delete unless stated, so account deletion is complete by construction.
-- Roles in policies: `anon` (no session), `guest` (anonymous user), `user`, `moderator`, `admin`; checked with `auth.uid()`, the `is_anonymous` JWT claim and `has_role()`.
+- Roles in policies: `anon` (no session), `guest` (anonymous user), `user`, `moderator`, `admin`. Policies never call vendor functions directly: they use our helpers `app.current_user_id()`, `app.is_guest()` and `has_role()`, which today wrap Supabase's `auth.uid()` and the `is_anonymous` JWT claim. Replacing the auth provider means re-implementing those helpers only.
 
 ---
 
@@ -89,7 +89,7 @@ Policies: owner select; owner may set `declared`, `level`; `affinity` server onl
 | `rejection_reason` | text null | shown to submitter |
 | `link_checked_at`, `link_status` | | last automated reachability check (job added with ingestion work; column reserved) |
 
-Constraints: `published` requires `reviewed_by`, `published_at`, ≥ 1 takeaway. Policies: anyone selects `published`; submitter selects own in any status; moderators select all; users insert only with `origin = user_submitted`, `status = pending`, `submitted_by = auth.uid()`, and not as guests; all other writes moderator/admin through server functions.
+Constraints: `published` requires `reviewed_by`, `published_at`, ≥ 1 takeaway. Policies: anyone selects `published`; submitter selects own in any status; moderators select all; users insert only with `origin = user_submitted`, `status = pending`, `submitted_by = app.current_user_id()`, and not as guests; all other writes moderator/admin through server functions.
 
 ### `content_topics`
 (`content_id`, `topic_id`) secondary topics. Public select for published items; moderator write.
@@ -167,6 +167,7 @@ categories ─< topics ─< content_items >─< content_topics
 | Function | Does | Callable by |
 |---|---|---|
 | `handle_new_user()` trigger | Creates `profiles` (generated unique handle) and `preferences` | Auth insert |
+| `app.current_user_id()`, `app.is_guest()` | The only place policies touch the auth provider | Policies |
 | `has_role(role)` | Role check for policies | Policies, server |
 | `set_interaction(content_id, kind, value)` | Validated state change + affinity update + event | Authenticated incl. guests |
 | `record_impressions(content_ids[], session_id)` | Batch impression counters | Authenticated incl. guests |

@@ -1,6 +1,7 @@
 # VSHARES — Architecture
 
-- Version: 1.0 · Date: 2026-11-14 · Stack approved by the owner (Phase 0 decisions §5).
+- Version: 1.1 · Date: 2026-11-14 · Stack approved by the owner (Phase 0 decisions §5; Official Development Platform Directive).
+- VSHARES 2.0 is a fresh, independent engineering project built directly in this GitHub repository with Claude Code. Lovable is not used for generation, backend, hosting or deployment, and nothing in this architecture depends on it. VSHARES shares no code, configuration, credentials or infrastructure with any other project.
 - Companions: `VSHARES_DATA_MODEL.md`, `VSHARES_API_CONTRACTS.md`, `VSHARES_SECURITY.md`, `VSHARES_DECISIONS.md`.
 
 ## 1. Shape
@@ -39,7 +40,7 @@ One **modular monolith**: one Next.js application, one PostgreSQL database (Supa
 | Analytics | First-party events in Postgres | No third-party processor; joins to learning data | PostHog/Mixpanel: revisit at scale |
 | Background work | `pg_cron` + SQL functions | Rollups and cleanup are set-based | Queue + workers: add when work is not SQL-shaped |
 | AI | None in the MVP. `vai` exposes a `ModelProvider` interface with no implementation | Deterministic ranking is testable and free | LLM calls now: cost, no evaluation data |
-| Hosting | Host-agnostic Node build; provider chosen in the release plan | No paid change without approval | — |
+| Hosting | Host-agnostic Node build (`next build` / `next start`, or a container); provider to be selected and approved separately | No paid change without approval; no host-specific APIs in application code | Lovable hosting: excluded by permanent decision |
 | Payments | None | Owner decision | — |
 
 Dependency policy: exact pinned versions, lockfile committed, `npm ci` everywhere, audit in CI, each new dependency justified in the decision log.
@@ -113,7 +114,7 @@ Database clients (only in `platform/db`):
 | Provider | Supabase Auth |
 | Methods | Email magic link (PKCE flow); Google OAuth; anonymous sign-in for guests |
 | Sessions | Access + refresh tokens in HTTP-only, `Secure`, `SameSite=Lax` cookies via `@supabase/ssr`; refreshed in the proxy; server code always verifies with `auth.getUser()`, never reads claims from an unverified cookie |
-| Guests | An anonymous user is created on the first write a guest makes (completing or saving a card) — not on page view. Protected by rate limiting and Supabase's bot protection (CAPTCHA provider to be chosen; free tiers exist). JWT carries `is_anonymous`; RLS and server checks use it to deny guest-forbidden actions (submitting, reporting, public profile) |
+| Guests | An anonymous user (Supabase anonymous sign-in, behind `platform/auth.upgradeGuest`/`ensureGuest`) is created on the first write a guest makes (completing or saving a card) — not on page view. Protected by rate limiting and Supabase's bot protection (CAPTCHA provider to be chosen; free tiers exist). JWT carries `is_anonymous`; RLS and server checks use it to deny guest-forbidden actions (submitting, reporting, public profile) |
 | Upgrade | Registering links an email or Google identity to the same user ID. No data migration. If the email already belongs to an account, the user signs in to that account and is offered a one-time merge of guest completions and saves (server function, tested) |
 | Redirects | `next` parameter accepted only as a same-site relative path (fixed in legacy code on 2026-11-14; reimplemented in `platform/auth`) |
 | Route protection | Proxy redirects unauthenticated requests away from `(app)` routes that need an account and from `/admin`. This is a UX convenience; the security boundary is steps 2–4 of the pipeline plus RLS |
@@ -192,7 +193,30 @@ Replacing or augmenting the ranker (learned weights, embeddings, LLM re-ranking)
 - Error tracking service and uptime monitoring: recommended; third-party, so each needs approval.
 - Migrations: forward-only timestamped SQL via Supabase CLI; applied to local and CI databases from scratch on every run; destructive changes need owner approval and a backup.
 
-## 9. Scaling path (only when measurements require it)
+## 9. Portability and vendor boundaries
+
+All application logic lives in this repository and is ours. Supabase supplies infrastructure (a Postgres database, an auth service, object storage); it does not hold business rules beyond row-level policies and a small set of SQL functions that are themselves versioned here as plain SQL.
+
+Each external dependency sits behind one boundary, so it can be replaced without touching the modules:
+
+| External concern | Boundary in our code | What a migration would involve |
+|---|---|---|
+| Database | Standard PostgreSQL; forward-only SQL migrations in `supabase/migrations`; all queries inside module `repository.ts` files | Run the same migrations on any Postgres host; swap the client inside `platform/db` and the repositories. No Supabase-only extensions are required by the schema |
+| Row-level security identity | Policies call our own SQL helpers `app.current_user_id()`, `app.is_guest()` and `has_role()` — never `auth.uid()` directly | Re-implement three small functions for the new auth source; policies stay unchanged |
+| Authentication | `platform/auth` exposes `getSession()`, `requireUser()`, `signInWithEmail()`, `signInWithProvider()`, `signOut()`, `upgradeGuest()`; modules never import the Supabase auth client | Write a new adapter behind the same interface; migrate user identifiers (UUIDs are kept) |
+| File storage | `platform/storage` with `put()`, `getUrl()`, `remove()`; the database stores paths, not vendor URLs | New adapter for any S3-compatible store; copy objects |
+| Email | `platform/email` with `send(template, to, data)` | New adapter |
+| Rate-limit store | `platform/rate-limit` interface over a Postgres table | Swap for Redis or similar behind the same interface |
+| AI models | `vai` `ModelProvider` interface (no implementation in the MVP) | One adapter per provider; ranking and progress logic never depend on a model |
+| Analytics | `analytics.track()` and our own tables | Add an exporter; data is already ours |
+| Hosting | Standard Node build; configuration only through environment variables validated in `platform/env` | Deploy the same build elsewhere |
+| Scheduled jobs | SQL functions invoked by a scheduler (`pg_cron` on Supabase) | Any cron that can call a SQL function or an authenticated internal endpoint |
+
+Honest assessment of remaining coupling: Supabase Auth is the tightest dependency (session cookies, anonymous users, OAuth configuration). Replacing it is real work, contained in `platform/auth`, the three SQL helpers and a user-ID-preserving data migration — not a rebuild. Everything else is a like-for-like swap.
+
+Rules that keep this true: no Supabase imports outside `src/platform` and `repository.ts` files (lint-enforced); no vendor URLs or vendor-specific IDs stored in tables; no host-specific runtime APIs; no secrets or configuration shared with any other project.
+
+## 10. Scaling path (only when measurements require it)
 
 1. Partial indexes and rollups; partition `analytics_events` by month.
 2. Edge-cache public card pages.
@@ -200,7 +224,7 @@ Replacing or augmenting the ranker (learned weights, embeddings, LLM re-ranking)
 4. Add a job queue for non-SQL work.
 5. Extract a service only where a module has a distinct scaling or security profile.
 
-## 10. Verified vs unverified
+## 11. Verified vs unverified
 
 - Verified in this session: the legacy app builds, lints and type-checks on the upgraded, pinned dependencies.
 - Not verifiable from this environment: whether a live Supabase project or Render deployment exists. No credentials or environment variables for either are present, and outbound access is restricted. The plan therefore assumes none exists and develops against a local Supabase stack; see "Decisions required" in the progress log.

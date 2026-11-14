@@ -10,12 +10,14 @@
 
 | | |
 |---|---|
-| What | An API key ID and secret for a brokerage (Alpaca, paper-trading endpoint configured) were hardcoded in `DAX_GOLD_PLUS_v7_LEARNING_READY.py`, a script unrelated to VSHARES. |
+| What | An API key ID and secret for a brokerage (Alpaca, paper-trading endpoint configured) were hardcoded in `DAX_GOLD_PLUS_v7_LEARNING_READY.py`. The owner has confirmed this file belongs to a separate, unrelated trading project and reached this repository by mistake. VSHARES has no connection to any brokerage or trading system. |
 | Where | Commit `5db2911` (PR #7, merged 2026-06-27). Present at the tip of `main`. Not present on any other remote branch (all seven checked on 2026-11-14). The PR's source branch no longer exists on the remote. |
 | Exposure | The repository is public; the values have been readable by anyone since 2026-06-27 and must be assumed copied. |
 | Found | 2026-11-14, during Phase 0 audit. |
 | Actions taken | File and its `CLEANUP_NOTES.md` removed from the working tree on the rebuild branch (commit `03ff06d`); notes verified to contain no VSHARES information. Secret scanning added to CI. `.gitignore` extended for key and credential files. |
-| **Still required** | **Owner: revoke and rotate the key pair.** Removal from the tree does not invalidate it. Status: owner has stated they will handle this separately; not verifiable from here. |
+| Credential status | **Revoked — confirmed by the owner on 2026-11-14.** Not independently verifiable from this environment. |
+| Cross-project audit | 2026-11-14: every remote branch searched for brokerage, trading-bot and exchange terms, Python or notebook files, and foreign dependencies or environment variables. The only matches anywhere are the two removed files at the tip of `main`. No shared configuration, imports, dependencies or environment variables exist. |
+| Safeguards added | gitleaks over full history in CI; `npm run check:hygiene` in CI (fails on Python/notebook/key/env files, on brokerage or Lovable packages, and on unpinned dependencies); `.gitignore` rules for credential files. |
 | Still present | In git history on `main` and in any clone or fork. History has not been rewritten (owner instruction). Until the rebuild branch is merged, the file is also still at the tip of `main`. |
 | Scanner note | `.gitleaks.toml` excludes that single historical path so the scanner can fail on anything new. Remove the exclusion if history is ever rewritten. |
 
@@ -82,7 +84,7 @@ From `VSHARES_PROJECT_DISCOVERY.md` §5.
 
 | ID | Finding | Status |
 |---|---|---|
-| S1 | Hardcoded credentials | **Mitigated in tree; rotation pending with owner; history unchanged** (SEC-2026-001) |
+| S1 | Hardcoded credentials | **Closed**: file removed on the rebuild branch; credentials revoked (owner-confirmed); history unchanged by owner instruction (SEC-2026-001) |
 | S2 | Open redirect in auth callback | **Fixed** in legacy code (commit `e1c1ac6`), behaviour checked against six inputs; reimplemented with tests in M2 |
 | S3 | Demo-mode cookie auth bypass | **Open** in legacy code; removed when the legacy app is replaced in M1/M2 (owner-approved). Not patched in place because the legacy smoke test and pages depend on it and the code is being deleted |
 | S4 | No input validation | Open in legacy; designed out (pipeline step 3) — M1 |

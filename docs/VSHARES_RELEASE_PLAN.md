@@ -15,7 +15,7 @@ Put the MVP in front of roughly 100 invited users and measure the validation tar
 | Local Supabase | Not yet set up for the rebuild | Planned in M1 |
 | Hosted Supabase project | **Unknown** | No credentials or project reference in the repository or this environment |
 | Render deployment | **Unknown** | `render.yaml` exists; whether a service was ever created from it cannot be checked from here |
-| Lovable beta | Reported by the owner; not reachable from this environment | — |
+| Lovable beta | Historical reference only. Not used for hosting, deployment or any production function (permanent owner decision) | — |
 
 The plan assumes no production environment exists. If one does, it is inventoried before anything is changed, and existing data is neither migrated nor deleted without approval.
 
@@ -34,7 +34,7 @@ Preview and production are separate Supabase projects with separate keys. Secret
 
 | Item | Options | Cost note |
 |---|---|---|
-| Hosting | Render (existing blueprint) or Vercel | Free tiers sleep or carry usage limits; a paid tier is advisable for a pilot |
+| Hosting | To be selected and approved separately. Candidates: Render (existing blueprint), Vercel, or any Node/container host — the build is host-agnostic. Lovable is excluded | Free tiers sleep or carry usage limits; a paid tier is advisable for a pilot |
 | Supabase plan | Free or Pro | Free has no point-in-time recovery, limited backups and pauses inactive projects — not recommended for real user data |
 | Supabase region | London or an EU region | — |
 | Email delivery for magic links | A transactional email provider with a verified sending domain | Supabase's built-in sender is rate-limited and for testing only |
@@ -51,7 +51,7 @@ All must be true, and recorded in `VSHARES_TEST_REPORT.md`:
 
 1. Every MVP acceptance criterion (spec §B5) has a passing automated test.
 2. CI green on the release commit: lint, typecheck, unit, database, integration, E2E, accessibility, audit, secret scan.
-3. Security: ASVS L2 walk-through complete; no open critical or high findings; SEC-2026-001 rotation confirmed by the owner.
+3. Security: ASVS L2 walk-through complete; no open critical or high findings.
 4. Privacy: privacy notice and terms approved by the owner; consent behaviour verified; export and deletion verified on the preview environment.
 5. Content: launch catalogue reviewed and approved by the owner; every link checked within 7 days of launch.
 6. Operations: backups enabled and one restore drill performed; health and readiness checks monitored; runbook written; first admin account bootstrapped.
