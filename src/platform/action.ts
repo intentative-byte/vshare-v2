@@ -39,7 +39,15 @@ export type ActionDefinition<Input, Output> = {
  */
 type ViewerResolver = () => Promise<Viewer | null>;
 
-let resolveViewer: ViewerResolver = async () => null;
+/**
+ * The default resolver loads the authentication adapter on first use. The
+ * import is deferred so that unit tests, which register their own resolver,
+ * never pull server-only code into a plain Node environment.
+ */
+let resolveViewer: ViewerResolver = async () => {
+  const { getViewer } = await import("@/platform/auth/provider");
+  return getViewer();
+};
 
 export function setViewerResolver(resolver: ViewerResolver): void {
   resolveViewer = resolver;

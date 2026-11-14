@@ -66,15 +66,15 @@ test("the client layer hydrates under the content security policy", async ({ pag
     }
   });
 
-  await page.goto("/you");
+  await page.goto("/path");
 
-  const toggle = page.getByRole("button", { name: "Why that matters" });
+  const toggle = page.getByRole("button", { name: "What it will be based on" });
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
   await toggle.click();
 
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText(/Activity, understanding and applied work/)).toBeVisible();
+  await expect(page.getByText(/Topics you choose, what you have finished/)).toBeVisible();
   expect(consoleErrors, consoleErrors.join("\n")).toEqual([]);
 });
 

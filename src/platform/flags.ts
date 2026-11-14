@@ -9,7 +9,7 @@
 
 export const featureFlags = {
   /** Account creation and sign-in. Implemented in Milestone 2. */
-  authentication: false,
+  authentication: true,
   /** Catalogue reads from the database. Implemented in Milestone 3. */
   catalogue: false,
   /** Ranked feed sessions. Implemented in Milestone 4. */

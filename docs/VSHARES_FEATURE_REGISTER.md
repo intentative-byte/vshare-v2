@@ -28,13 +28,13 @@ Date: 2026-11-14. Targets revised after the owner's Phase 0 decisions; statuses 
 |---|---|---|---|---|---|---|---|---|
 | F-001 | Black/gold responsive design system | Premium identity, consistent UI | OWNER-H; BRANCH PR #1 (theme) | P0 | — | **implemented** (tokens, primitives, gallery) | **tested** (axe on 7 routes, both viewports) | MVP |
 | F-002 | Five-tab navigation PATH / LEARN / EXPLORE / SAVED / YOU | Core information architecture | OWNER-H; BRANCH PR #5 (feed/explore/saved/profile bottom nav) | P0 | F-001 | **implemented** (five tabs, every route live) | **tested** (routes, active state, keyboard, tap size) | MVP |
-| F-003 | First Learning Win: guest learning without registration | First-session activation | OWNER-H (problem); CODE has a cookie bypass, not a real guest mode | P0 | F-024, F-031 | not started | none | MVP |
-| F-004 | Account creation: magic link | Low-friction secure sign-in | CODE | P0 | — | not started | none | MVP |
+| F-003 | First Learning Win: guest learning without registration | First-session activation | OWNER-H (problem); CODE has a cookie bypass, not a real guest mode | P0 | F-024, F-031 | guest accounts **implemented**; the learning win itself needs the catalogue | guest rules **tested** (database) | MVP |
+| F-004 | Account creation: magic link | Low-friction secure sign-in | CODE | P0 | — | **implemented** | unit + schema tested; live journey awaiting an auth service | MVP |
 | F-005 | Account creation: Google | Faster sign-up | NEW (CODE has GitHub OAuth behind a flag) | P0 | F-004 | not started | none | MVP |
-| F-006 | Guest → account upgrade keeping progress | Do not lose the first win | NEW | P0 | F-003, F-004 | not started | none | MVP |
-| F-007 | Profile (name, handle, avatar) | Identity | CODE | P0 | F-004 | not started | none | MVP |
+| F-006 | Guest → account upgrade keeping progress | Do not lose the first win | NEW | P0 | F-003, F-004 | **implemented**, including collision handling | merge rules **tested** (16 database assertions) | MVP |
+| F-007 | Profile (handle, display name, visibility) | Identity | CODE | P0 | F-004 | **implemented** (avatar deferred to M6) | **tested** (database + schemas) | MVP |
 | F-008 | Interests and goals | Personalisation inputs | CODE (topics, goals, daily minutes) | P0 | F-020 | not started | none | MVP |
-| F-009 | Role-based access (learner, creator, moderator, admin) | Server-side authorisation | OWNER-H (admin); no code | P0 | F-004 | not started | none | MVP |
+| F-009 | Role-based access (learner, moderator, admin) | Server-side authorisation | OWNER-H (admin); no code | P0 | F-004 | **implemented** | **tested** (14 database assertions) | MVP |
 | F-010 | Data export and account deletion | User control, UK GDPR | OWNER-P | P0 | F-007 | not started | none | MVP |
 | F-011 | Personalisation off switch | User control | OWNER-P | P0 | F-031 | not started | none | MVP |
 | F-012 | Notification preferences | User control | OWNER-P | P1 | — | not started | none | R3 |

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getEnv } from "@/platform/env";
+import { getEnv, isDatabaseConfigured } from "@/platform/env";
 import { logger } from "@/platform/logger";
 
 export const dynamic = "force-dynamic";
@@ -10,12 +10,21 @@ export const dynamic = "force-dynamic";
  * "not ready" to the caller and the reason goes to the logs only
  * (docs/VSHARES_PR_DISPOSITION.md, PR #4).
  *
- * The database check lands with the first migration in Milestone 2. Until
- * then readiness is configuration validity.
+ * From Milestone 2 the account system needs a database, so an instance
+ * without one is not ready to serve.
  */
 export function GET() {
   try {
     getEnv();
+
+    if (!isDatabaseConfigured()) {
+      logger.warn({ event: "readiness_not_configured", outcome: "database_missing" });
+      return NextResponse.json(
+        { status: "not_ready" },
+        { status: 503, headers: { "cache-control": "no-store" } },
+      );
+    }
+
     return NextResponse.json({ status: "ready" }, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     logger.error({

@@ -1,23 +1,37 @@
 /**
  * Profiles module — identity and account lifecycle.
  *
- * Owns the profile record, role reads, guest upgrade, data export and
- * account deletion. Depends on the platform auth and database interfaces
- * only, never on a vendor SDK.
+ * Owns the profile record, role reads and the guest-to-account path.
+ * Depends on the platform auth and database interfaces only, never on a
+ * vendor SDK.
  *
- * Implemented so far: nothing. Milestone 1 builds the foundation only.
+ * Implemented: sign-in by magic link, provider sign-in, guest accounts,
+ * guest upgrade with collision handling, sign-out including everywhere,
+ * profile read and partial update.
  *
- * Planned public API (docs/VSHARES_API_CONTRACTS.md section 3):
- *   getMyProfile()                 Milestone 2
- *   updateProfile(input)           Milestone 2
- *   setAvatar(file)                Milestone 2
- *   requestMagicLink(input)        Milestone 2
- *   startGoogleSignIn(input)       Milestone 2
- *   signOut(input)                 Milestone 2
- *   requestEmailChange(input)      Milestone 6
- *   exportMyData()                 Milestone 6
- *   deleteAccount(input)           Milestone 6
- *
- * Reserved for later releases: public profiles and follows.
+ * Planned: avatar upload and email change (Milestone 6), data export and
+ * account deletion (Milestone 6), public profiles and follows (later).
  */
-export {};
+
+export {
+  requestMagicLink,
+  startProviderSignIn,
+  signOut,
+  ensureGuest,
+  upgradeGuest,
+  recordGuestCollision,
+  getMyProfile,
+  updateProfile,
+  readViewer,
+  readMyProfile,
+} from "./actions";
+
+export {
+  handleSchema,
+  displayNameSchema,
+  updateProfileInput,
+  signInInput,
+  type UpdateProfileInput,
+} from "./schemas";
+
+export type { Profile } from "./types";

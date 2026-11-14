@@ -99,3 +99,71 @@ Environment: Node 22, clean `npm ci`, no database. End-to-end suites run against
 ### Visual evidence
 
 `docs/evidence/milestone-1/` holds a screenshot of every route at phone (Pixel 7) and desktop (1280×900) width, regenerated with `scripts/capture-screenshots.mjs`.
+
+## 2026-11-14 — Milestone 1 continuous integration
+
+The workflow executed for the first time on pull request #8 (draft, not for merging).
+Run: `43596430142`, commit `badb964`.
+
+| Job | Result |
+|---|---|
+| Hygiene, lint, types, unit tests, build | **pass** |
+| End-to-end, accessibility and security headers | **pass** |
+| Dependency audit | **pass** |
+| Secret scan (gitleaks, full history) | **pass** |
+
+This closes the Milestone 1 item that was previously reported as unverified. The secret scan, which could not run locally, passes over the whole history with the documented exclusion for the removed file (SEC-2026-001).
+
+## 2026-11-14 — Milestone 2 (identity, authentication and profiles)
+
+### What is real and what is not
+
+The owner asked for tests against a real local stack to be distinguished from tests that are not. This environment has PostgreSQL 16 but no container runtime, so the Supabase CLI stack (which runs the auth service) cannot start here.
+
+| Layer | Status |
+|---|---|
+| **Database: real.** Real PostgreSQL 16.15, the real migrations applied in order, policies evaluated against the same `request.jwt.claims` setting the API layer sets per request. Nothing mocked. | **tested** |
+| **Application logic: real unit tests** for every input contract and for the authorisation pipeline. | **tested** |
+| **Auth service journeys** (sending a magic link, exchanging a code, creating an anonymous session, linking an identity): the adapter is written, but the service is not reachable here. | **implemented, not verified** |
+
+### Results
+
+| Check | Command | Result |
+|---|---|---|
+| Database policies and functions | `npm run test:db` | **9 files, 89 assertions, 0 failed** |
+| Unit tests | `npm test` | **76 passed, 0 failed** (6 files) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **54 passed, 8 skipped, 0 failed** |
+| Hygiene, lint, types, build | — | pass |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+The 8 skipped tests are the live auth journeys in `tests/e2e/auth-live.spec.ts`. They are skipped with a stated reason and run automatically the moment an auth service is configured. They were not replaced with weaker checks that would pass without one.
+
+### Database coverage (89 assertions, real PostgreSQL)
+
+| File | Proves |
+|---|---|
+| `010_signup.sql` | Creating an account provisions exactly one profile and one preferences row, private by default, with a handle we generate |
+| `020_handle_collision.sql` | Three accounts whose provider data suggests the same handle all get created with distinct handles; awkward and empty seeds still produce valid handles. This is the legacy defect C1, now impossible |
+| `030_profile_isolation.sql` | With two distinct users: neither can read or change the other's profile or preferences; a cross-account update changes nothing; identity and creation date cannot be rewritten; a viewer can neither insert nor delete a profile row |
+| `040_public_profiles.sql` | A public profile is readable by others and by a signed-out visitor; a private one is not; a signed-out visitor is refused the preferences table outright |
+| `050_guest_restrictions.sql` | A guest has their own profile and preferences and can edit them, cannot make themselves public, cannot touch another account, and the guest flag comes from the verified session rather than an editable column |
+| `060_roles.sql` | A new account holds no role; a viewer cannot self-grant by insert or through the function; an administrator can grant and revoke; the last administrator cannot be removed; a moderator is not an administrator; a moderator can read profiles for moderation and a plain account cannot |
+| `070_account_merge.sql` | On a collision the merge is recorded and the existing account's display name, session length and personalisation choice are all unchanged; only the target may merge; self-merges, guest targets, registered sources and unknown accounts are refused; the record cannot be edited or deleted and is private to the target; deleting the account removes its merge records |
+| `080_account_deletion.sql` | Deleting an account removes its profile, preferences and role grants and leaves other accounts untouched; stale guests are purged while recent guests and old registered accounts are kept; a viewer cannot run the purge |
+| `090_constraints.sql` | Handle length, character and uniqueness rules, session-length bounds and display-name length are enforced in the database, not only in the application |
+
+### Defects found and fixed during the milestone
+
+| What | How it was found | Fix |
+|---|---|---|
+| Handle generation called a pgcrypto function that is unreachable under the pinned empty search path, so **every account creation would have failed** on a project where the extension lives in another schema | Database test run | Uses the core `pg_catalog.gen_random_uuid()` instead; no extension dependency |
+| The append-only guard on merge records blocked the cascade from account deletion, so **deleting an account would have failed** once a merge existed | Database test run | The guard now covers edits only; deletion happens solely through the account cascade, and no user-scoped client holds a delete grant. A test now asserts erasure works |
+| The sign-in and You pages had no `h1` in their unavailable state | End-to-end run | Both states carry a heading |
+| The proxy imported the vendor SDK directly, crossing the architecture boundary | Lint rule added in Milestone 1 | Session refresh moved into `src/platform/auth/session.ts` |
+
+### Still not verified
+
+| Item | What is needed |
+|---|---|
+| Magic-link sign-in end to end, code exchange, anonymous session creation, identity linking, sign-out | A running auth service: a container runtime for the local stack, or a Supabase project. Owner decision; no paid tier required |
+| The JavaScript-to-database path (module repositories) | The same. The SQL those repositories call is covered by the database suite |

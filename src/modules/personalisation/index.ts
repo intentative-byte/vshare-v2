@@ -1,21 +1,17 @@
 /**
- * Personalisation module — declared interests and preference memory.
+ * Personalisation module — preference memory.
  *
- * Owns the user's chosen topics, the affinity learned from their own
- * interactions, their level per topic and the personalisation switch.
- * Everything it stores is visible to the user and can be corrected or reset.
+ * Owns what the viewer has told us and what we have learned from their own
+ * actions. Everything it stores is visible to them and can be corrected or
+ * reset.
  *
- * Implemented so far: nothing.
+ * Implemented: stored preferences (personalisation switch, analytics
+ * consent, session length).
  *
- * Planned public API (docs/VSHARES_API_CONTRACTS.md section 3):
- *   getPreferenceMemory()          Milestone 4
- *   setTopics(input)               Milestone 4
- *   setTopicLevel(input)           Milestone 4
- *   resetLearnedPreferences(input) Milestone 4
- *   updatePreferences(input)       Milestone 4
- *   getLearnerProfile()            Milestone 4, consumed by vai
- *
- * Reserved for later releases: User DNA adds skills, pace, formats and gaps
- * to getLearnerProfile() without changing its callers.
+ * Planned: declared topics and learned affinity (Milestone 4), the User DNA
+ * view (later).
  */
-export {};
+
+export { getMyPreferences, updatePreferences, readMyPreferences } from "./actions";
+export { updatePreferencesInput, type UpdatePreferencesInput } from "./schemas";
+export type { Preferences } from "./types";

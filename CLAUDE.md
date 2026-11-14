@@ -36,13 +36,16 @@ npm ci
 npm run lint
 npm run typecheck
 npm run check:hygiene # no foreign files, forbidden packages or unpinned deps
-npm run test:smoke   # legacy copy-grep only; replaced in M1
+npm test             # unit tests
+npm run test:db      # policies and functions against a real PostgreSQL
+npm run test:e2e     # browser, accessibility and security headers
 npm run build
 npm audit --omit=dev # must report 0
 ```
 
 ## Rules
 
+- The database is the security boundary. Every new table gets row-level security and a test in `supabase/tests/cases/` proving two distinct users cannot reach each other's rows. Policies call `app.current_user_id()` and `app.is_guest()`, never vendor functions.
 - Build only what the current milestone in the roadmap calls for. MVP scope is spec Part B; everything else is roadmap. Reserved modules get no code or tables early.
 - One modular application. Modules import each other only through `index.ts`; only `repository.ts` touches the database; the browser never does. No Supabase imports outside `src/platform` and `repository.ts` files; RLS policies use our SQL helpers, not vendor functions.
 - Every mutation goes through the platform action pipeline: rate limit → authenticate → validate (Zod, strict) → authorise → execute → record → uniform result.
@@ -55,6 +58,14 @@ npm audit --omit=dev # must report 0
 - Report status precisely: implemented, tested, mocked, blocked, production-verified. Never claim a check passed without running it.
 - End each milestone with a VSHARES ENGINEERING REPORT (format in the owner's directive) and update the progress log, test report and feature register.
 - Ask the owner before: deleting existing material, closing PRs or deleting branches, destructive database changes, anything that costs money, deploying, touching production data, rewriting git history or force-pushing.
+
+## Local database
+
+```bash
+DATABASE_URL=postgres://user@host:port/postgres npm run test:db
+```
+
+Applies `supabase/tests/harness.sql`, then every migration, then each file in `supabase/tests/cases/` in its own transaction. The harness stands in for what the hosted platform provides and is never applied to a real project.
 
 ## Hazards
 

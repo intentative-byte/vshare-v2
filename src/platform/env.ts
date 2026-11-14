@@ -131,6 +131,18 @@ export function requireServiceRoleKey(): string {
   return env.SUPABASE_SERVICE_ROLE_KEY;
 }
 
+/**
+ * Whether the database and auth service are configured.
+ *
+ * Used to show an honest "unavailable" state rather than a crash, and to
+ * mark the environment as not ready. It is never used to substitute demo
+ * data for real data.
+ */
+export function isDatabaseConfigured(): boolean {
+  const env = getEnv();
+  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+}
+
 export function isProduction(): boolean {
   return getEnv().NODE_ENV === "production";
 }

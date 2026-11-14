@@ -2,15 +2,17 @@
 
 ## Current state
 
-- **Phase:** 2 Core application. Milestone 1 (foundation and shell) is complete and tested; Milestone 2 (identity and profiles) is next and has not started.
+- **Phase:** 2 Core application. Milestones 1 and 2 are complete and tested; Milestone 3 (catalogue and moderation) is next and has not started.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
-- **What works:** the application shell, five-tab navigation, design system, platform layer, security headers and the test suites. 54 unit tests and 44 end-to-end tests pass.
-- **What does not exist yet:** database, accounts, catalogue, feed, saving, progress. Every destination has a real route; unfinished ones say so on the page.
+- **What works:** the application shell and design system; the identity schema with row-level security on every table; profiles, roles, preferences, guest accounts, guest upgrade and collision handling; sign-in and sign-out surfaces. 76 unit tests, 89 database assertions and 54 end-to-end tests pass.
+- **What is implemented but not verified here:** the auth service journeys (magic link, code exchange, anonymous session, identity linking). This environment has PostgreSQL but no container runtime, so the auth service cannot run. See the test report.
+- **What does not exist yet:** catalogue, feed, saving, progress. Every destination has a real route; unfinished ones say so on the page.
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
+| D14 | **An auth service is needed to finish verifying Milestone 2.** Either enable a container runtime in this environment for the local stack, or create a Supabase project (the free tier is enough) and share its URL and anon key — never the service-role key | Create a project; it costs nothing and unblocks live verification | Completing Milestone 2 verification |
 | D11 | Review the Milestone 1 reference screens (`docs/evidence/milestone-1/`) and confirm the visual direction, or say what to change | Confirm | M2 polish |
 | D12 | Confirm the font pairing: Sora for headings, Inter for body, both self-hosted | Confirm | M2 |
 | D13 | Google sign-in needs an OAuth client created in your Google Cloud account (free). Shall I proceed with magic link only in M2 and add Google when the client exists? | Magic link first, Google as soon as the client exists | M2 |
@@ -23,6 +25,21 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 2: identity, authentication and profiles
+
+Done:
+- Identity migration: `profiles`, `user_roles`, `preferences` and `account_merges`, with row-level security on every table, generated handles, the signup trigger, role functions, the non-destructive merge function and the stale-guest purge.
+- Auth adapter behind `platform/auth`: magic link, Google (ready, no credentials needed to build), anonymous guests, in-place upgrade, collision handling, sign-out and sign-out everywhere. The action pipeline now resolves the viewer through it.
+- Profiles and personalisation modules with validated partial updates; sign-in page and form; auth callback using the tested redirect sanitiser; the You tab rebuilt around a real profile.
+- Session refresh moved into the platform layer after the architecture lint rule caught the proxy importing the vendor SDK.
+- A database test harness and 89 assertions against real PostgreSQL; the suite added to continuous integration against a PostgreSQL service.
+- Continuous integration executed for the first time on pull request #8 and all four jobs passed, including the secret scan. The Milestone 1 verification gap is closed.
+
+Two defects were found that would have broken production: account creation would have failed on a project where pgcrypto lives in another schema, and account deletion would have failed once a merge record existed. Both are fixed and covered by tests.
+
+Not done:
+- The auth service journeys cannot be exercised here (no container runtime). The tests for them exist and are skipped with a stated reason.
 
 ### 2026-11-14 — Milestone 1: foundation and shell
 
