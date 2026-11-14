@@ -14,5 +14,6 @@ export {
   listCategories,
   findCategoryWithTopics,
   findPublishedCard,
+  findPublishedCardById,
   listPublishedCardsByTopic,
 } from "./repository";

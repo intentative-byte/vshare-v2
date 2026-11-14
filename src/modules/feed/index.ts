@@ -1,17 +1,16 @@
 /**
- * Feed module — session assembly for the LEARN tab.
+ * Feed module — the Value Feed.
  *
- * Queries candidates, asks vai to rank them, and assembles a finite session
- * of seven cards that ends with a closing card rather than refilling. The
- * platform is not designed to keep anyone scrolling.
+ * Asks the catalogue for eligible cards, asks VAI to rank them, and
+ * assembles a finite session that ends with a summary rather than refilling.
+ * The platform is not designed to keep anyone scrolling.
  *
- * Implemented so far: nothing.
+ * Implemented: session assembly, impressions, explanations and session
+ * summaries.
  *
- * Planned public API (docs/VSHARES_API_CONTRACTS.md section 3):
- *   getFeedSession(input)          Milestone 4
- *   getFirstWinCard(input)         Milestone 5
- *
- * Reserved for later releases: sessions that mix lessons, quizzes and
- * reviews alongside value cards.
+ * Reserved: sessions that mix lessons, quizzes and reviews alongside value
+ * cards, once the learning engine exists.
  */
-export {};
+
+export { getFeedSession, recordImpressions, whyThis, endFeedSession } from "./actions";
+export type { FeedCard, FeedSession } from "./service";

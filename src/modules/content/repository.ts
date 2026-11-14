@@ -161,6 +161,23 @@ export async function findPublishedCard(slug: string): Promise<Card | null> {
   return toCard(data as unknown as CardRow);
 }
 
+export async function findPublishedCardById(contentId: string): Promise<Card | null> {
+  const supabase = createPublicClient();
+
+  const { data, error } = await supabase
+    .from("content_items")
+    .select(cardSelect)
+    .eq("id", contentId)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return toCard(data as unknown as CardRow);
+}
+
 export async function listPublishedCardsByTopic(topicSlug: string, limit = 24): Promise<Card[]> {
   const supabase = createPublicClient();
 

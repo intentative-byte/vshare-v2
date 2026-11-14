@@ -1,26 +1,41 @@
 /**
- * VAI module — ranking, recommendation and explanation.
+ * VAI — Value Artificial Intelligence.
  *
- * The intelligence layer, built as our own application logic. Ranking is a
- * deterministic weighted score over recorded signals, and every
- * recommendation is logged with the components that produced it so it can be
- * explained to the user and evaluated later.
+ * The intelligence layer, built as our own application logic. In this
+ * version VAI is a deterministic recommendation engine, not a generative
+ * model: the same inputs always produce the same order, every score breaks
+ * down into named components, and every explanation is generated from the
+ * components that actually applied.
  *
- * No model provider is wired in. `ModelProvider` is an interface with no
- * implementation: expensive AI services are introduced only on demonstrated
- * need, and never for grading, progress or ranking decisions.
+ * No model provider is wired in and none is needed. `ModelProvider` is an
+ * interface with no implementation, so a hosted model can be added later
+ * without any feature depending on one.
  *
- * Implemented so far: nothing.
- *
- * Planned public API (docs/VSHARES_ARCHITECTURE.md section 6):
- *   rankCandidates(candidates, context)  Milestone 4
- *   buildSession(ranked, options)        Milestone 4
- *   explain(contentId, sessionId)        Milestone 4
- *   getNextBest()                        Milestone 4
- *
- * Reserved for later releases: Next Best Move across learning and applied
- * work, mentor explanations grounded in stored content, explicit memory
- * records, adaptive difficulty, retention signals.
+ * Implemented: the ranker, session assembly and explanations.
+ * Planned: Next Best Move across learning and applied work, a grounded
+ * mentor, adaptive difficulty, retention signals.
  */
 
+export {
+  rankCandidates,
+  scoreCandidate,
+  declaredInterestComponent,
+  learnedAffinityComponent,
+  qualityComponent,
+  levelFitComponent,
+  engagementQualityComponent,
+  freshnessComponent,
+  timeFitComponent,
+  type Candidate,
+  type LearnerContext,
+  type Level,
+  type RankingConfig,
+  type RankingParams,
+  type RankingWeights,
+  type ScoreComponents,
+  type ScoredCandidate,
+} from "./ranker";
+
+export { assembleSession, type AssembledSession, type SessionItem } from "./session";
+export { explain, type Explanation } from "./explain";
 export type { ModelProvider, ModelRequest, ModelResponse } from "./model-provider";

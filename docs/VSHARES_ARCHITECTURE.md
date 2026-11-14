@@ -1,6 +1,6 @@
 # VSHARES — Architecture
 
-- Version: 1.1 · Date: 2026-11-14 · Stack approved by the owner (Phase 0 decisions §5; Official Development Platform Directive).
+- Version: 1.2 · Date: 2026-11-14 · Stack approved by the owner (Phase 0 decisions §5; Official Development Platform Directive).
 - VSHARES 2.0 is a fresh, independent engineering project built directly in this GitHub repository with Claude Code. Lovable is not used for generation, backend, hosting or deployment, and nothing in this architecture depends on it. VSHARES shares no code, configuration, credentials or infrastructure with any other project.
 - Companions: `VSHARES_DATA_MODEL.md`, `VSHARES_API_CONTRACTS.md`, `VSHARES_SECURITY.md`, `VSHARES_DECISIONS.md`.
 
@@ -127,55 +127,90 @@ Database clients (only in `platform/db`):
 
 ## 6. Feed ranking specification (VAI ranker v1)
 
-Deterministic and transparent: the same inputs always give the same order.
+Implemented in `src/modules/vai/ranker.ts`. Deterministic: the same inputs
+always produce the same order, which is what makes a recommendation
+explainable, testable and comparable between configurations.
 
-### Stage 1 — candidate query (SQL)
+Nothing here optimises for clicks, dwell time or session length. The one
+popularity signal is a completion rate, not a click rate.
 
-Published cards, excluding for this user: completed; skipped; marked not useful; shown in the last `repeat_window_hours` (default 48) without being opened. Scope: the user's topics (declared or learned), or one chosen topic. Limit 200, newest first. If fewer than one session's worth remain, widen to sibling topics in the same category, then to all topics; the closing card says so honestly.
+### Stage 1 — candidates (SQL)
 
-### Stage 2 — score (pure function, `modules/vai/service.ts`)
+Published cards only, enforced by the query and again by row-level security.
+Excluded for this viewer: completed, skipped, marked not useful, or shown
+within the repeat window (48 hours) without being opened. That is why a
+completed card cannot dominate the feed and a skip genuinely changes what
+comes next. Scope: the chosen topic, or all topics. Limit 200.
 
-`score = Σ weight_i × component_i`, every component in [0, 1].
+### Stage 2 — score (pure function)
 
-| Component | Definition | Default weight |
+`score = Σ weightᵢ × componentᵢ − penalties`, every component in [0, 1].
+
+| Component | Weight | What it measures |
 |---|---|---|
-| `declared_interest` | 1 if the card's primary topic is a declared topic; 0.5 if only a secondary topic matches; else 0 | 0.30 |
-| `learned_affinity` | The user's affinity for the card's primary topic (see below) | 0.20 |
-| `quality` | Editorial quality score / 100 | 0.20 |
-| `level_fit` | 1 if card level equals the user's level for the topic; 0.5 if one step away; 0 if two. Level starts at beginner and steps up after 5 completions at the current level in that topic; the user can override it | 0.10 |
-| `freshness` | `exp(−age_days / 90)` from publish date | 0.05 |
-| `time_fit` | 1 if estimated minutes ≤ the user's preferred session length (default 10), decaying linearly to 0 at 4× | 0.05 |
-| `engagement_quality` | Platform-wide completion rate of the card, Bayesian-smoothed toward the global mean with a prior of 20 impressions — so new cards are neither punished nor boosted | 0.10 |
+| `declaredInterest` | 0.30 | 1 if the card's primary topic is one the person chose, 0.5 if only a secondary topic matches, else 0 |
+| `learnedAffinity` | 0.20 | Affinity for the topic, learned from their own completions, saves, likes and skips. 0.2 for a topic with no history |
+| `quality` | 0.20 | Editorial quality score ÷ 100 |
+| `levelFit` | 0.10 | 1 at the person's level, 0.5 one step away, 0 two steps away |
+| `engagementQuality` | 0.10 | Completion rate among people shown the card, smoothed towards a 0.35 prior with a weight of 20 impressions |
+| `freshness` | 0.05 | `exp(−ageDays / 90)` |
+| `timeFit` | 0.05 | 1 within the person's session length, falling to 0 at four times it |
 
-Penalties (subtracted after the sum): previously shown and not opened: −0.05 per impression, capped at −0.15; same source as a card completed in the last 24 h: −0.05.
+Penalties, subtracted after the sum:
 
-Ties are broken by `published_at` descending, then `id` — fully deterministic.
+| Penalty | Size |
+|---|---|
+| Shown before and not opened | −0.05 per impression, capped at −0.15 |
+| Same source as something completed in the last day | −0.05 |
 
-**Learned affinity** per user and topic: starts at 0.5 for declared topics, 0.2 otherwise. Updated by interaction with an exponential moving average toward a target: complete → 1.0 (α 0.15), save or like → 1.0 (α 0.10), skip → 0.0 (α 0.10), not useful → 0.0 (α 0.20). Opening alone changes nothing. Stored in `user_topics.affinity`; visible and resettable in YOU.
+Ties break on publication date, then on id, so the ordering is total and does
+not depend on the order candidates arrived in.
+
+**The smoothing matters.** A card with three impressions and three
+completions does not leap to the top, and a card with none is neither
+punished nor flattered: with no data the component is exactly the prior, a
+stated assumption rather than an invented statistic.
+
+**Learned affinity** starts at 0.5 for a declared topic and 0.2 otherwise,
+and moves by an exponential average towards a target: complete → 1.0 at rate
+0.15; save or like → 1.0 at 0.10; skip → 0.0 at 0.10; marked not useful →
+0.0 at 0.20. Opening alone changes nothing. It is visible and resettable on
+the YOU tab, and no client can write it directly.
 
 ### Stage 3 — session assembly
 
-Take the ordered list and build a session of `session_size` (default 7): no more than 2 consecutive cards from the same topic and no more than 2 from the same source per session; one "discovery" slot (position 5) is given to the best-scoring card from a topic adjacent to the user's interests, labelled as such. The session ends with a closing card: progress made in this session and the Next Best option — never an automatic refill.
+Seven cards (configurable), with no more than two consecutive from one topic
+and no more than two from any one source. Position five goes to the best card
+from outside the person's declared topics, marked so the interface can say
+why. If the variety rules cannot all be met the session is still filled:
+variety is a preference, an empty slot is not an improvement.
+
+The session ends. There is no refill and no infinite scroll; starting another
+is a deliberate act.
 
 ### Modes
 
 | Mode | Components used |
 |---|---|
-| Personalised (default for accounts) | All |
-| Guest, first session | `quality`, `engagement_quality`, `freshness`, within the chosen topic; beginner level preferred |
-| Personalisation off | `quality`, `freshness`, explicitly chosen topics only |
+| Personalised (default) | All |
+| Personalisation off | `declaredInterest`, `quality`, `engagementQuality`, `freshness`. Nothing learned about the person, and no penalties |
+| New account | The same formula. With no history, `learnedAffinity` sits at its floor and `engagementQuality` at the prior, so quality and the chosen topic decide |
 
-### Explanation and logging
+### Evidence and explanation
 
-Each served card stores its component breakdown in `recommendations`. "Why this?" renders the top two contributing components as sentences ("You chose Personal Finance", "Rated highly by our curators"). Weights and thresholds live in `ranking_configs` (versioned, one active, change audited); the active version is recorded with each recommendation so results can be compared between versions.
+Every served card is logged in `recommendations` with its component
+breakdown and the configuration version in force. "Why this?" reads that row
+and turns the components that actually contributed into sentences. A reason
+the ranker did not use cannot appear, and if the log is missing the interface
+says so rather than inventing one.
 
-### Next Best (PATH tab)
+### Changing the weights
 
-One recommendation, chosen by ordered rules over the same data: (1) a card opened but not completed in the last 7 days → "Finish …"; (2) a saved card not yet opened → "You saved this …"; (3) otherwise the top-scoring candidate → "Next for you …"; (4) no topics chosen → "Pick a topic". The reason shown is the rule that fired.
-
-### Evolution
-
-Replacing or augmenting the ranker (learned weights, embeddings, LLM re-ranking) requires showing an improvement on logged outcomes against v1. Until then v1 stays.
+Weights and parameters live in `ranking_configs`, versioned, one active at a
+time, readable by anyone and writable only by an administrator. A past
+recommendation can still be explained by the weights that produced it.
+Replacing the ranker with anything learned must beat version 1 on logged
+outcomes first.
 
 ## 7. Analytics
 

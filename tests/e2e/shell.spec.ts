@@ -48,7 +48,8 @@ test("a visitor can walk from the home page into a category", async ({ page }) =
 });
 
 test("unfinished destinations say so rather than looking complete", async ({ page }) => {
-  await page.goto("/learn");
+  // Learn and Explore are built now; Path is not, and says so.
+  await page.goto("/path");
 
   await expect(page.getByText("Not built yet")).toBeVisible();
   await expect(page.getByText(/Planned for Milestone/)).toBeVisible();

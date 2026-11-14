@@ -2,13 +2,14 @@
 
 ## Current state
 
-- **Phase:** 2 Core application complete. Milestones 1, 2 and 3 are built and tested; Milestone 4 (Value Feed and VAI ranking) is next and has not started.
+- **Phase:** 3 Value Feed. Milestones 1 to 4 are built and tested; Milestone 5 (First Learning Win, library and progress) is next and has not started.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
 - **What works:** the application shell and design system; the identity schema with row-level security on every table; profiles, roles, preferences, guest accounts, guest upgrade and collision handling; sign-in and sign-out surfaces. 76 unit tests, 89 database assertions and 54 end-to-end tests pass.
 - **What is implemented but not verified here:** the auth service journeys (magic link, code exchange, anonymous session, identity linking). This environment has PostgreSQL but no container runtime, so the auth service cannot run. See the test report.
 - **What also works:** the catalogue — database-driven categories and topics, value cards with version history, moderation, reporting, the admin queue, public card pages with attribution, and an audit log. 166 database assertions pass.
 - **Awaiting review:** the first 10 value cards, in `VSHARES_CATALOGUE_BATCH_1.md`. Seeded as drafts; none can be published because their links are unchecked.
-- **What does not exist yet:** the ranked feed, saving and progress. Every destination has a real route; unfinished ones say so on the page.
+- **What also works:** the Value Feed — VAI's deterministic ranker, finite seven-card sessions, "Why this?" explanations from logged evidence, interactions, preference memory and session summaries. 119 unit tests and 220 database assertions pass.
+- **What does not exist yet:** the guest first-learning-win journey end to end, the saved library screen and the progress dashboard. Every destination has a real route; unfinished ones say so on the page.
 
 ## Decisions required
 
@@ -29,6 +30,20 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-14 — Milestone 4: the Intelligent Value Feed
+
+Done:
+- Feed migration: preference memory, per-viewer interactions, platform counters, versioned ranking configurations, sessions and a recommendation log with component breakdowns. Interactions and affinity are writable only through functions.
+- VAI ranker v1: a deterministic weighted sum over seven named components with two penalties, documented factor by factor in the architecture. 43 unit tests cover determinism, cold start, each component, repetition, personalisation off, and that re-weighting genuinely reorders.
+- Finite seven-card sessions with variety rules and one discovery slot; explanations generated from the logged components, so no unused reason can appear.
+- The Learn tab: card position, session progress, category, time, save, like, skip, "Got it", source attribution, "Why this?", and a session summary that counts only what was finished.
+- Measured query performance on 5,000 cards and 30,000 interactions, which found a sequential scan and an index that made it eight times faster.
+- The editorial checklist, and Productivity candidates prepared for batch 2 without writing the cards.
+
+Not done:
+- The live journeys still need a configured service; 22 tests are written and skipped.
+- Batch 1 remains draft and unverified.
 
 ### 2026-11-14 — Milestone 3: catalogue, content management and moderation
 

@@ -246,3 +246,111 @@ All four were found by the tests, and three would have caused failures in produc
 | Every source link in batch 1 | Network access. The checker is written and works; this environment refuses all outbound requests. **No card can be published until it passes**, enforced by the database |
 | The rendered catalogue with real data | A configured database; 6 tests are written and skipped |
 | Live authentication journeys | Unchanged from Milestone 2; 8 tests written and skipped. Procedure in `VSHARES_VERIFICATION_PROCEDURE.md` |
+
+## 2026-11-14 — Milestone 4 (Intelligent Value Feed and VAI ranking)
+
+| Check | Command | Result |
+|---|---|---|
+| Unit tests | `npm test` | **119 passed, 0 failed** (8 files; 43 new for the ranker, session and explanations) |
+| Database policies and functions | `npm run test:db` | **17 files, 220 assertions, 0 failed** (54 new) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **66 passed, 22 skipped, 0 failed** |
+| Hygiene, lint, types, build | — | pass (16 routes) |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+The 22 skips are the live journeys: authentication (8), catalogue (6) and
+feed (8). Each is written and skipped with a stated reason, and runs the
+moment a service is configured.
+
+### Database query performance — measured, not assumed
+
+`npm run measure:feed` builds a scratch database with **5,000 published
+cards, 30,000 interactions and 2,000 topic preferences**, then runs each
+query five times under `EXPLAIN ANALYZE`.
+
+| Query | Median |
+|---|---|
+| Candidate pool (exclusions applied, limit 200) | **0.48 ms** |
+| Viewer memory (topics and interactions) | 0.14 ms |
+| Saved library | 0.03 ms |
+| Progress summary (completions only) | 0.07 ms |
+| Published card by slug | 0.12 ms |
+
+**A real optimisation came out of measuring.** The candidate query for a
+session spanning all topics was doing a sequential scan over every published
+card — 5.15 ms, reading 4,940 rows to return 200 — because the existing
+partial index is topic-first. Adding `content_items_published_recent_idx`
+turned it into an index scan reading only the rows needed: **5.15 ms → 0.60
+ms, an eight-fold improvement**, confirmed over three runs.
+
+### Ranker coverage (43 unit tests)
+
+| Area | What is established |
+|---|---|
+| Determinism | Identical inputs give an identical score and breakdown; the order does not depend on the order candidates arrive in; exact ties break on publication date then id |
+| Declared interests | A chosen topic outranks an unchosen one of equal quality, and cannot be outweighed by quality alone at the approved weights; a secondary topic counts for half |
+| Quality | A better-reviewed card outranks a worse one, all else equal |
+| Level fit | Full marks at the person's level, half a step away, zero two steps away; beginner assumed when nothing is known |
+| Engagement quality | Exactly the prior with no data; pulled towards the prior on a tiny sample; approaches the observed rate with 2,000 impressions; never leaves [0,1] |
+| Freshness and time | Gentle decay that cannot reorder on its own at weight 0.05; time fit full inside the chosen session length, zero at four times it |
+| Repetition | A card shown and not opened is penalised, the penalty is capped so nothing is buried for ever, and a just-read source is penalised |
+| Cold start | With nothing known, ranking falls to quality, engagement and freshness, and every candidate still scores above zero |
+| Personalisation off | Everything learned is ignored, including penalties, while quality, freshness and an explicitly chosen topic still apply |
+| Weight changes | Re-weighting towards quality genuinely reorders the feed, so a configuration change is a real lever |
+
+### Session and explanation coverage (19 unit tests)
+
+Exactly seven cards by default; positions numbered without gaps; no card
+twice; honest when the catalogue is short or empty; configurable length;
+reproducible. No more than two consecutive cards from a topic, at most two
+from one source, and the session is still filled when those rules conflict.
+One discovery slot at position five when the person has declared topics,
+none when they have not, and no gap when there is nothing outside their
+topics.
+
+Explanations name the strongest real contribution first, never claim a
+reason that contributed nothing, say when a card is there to widen the
+picture, mention a repetition penalty when one applied, say when
+personalisation is off, and always give at least one sentence.
+
+### Database coverage added (54 assertions)
+
+| File | Proves |
+|---|---|
+| `160_interactions.sql` | Opening is recorded but does not complete; completing twice counts once; counters move exactly once; the card's length at completion is kept; saves and likes can be undone and completing clears a skip; **unpublished content cannot be completed, saved or given an impression**; progress cannot be inserted or edited directly; one person's history and preference memory are invisible to another |
+| `170_feed_sessions.sql` | Chosen topics are recorded and unticking works; a chosen level is stored and marked as the person's own; **affinity cannot be written directly**; completing something raises affinity without swinging it to the maximum; resetting affinities restores the starting point; resetting history clears skips but keeps completions; an unknown reset scope is refused; a session records the configuration version; recommendations and their component breakdowns are logged; the summary counts only what was finished and the minutes of the card actually completed; another account can neither end, write into, attribute impressions to, nor read someone else's session; **a guest can choose topics, run a session, complete and save, all on their own account**; impressions count per showing and are never progress |
+
+### Against the Milestone 4 testing requirements
+
+| # | Requirement | Status |
+|---|---|---|
+| 1 | Deterministic ranking | **Tested** — 3 tests |
+| 2 | Cold-start recommendations | **Tested** — 2 tests |
+| 3 | Topic relevance | **Tested** — 3 tests |
+| 4 | Ranking weight changes | **Tested** |
+| 5 | Duplicate prevention | **Tested** — no card twice in a session; idempotent interactions |
+| 6 | Completed-content handling | **Tested** — excluded from candidates; completing twice counts once |
+| 7 | Skip behaviour | **Tested** — excluded, and affinity moves down |
+| 8 | Guest personalisation | **Tested** at the database layer |
+| 9 | Account preference persistence | **Tested** |
+| 10 | Seven-card session boundaries | **Tested** — 6 tests |
+| 11 | Session summaries | **Tested** — counts only completions |
+| 12 | Recommendation explanations | **Tested** — 6 tests, including that no unused reason appears |
+| 13 | Published-content-only enforcement | **Tested** at both layers |
+| 14 | Access control | **Tested** — cross-account refusals on every feed table and function |
+| 15 | Mobile and desktop accessibility | **Tested** — axe on every route at both viewports, 0 violations |
+| 16 | Empty catalogue behaviour | **Tested** — ranker, session assembly and the interface each handle it |
+| 17 | Database query performance | **Measured** — table above |
+
+### Defects found and fixed during the milestone
+
+| What | How found | Fix |
+|---|---|---|
+| The all-topics candidate query did a sequential scan over the whole catalogue | Performance measurement | A partial index on publication date; 5.15 ms → 0.60 ms |
+| The feed client set state synchronously inside an effect, risking cascading renders | Lint rule | Restructured with a cancellation flag and an attempt counter |
+| My own synthetic performance loader was refused by the publication constraint | Running it | The constraint was right; the loader now creates drafts, versions them, then publishes |
+
+### Still not verified
+
+Unchanged: live authentication, the rendered catalogue and the rendered feed
+all need a configured service. 22 tests are written and skipped. Source links
+remain unverified and no card can be published until they pass.
