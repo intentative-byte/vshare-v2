@@ -97,6 +97,20 @@ server-side and never in a browser or in chat) because they call `rollup_day`,
 | 7.7 | The first-win time is recorded once, and a reload does not report a faster one | Auth service |
 | 7.8 | A learner signed in cannot reach the dashboard | Auth service |
 
+### Milestone 8 — admin interface (5 checks, `admin-live.spec.ts`)
+
+| # | Check | Needs |
+|---|---|---|
+| 8A.1 | An admin creates a category and it appears in the list | Auth service, admin account |
+| 8A.2 | A new card enters as a draft and cannot publish without a link check | Auth service, moderator account |
+| 8A.3 | A moderator does not see taxonomy management succeed (DB refuses) | Auth service, moderator account |
+| 8A.4 | The audit log lists recorded actions for an admin | Auth service, admin account |
+| 8A.5 | A card's version history keeps every version | Auth service, moderator + a card |
+
+The database layer for all of these is covered and **passing** in
+`supabase/tests/cases/230_admin_access.sql` (14 assertions). What is skipped is
+only the rendered journey through a real sign-in.
+
 ### Operational, not yet written as tests
 
 | # | Check | Needs |
@@ -109,7 +123,7 @@ server-side and never in a browser or in chat) because they call `rollup_day`,
 
 ## 4. Order to clear them in
 
-1. Create the development project (`VSHARES_SUPABASE_SETUP.md`) → clears 2.x, 3.x, 6.1–6.3, 6.6, 7.7, 7.8.
+1. Create the development project (`VSHARES_SUPABASE_SETUP.md`) → clears 2.x, 3.x, 6.1–6.3, 6.6, 7.7, 7.8, 8A.1–8A.5.
 2. Check the first ten source links where the web is reachable, then publish them → clears 4.x, 5.x, 6.4, 6.5.
 3. Add a privileged client to the scheduler and run one rollup → clears 7.1–7.6 and O.1, O.2.
 4. Measure the 60-second benchmark (5.6) and record the real number.
@@ -118,10 +132,14 @@ server-side and never in a browser or in chat) because they call `rollup_day`,
 
 | | Count |
 |---|---|
-| Written and skipped | 62 |
+| Written and skipped | 72 (62 + 10 admin-interface journeys added in M8) |
 | Passing without a service | 90 |
-| Of the skipped, needing only a database or auth service | 59 |
+| Of the skipped, needing only a database or auth service | 69 |
 | Of the skipped, needing a privileged client as well | 3 |
+
+The count rises because Milestone 8 **added** the admin interface and its live
+journeys, not because any check was removed. No skipped test has ever been
+deleted or weakened to lower this number (D-037).
 
 **None of these may be reported as passing until it has run.** When one does run,
 record the result in `VSHARES_TEST_REPORT.md` with the date and the environment.

@@ -13,6 +13,8 @@ import { DataRights } from "@/components/account/data-rights";
 import { seedCategories } from "@/modules/content";
 import { ColumnChart, RankedBars, StatTile } from "@/components/admin/charts";
 import { findMetric } from "@/modules/analytics";
+import { TaxonomyManager } from "@/components/admin/taxonomy-manager";
+import { CardForm } from "@/components/admin/card-form";
 
 export const metadata = { title: "Component gallery" };
 
@@ -117,6 +119,78 @@ export default function ComponentGalleryPage() {
             }))}
           />
           <DataRights />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg text-white">Admin interface</h2>
+        <p className="mt-2 text-sm text-silver-dim">
+          The catalogue and taxonomy management surfaces, drawn here with{" "}
+          <strong className="text-text">mock data so the layout can be reviewed</strong>. The real
+          pages live under <code>/admin</code> and need a staff account; nothing here can save,
+          because there is no session.
+        </p>
+        <div className="mt-4 rounded-[var(--radius-card)] border border-border bg-bg p-4">
+          <TaxonomyManager
+            categories={[
+              {
+                id: "00000000-0000-4000-8000-000000000001",
+                slug: "personal-finance",
+                name: "Personal finance",
+                description: "Making money work for what matters to you.",
+                sortOrder: 3,
+                isHighImpact: true,
+                archivedAt: null,
+                topicCount: 4,
+              },
+              {
+                id: "00000000-0000-4000-8000-000000000002",
+                slug: "communication",
+                name: "Communication",
+                description: "Saying what you mean so it lands.",
+                sortOrder: 5,
+                isHighImpact: false,
+                archivedAt: null,
+                topicCount: 3,
+              },
+            ]}
+            topics={[
+              {
+                id: "00000000-0000-4000-8000-000000000011",
+                slug: "budgeting",
+                name: "Budgeting",
+                sortOrder: 1,
+                categoryId: "00000000-0000-4000-8000-000000000001",
+                categoryName: "Personal finance",
+                archivedAt: null,
+              },
+              {
+                id: "00000000-0000-4000-8000-000000000012",
+                slug: "clear-writing",
+                name: "Clear writing",
+                sortOrder: 1,
+                categoryId: "00000000-0000-4000-8000-000000000002",
+                categoryName: "Communication",
+                archivedAt: "2026-11-01T00:00:00Z",
+              },
+            ]}
+          />
+        </div>
+        <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-bg p-4">
+          <h3 className="mb-3 font-display text-white">New card form</h3>
+          <CardForm
+            topics={[
+              {
+                id: "00000000-0000-4000-8000-000000000011",
+                slug: "budgeting",
+                name: "Budgeting",
+                sortOrder: 1,
+                categoryId: "00000000-0000-4000-8000-000000000001",
+                categoryName: "Personal finance",
+                archivedAt: null,
+              },
+            ]}
+          />
         </div>
       </section>
 

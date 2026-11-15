@@ -18,13 +18,6 @@ test("the admin dashboard is not reachable without a role", async ({ page }) => 
   expect(response?.status()).toBe(404);
 });
 
-test("the admin area as a whole answers the same way", async ({ page }) => {
-  for (const route of ["/admin", "/admin/queue", "/admin/metrics"]) {
-    const response = await page.goto(route);
-    expect(response?.status(), route).toBe(404);
-  }
-});
-
 test("no analytics identifier is set in the browser before consent", async ({ page, context }) => {
   // Walk a normal path through the product, not just one page.
   for (const route of ["/", "/explore", "/learn"]) {

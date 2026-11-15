@@ -1,20 +1,20 @@
 ## Current state
 
-- **Phase:** 7 essentials, complete. Milestones 1 to 7 are built and tested; Milestone 8 (hardening and release preparation) is next and has not started.
+- **Phase:** 11 (MVP-level hardening), in progress. Milestones 1 to 7 are built and tested; Milestone 8 is **in progress and incomplete** because live verification is blocked.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
-- **Verified this session:** 177 unit tests, 381 database assertions over 22 files against real PostgreSQL 16, 90 end-to-end tests passing and 62 skipped, lint and types clean, 21 routes built, 0 production-dependency advisories.
-- **What works:** the shell and design system; identity with row-level security on every table; the catalogue with versions, moderation, reporting and an audit log; the Value Feed with VAI's deterministic ranker and explanations from logged evidence; the first learning win with no account; the saved library and progress; submissions, sharing, export and account deletion; and now measurement — derived daily rollups, reconciliation, suppression, a metrics dictionary and an admin dashboard where every figure carries what it does not mean.
-- **What is implemented but not verified here:** everything that needs an auth service. 62 end-to-end checks are written and skipped with stated reasons, listed in `VSHARES_LIVE_VERIFICATION.md`.
-- **Deliberately not enabled:** the guest purge is not scheduled (the dry run is approved, the destructive run is not), and the analytics rollup is not scheduled because no deployment platform has been chosen. `VSHARES_SCHEDULED_JOBS.md` has the configuration for both.
-- **Not claimed:** full account erasure is proven at the database layer, not end to end. The 60-second first-win benchmark has never been measured on a real journey.
-- **Awaiting review:** the first 10 value cards. Seeded as drafts; none can publish because their links are unchecked.
-- **Release blockers:** listed in the feature register under "Outstanding before public release" — chiefly the missing admin catalogue and taxonomy interface, the 62 live checks, and the unchecked source links.
+- **Headline:** the application is internally complete and passes everything that can run without a live service, but **it is not production-ready.** 72 authentication-dependent checks have never run, full erasure is unverified end to end, and no catalogue card can be published until its links are checked. `VSHARES_RELEASE_DASHBOARD.md` is the single honest view.
+- **Verified this session:** 192 unit tests, 395 database assertions over 23 files against real PostgreSQL 16, 90 end-to-end passing and 72 skipped, 0 axe violations on every route and component, a backup/restore drill executed 9/9, 25 routes built, 0 production advisories.
+- **Built this milestone:** the admin catalogue and taxonomy interface (`/admin/taxonomy`, `/admin/cards/*`, `/admin/audit`) — the one feature release-blocker from M3. Guarded in three layers and proven by DB tests that call the functions as the wrong role.
+- **Executed this milestone:** a real backup-and-restore drill (pg_dump/pg_restore), a security review (3 low/info findings, all fixed), and front-end performance measurement (~224 KB first-load JS, within budget).
+- **Blocked on a live service (D17):** the 72 live checks, end-to-end erasure, the 60-second first-win benchmark, Core Web Vitals on real journeys, a manual screen-reader pass.
+- **Open (owner):** source-link checking and the launch catalogue; privacy notice, terms and a DPIA.
+- **Deliberately not enabled:** the analytics rollup and guest dry-run schedules (no platform chosen); the destructive guest purge (not approved).
 
 ## Decisions required
 
 | # | Decision | Recommended default | Blocks |
 |---|---|---|---|
-| D17 | **62 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of seven milestones' worth of journeys |
+| D17 | **72 live-service tests are now blocked on a database.** `VSHARES_SUPABASE_SETUP.md` has the exact steps; it costs nothing and needs only the publishable key | Create a free development project and send the project URL and anon key | Verification of seven milestones' worth of journeys, plus the M8 admin interface |
 | D15 | **Review the first 10 value cards** in `VSHARES_CATALOGUE_BATCH_1.md`, checking each summary against the live page — I could not open any of them | Correct the house style now, before the remaining ninety | The rest of the catalogue |
 | D16 | **Network access is needed to check source links.** No card can be published without it; the database enforces this | Run `npm run check:links` where the web is reachable, or allow the source hosts here | Publishing anything |
 | D14 | **An auth service is needed to finish verifying Milestone 2.** Either enable a container runtime in this environment for the local stack, or create a Supabase project (the free tier is enough) and share its URL and anon key — never the service-role key | Create a project; it costs nothing and unblocks live verification | Completing Milestone 2 verification |
@@ -30,6 +30,36 @@
 | D10 | Historical brand assets: if a logo or screenshots of the earlier version exist, supply them as reference; none are in the repository | Otherwise proceed with the specified black / gold / silver / blue system | M1 reference screens |
 
 ## Log
+
+### 2026-11-15 — Milestone 8: release hardening and MVP verification
+
+The honest summary first: **this milestone is incomplete.** Its acceptance standard is a real user completing real journeys against real services, and no live service exists here, so the bulk of verification is blocked and reported as blocked. What could be done independently was done fully.
+
+Built:
+- **The admin catalogue and taxonomy interface** — the one feature release-blocker outstanding since M3. `/admin/taxonomy` (categories and topics: create, edit, archive, restore), `/admin/cards/new`, `/admin/cards/[id]` (edit as a new version, version history, review, read-only link status, moderation trail), `/admin/audit`. Three new form primitives (TextArea, SelectField). Guarded in three layers; taxonomy is admin-only, cards are moderator-and-up, and the database draws both lines.
+
+Executed (not just documented):
+- **A backup-and-restore drill** against real PostgreSQL: dump, drop, restore, verify. 9 of 9 checks, including that row-level security and all 33 policies survived and a later migration still applies on the restore. `scripts/backup-restore-drill.mjs`, `npm run drill:backup`.
+- **A security review** of all 14 directive items, with an independent pass over the new admin surface. Three findings, all low or informational, all fixed: a misleading unused authorship field removed, a rate limit added to the two unrate-limited card writes, and the admin id parameter confirmed safe.
+- **Performance measurement**: ~224 KB first-load JavaScript (within the 300 KB budget), shell routes ~100–170 ms. Found and explained a 7-second `/explore` first paint — the placeholder DB host timing out, not a production number.
+
+Documented:
+- `VSHARES_RELEASE_DASHBOARD.md` (the single readiness view, every blocker visible), `VSHARES_SECURITY_REVIEW.md`, `VSHARES_BACKUP_RESTORE.md`, `VSHARES_PERFORMANCE_ACCESSIBILITY.md`. Updated the register (admin interface now implemented), live-verification checklist (admin journeys added; count 62 → 72), roadmap, decisions (D-086 to D-092).
+
+Found and fixed:
+- A privacy-shaped finding in my own new code: a `submittedByMe` field on the admin card read, hardcoded false and unused — removed before it could be mistaken for a control.
+- Two card-write actions without rate limits — added one.
+- Two self-inflicted bugs while building the drill (a function check pointing at a held-back migration; a raw-insert seed hitting a constraint) — both fixed by making the drill more faithful to the real database.
+
+Blocked, and reported as blocked (not simulated):
+- The 72 live-service checks, full end-to-end erasure, the 60-second first-win benchmark, Core Web Vitals on real content, a manual screen-reader pass. All need a live auth service (D17) or a person.
+
+Open for the owner:
+- D17 (a free dev project) is the single action that unblocks most verification.
+- Source-link checking and the launch catalogue; privacy notice, terms and a DPIA.
+
+**Recommendation: do not release.** Milestone 8 stays open until the live verification is done and the catalogue is published.
+
 
 ### 2026-11-14 — Milestone 7: essential analytics and product intelligence
 

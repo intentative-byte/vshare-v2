@@ -26,6 +26,15 @@ export {
 } from "./actions";
 
 export {
+  upsertCategory,
+  upsertTopic,
+  setCategoryArchived,
+  setTopicArchived,
+  createCard,
+  addCardVersion,
+} from "./admin-actions";
+
+export {
   submitResourceInput,
   resubmitInput,
   moderateInput,
@@ -33,10 +42,27 @@ export {
   sourceUrlSchema,
   slugSchema,
   takeawaysSchema,
+  categoryInput,
+  topicInput,
+  archiveInput,
+  createCardInput,
+  cardVersionInput,
   type SubmitResourceInput,
 } from "./schemas";
 
-export type { Card, CardSummary, CardStatus, Category, Topic } from "./types";
+export type {
+  Card,
+  CardSummary,
+  CardStatus,
+  Category,
+  Topic,
+  CategoryAdmin,
+  TopicAdmin,
+  CardDetail,
+  CardVersion,
+  ModerationEvent,
+  AuditEntry,
+} from "./types";
 
 // The approved launch taxonomy. The database is seeded from this, and the
 // home page uses it to offer entry points before anyone has signed in.

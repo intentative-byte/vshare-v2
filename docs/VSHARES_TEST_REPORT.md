@@ -672,3 +672,87 @@ It is a separate script rather than part of the end-to-end suite on purpose. The
 **62 live-service checks**, up from 46: the sixteen new ones cover the dashboard, the suppression behaviour and the first-win timer through a real sign-in. Three of them also need a privileged client. `VSHARES_LIVE_VERIFICATION.md` lists every one and the order to clear them in.
 
 Also unchanged: no source link has been checked, so no card can be published; and the owner's editorial review of batch 1 is pending.
+
+## 2026-11-15 — Milestone 8 (release hardening and MVP verification)
+
+Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalled Chromium, **no auth service and no outbound network**. The single most important fact about this milestone: **live integration is blocked** and is reported as blocked, never simulated. `VSHARES_RELEASE_DASHBOARD.md` is the single view.
+
+| Check | Command | Result |
+|---|---|---|
+| Repository hygiene, lint, types | — | pass |
+| Unit tests | `npm test` | **192 passed, 0 failed** (13 files; 15 new admin-schema tests) |
+| Database policies and functions | `npm run test:db` | **23 files, 395 assertions, 0 failed** (14 new in `230_admin_access.sql`) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **90 passed, 72 skipped, 0 failed** (admin 404-guard runs; 10 admin-live journeys skipped) |
+| Accessibility of charts + admin components | `npm run check:gallery-a11y` | **0 violations**, both viewports |
+| Backup and restore drill | `npm run drill:backup` | **9/9 checks passed (executed)** |
+| Production build | `npm run build` | pass — **25 routes** |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+### What was built: the admin catalogue and taxonomy interface
+
+The one feature release-blocker from Milestone 3 is now built and tested:
+
+- `/admin/taxonomy` — create, edit, archive and restore categories and topics (admin-only).
+- `/admin/cards/new` — create a curated card; it enters as a draft and the form cannot shortcut the link check or review.
+- `/admin/cards/[id]` — the full card: current version, whole version history, review (approve/reject/archive/restore), link-check status (read-only), and the moderation trail.
+- `/admin/audit` — the audit log, admin-only.
+
+Guarded in three layers (D-086): the layout 404s a non-staff account, the pipeline re-checks access, and the database function re-checks the role while RLS re-filters reads. `230_admin_access.sql` proves a moderator cannot manage taxonomy and a learner cannot do anything, by calling the functions as the wrong role and watching them refuse.
+
+### Backup and restore — executed, not described
+
+`scripts/backup-restore-drill.mjs` against real PostgreSQL 16: build and populate through the real functions, `pg_dump -Fc`, drop, `pg_restore`, verify.
+
+| Check | Result |
+|---|---|
+| Backup file produced | pass (187 KB) |
+| User and card rows match | pass |
+| Content checksum matches | pass (md5 identical) |
+| Published card resolves its version | pass |
+| RLS still enabled | pass |
+| Security-definer functions execute | pass |
+| 33 RLS policies restored | pass |
+| A later migration applies on the restore | pass |
+
+9 of 9. Full writeup and recovery runbook in `VSHARES_BACKUP_RESTORE.md`.
+
+### Security review — 3 findings, all low/info, all fixed
+
+From `VSHARES_SECURITY_REVIEW.md`, covering all 14 §8 items. No critical or high findings.
+
+- **SR-M8-01** (info): removed a misleading unused `submittedByMe` authorship field before it could become a trusted-but-false control.
+- **SR-M8-02** (low): added a 300/hour rate limit to `createCard` and `addCardVersion` — the one unrate-limited mutation path.
+- **SR-M8-03** (info): confirmed the admin card id is validated and parameterised, no injection path.
+
+### Performance — measured, with a real finding
+
+`VSHARES_PERFORMANCE_ACCESSIBILITY.md`. First-load JavaScript **~224 KB** (budget ≤ 300 KB). Shell routes render in ~100–170 ms. `/explore` measured ~7,100 ms to first paint **in this environment only** — the cause is the placeholder, unreachable database host timing out, because Explore blocks its first render on a category read; against a healthy DB the same query is sub-millisecond. Reported honestly rather than hidden or averaged away.
+
+### Defects found and fixed during the milestone
+
+| What | How found | Fix |
+|---|---|---|
+| A misleading unused authorship field on the admin card read | The security review | Removed; the real high-impact rule is in the database |
+| Two card-write actions had no rate limit | The security review | Added `staffWritePerUser` (300/hour) |
+| The backup drill's function check named a function from the held-back migration | Running the drill | Pointed it at a baseline function — the "absence" was correct, the test was wrong |
+| The backup seed hit the published-card constraint with raw inserts | Running the drill | Seeded through the real `create_card` → `record_link_check` → `moderate_content` path instead, which is more representative anyway |
+
+### Against the Milestone 8 directive
+
+| # | Requirement | Status |
+|---|---|---|
+| 2 | Live Supabase environment | **Blocked** — no project/service available here; reported, not simulated |
+| 3 | Clear the 62 skipped live tests | **Blocked** — and the count rose to 72 because M8 *added* admin journeys; none removed or weakened |
+| 4 | Admin catalogue and taxonomy interface | **Done and tested** |
+| 5 | Content verification / launch catalogue | **Blocked (link check)** / **Open (editorial)** |
+| 6 | End-to-end erasure across account types | **Blocked** — DB layer proven, live unverified; not claimed |
+| 7 | Backup and recovery drill | **Done — executed, 9/9** |
+| 8 | Security review | **Done — 14 items, 3 low/info findings fixed** |
+| 9 | Performance and accessibility | **Measured where possible; Core Web Vitals and screen-reader pass blocked** |
+| 10 | First Learning Win 60-second validation | **Blocked** — never measured on a real journey; target unverified |
+| 11 | Guest lifecycle | **Unchanged** — dry run config documented, destructive purge disabled |
+| 12 | Release dashboard | **Done** — `VSHARES_RELEASE_DASHBOARD.md` |
+
+### Still not verified — the headline
+
+**Milestone 8 is incomplete, and the MVP is not production-ready.** 72 live-service checks remain blocked on a service that does not exist here; full erasure and the first-win benchmark are unverified end to end; no card can be published until its links are checked. The one owner action that unblocks most of it is a free development project (D17). Everything that *can* be verified without a live service passes.

@@ -13,7 +13,7 @@
 | 3 | Value Feed: discovery, ranking, saves, shares, interactions | MVP (M4–M6) | **done (M4–M6 built)** |
 | 5 (foundation only) | VAI: deterministic ranking and Next Best | MVP (M4) | **done** |
 | 7 (essentials only) | Event analytics and funnels | MVP (M7) | **done** |
-| 11 (MVP level) | Security review, accessibility, release preparation | MVP (M8) | planned |
+| 11 (MVP level) | Security review, accessibility, release preparation | MVP (M8) | **in progress** |
 | 4 | Learning engine: paths, quizzes, progress, quests, mastery | R2 | planned |
 | 5 | VAI: next best move, mentor, memory | R2 | planned |
 | 6 | User development: User DNA, Applied Learning, dashboards, review | R2 | planned |
@@ -38,7 +38,7 @@ Size is given in focused engineering sessions (one session ≈ one working block
 | M5 ✅ | **First Learning Win, library, progress** — built 2026-11-14 | Home → topic → card → "Got it" → win state as a guest; SAVED; progress summary; PATH tab (M-01, M-06, M-07) | Built and covered by tests. The first-win end-to-end checks are written and skipped until a service exists, so the 60-second benchmark is not yet measured against a real journey | 2 |
 | M6 ✅ | **Submission, sharing, data rights** — built 2026-11-14 | Migration 5: consent events, export, deletion, guest purge; submit a resource; my submissions; correction and resubmission; reports; share; export; account deletion (M-08, M-10) | Met. 57 new database assertions: the export carries every category and nothing of anyone else's; deletion needs a confirmation and a recent sign-in; no orphan rows remain; the purge is idempotent and keeps active guests. **Open:** the guest purge is deliberately not scheduled, and the live journeys remain skipped | 2 |
 | M7 ✅ | **Essential analytics** — built 2026-11-14 | Migration 6: derived rollups, reconciliation, suppression, learner milestones; the metrics dictionary and value framework; the admin measurement dashboard (M-12) | Met. 73 new database assertions; reconciliation exact after a rollup and reporting drift it cannot explain; nothing identifying recorded before consent, proven in the database and in the browser. **Open:** the rollup is not scheduled, because no deployment platform is chosen |
-| M8 | **Hardening and release preparation** | ASVS L2 walk-through; accessibility audit incl. manual screen-reader pass; performance budget check; runbook; backup and restore drill; privacy notice and terms drafts; release checklist | `VSHARES_TEST_REPORT.md` and `VSHARES_SECURITY.md` updated with results; no open critical or high defects; owner go/no-go | 2 |
+| M8 ⏳ | **Hardening and release preparation** — in progress 2026-11-15 | **Done:** admin catalogue/taxonomy interface built and tested; backup/restore drill executed (9/9); security review (3 low/info findings, fixed); performance measured (JS ~224 KB, within budget); accessibility 0 axe violations; release dashboard. **Blocked on a live service:** the 72 live checks, end-to-end erasure, the 60-second benchmark, Core Web Vitals, a manual screen-reader pass. **Open:** source links, launch catalogue, compliance drafts | `VSHARES_RELEASE_DASHBOARD.md` is the single view. **Milestone incomplete — MVP not production-ready** | 2 |
 
 Total: roughly 16–19 sessions plus catalogue curation and owner reviews.
 

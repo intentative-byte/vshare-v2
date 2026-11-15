@@ -17,4 +17,8 @@ export {
   findPublishedCardById,
   findTopicBySlug,
   listPublishedCardsByTopic,
+  listCategoriesForAdmin,
+  listTopicsForAdmin,
+  getCardForAdmin,
+  listAuditLog,
 } from "./repository";

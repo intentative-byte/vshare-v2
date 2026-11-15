@@ -50,7 +50,11 @@ export function ModerationQueue({ cards, status }: ModerationQueueProps) {
         >
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
-              <h2 className="font-display text-lg font-bold text-white">{card.title}</h2>
+              <h2 className="font-display text-lg font-bold text-white">
+                <Link href={`/admin/cards/${card.id}`} className="hover:text-gold">
+                  {card.title}
+                </Link>
+              </h2>
               <p className="tabular mt-2 flex flex-wrap gap-x-3 text-xs font-semibold tracking-wide text-silver-dim uppercase">
                 <span>{card.topicName}</span>
                 <span>{card.level}</span>

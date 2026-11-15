@@ -8,9 +8,11 @@ import { readViewer } from "@/modules/profiles";
 export const metadata = { title: "Admin" };
 
 const sections = [
-  { href: "/admin/queue", label: "Moderation queue" },
-  { href: "/admin/queue?status=published", label: "Published" },
+  { href: "/admin/queue", label: "Queue" },
+  { href: "/admin/cards/new", label: "New card" },
+  { href: "/admin/taxonomy", label: "Taxonomy" },
   { href: "/admin/metrics", label: "Measurement" },
+  { href: "/admin/audit", label: "Audit" },
 ];
 
 /**

@@ -130,3 +130,78 @@ export const reportInput = z
 export const searchInput = z
   .object({ query: z.string().trim().min(2).max(80) })
   .strict();
+
+// -------------------------------------------------- admin: taxonomy ------
+
+/**
+ * Category and topic inputs for the admin interface.
+ *
+ * These match the database functions `upsert_category` and `upsert_topic`,
+ * which enforce administrator access themselves. The schema is the first of
+ * two checks, not the only one.
+ */
+export const categoryInput = z
+  .object({
+    id: z.string().uuid().optional(),
+    slug: slugSchema,
+    name: z.string().trim().min(2).max(80),
+    description: z.string().trim().min(10, "Say what the category is for.").max(280),
+    sortOrder: z.number().int().min(0).max(999).default(0),
+    // High-impact is a property of the category: finance and health content
+    // always needs a second reviewer, and that follows from this flag.
+    isHighImpact: z.boolean().default(false),
+  })
+  .strict();
+
+export const topicInput = z
+  .object({
+    id: z.string().uuid().optional(),
+    categoryId: z.string().uuid("Choose a category."),
+    slug: slugSchema,
+    name: z.string().trim().min(2).max(80),
+    sortOrder: z.number().int().min(0).max(999).default(0),
+  })
+  .strict();
+
+export const archiveInput = z
+  .object({ id: z.string().uuid(), archived: z.boolean() })
+  .strict();
+
+// -------------------------------------------------- admin: cards ---------
+
+/**
+ * Creating a curated card. It enters as a draft with an unchecked link,
+ * exactly like anything else: the admin interface cannot shortcut
+ * publication, because `create_card` sets the status, not the caller.
+ */
+export const createCardInput = z
+  .object({
+    slug: slugSchema,
+    topicId: z.string().uuid("Choose a topic."),
+    sourceUrl: sourceUrlSchema,
+    sourceName: z.string().trim().min(2).max(120),
+    sourceAuthor: z.string().trim().max(120).optional(),
+    title: z.string().trim().min(10).max(120),
+    summary: z.string().trim().min(40).max(600),
+    takeaways: takeawaysSchema,
+    nextStep: z.string().trim().min(10).max(300),
+    format: z.enum(["article", "video", "podcast", "course", "tool", "book"]),
+    level: z.enum(["beginner", "intermediate", "advanced"]),
+    estimatedMinutes: z.number().int().min(1).max(600),
+    qualityScore: z.number().int().min(0).max(100).default(50),
+    isAiAssisted: z.boolean().default(false),
+  })
+  .strict();
+
+/** A correction to a card: a new version, never an edit of an old one. */
+export const cardVersionInput = z
+  .object({
+    contentId: z.string().uuid(),
+    title: z.string().trim().min(10).max(120),
+    summary: z.string().trim().min(40).max(600),
+    takeaways: takeawaysSchema,
+    nextStep: z.string().trim().min(10).max(300),
+    sourceName: z.string().trim().min(2).max(120),
+    sourceAuthor: z.string().trim().max(120).optional(),
+  })
+  .strict();

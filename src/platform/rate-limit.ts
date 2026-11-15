@@ -106,4 +106,8 @@ export const rateLimitRules = {
   reportPerUser: { limit: 10, windowSeconds: 24 * 60 * 60 },
   exportPerUser: { limit: 3, windowSeconds: 24 * 60 * 60 },
   eventsPerSession: { limit: 240, windowSeconds: 60 * 60 },
+  // Staff catalogue writes. Generous, because a reviewer clearing a backlog
+  // is legitimate; it exists to bound a compromised or runaway staff account,
+  // not to pace ordinary work.
+  staffWritePerUser: { limit: 300, windowSeconds: 60 * 60 },
 } as const satisfies Record<string, RateLimitRule>;
