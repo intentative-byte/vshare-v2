@@ -25,7 +25,9 @@
     "measure:feed": "node scripts/measure-feed-performance.mjs",
     "measure:analytics": "node scripts/measure-analytics-performance.mjs",
     "check:gallery-a11y": "node scripts/check-gallery-accessibility.mjs",
-    "drill:backup": "node scripts/backup-restore-drill.mjs"
+    "drill:backup": "node scripts/backup-restore-drill.mjs",
+    "apply:project": "node scripts/apply-to-project.mjs",
+    "bootstrap:staff": "node scripts/bootstrap-staff.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

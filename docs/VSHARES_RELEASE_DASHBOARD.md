@@ -1,6 +1,6 @@
 # VSHARES — Release-readiness dashboard
 
-- Date: 2026-11-15 · Milestone 8
+- Date: 2026-11-15 · Milestone 8 + Live Integration stage
 - **Status: NOT READY FOR PRODUCTION.** Mandatory live verification is blocked
   on a service that does not yet exist, and one release blocker (source links /
   launch catalogue) remains open. This is the honest single view the directive
@@ -14,7 +14,8 @@
 **Do not release.** The application is built, internally consistent and passes
 every check that can run without a live service (192 unit, 395 database, 90
 end-to-end, 0 axe violations, a clean backup/restore drill, 0 production
-dependency advisories). It cannot be declared production-ready because the
+dependency advisories), and is now proven to apply and run against a
+Supabase-shaped database (§1a). It cannot be declared production-ready because the
 62-plus authentication-dependent journeys have never run against a real
 service, full account erasure is unverified end to end, and no catalogue card
 can be published until its source link is checked. See §1 for what unblocks it.
@@ -30,6 +31,31 @@ can be published until its source link is checked. See §1 for what unblocks it.
 | B5 | Source links unchecked → no card can publish | **Open** | Critical | Owner + Claude | Run the link checker where the web is reachable; owner editorial sign-off of the first 10 | Then publish |
 | B6 | Launch catalogue not published | **Open** (depends on B5) | High | Owner | Approve house style; prepare the rest incl. Productivity | After B5 |
 | B7 | Admin catalogue/taxonomy interface | **Resolved this milestone** | — | Claude | Built, DB-tested; live admin journeys are in B2 | — |
+
+## 1a. Live-integration connection readiness (new)
+
+Before a project exists, the question is: *will the app actually apply and run
+against a Supabase-shaped database?* Proven by applying the real migrations and
+seeds to a PostgreSQL database with a real `auth.users`, the three Supabase
+roles, and **no test harness** — the honest standalone test.
+
+| Check | Status | Evidence |
+|---|---|---|
+| All 7 migrations apply standalone (no harness) | **Pass** | `npm run apply:project` against the Supabase-shaped DB, all ok |
+| Both seed files apply | **Pass** | 8 categories, 40 topics, 10 cards |
+| Seeded cards are drafts, none publishable | **Pass** | 10 draft, 0 published |
+| Signup trigger creates profile + preferences | **Pass** | Insert into `auth.users` → profile `newuser` + preferences appear |
+| Migrations grant table access to `authenticated`/`anon` | **Pass** | 47 grants in the migrations themselves, not the test-only file |
+| RLS reads work with request claims | **Pass** | Read as `authenticated` with a claims sub respects policies |
+| `apply:project` refuses a local test DB | **Pass** | Safety guard verified |
+| `bootstrap:staff` grants a role by email, idempotent, fails loudly on a typo | **Pass** | All three paths tested |
+| Setup guide covers the 11-point §1 checklist | **Pass** | `VSHARES_SUPABASE_SETUP.md` |
+
+**What this means.** The application is *ready to connect*. What is still
+blocked is not the app's readiness but the existence of a project running the
+HTTP auth (GoTrue) and data (PostgREST) services — which `@supabase/supabase-js`
+talks to, and which need either a hosted project or a container runtime. The
+schema layer is proven; the service layer is not reachable here.
 
 ## 2. Functional requirements
 

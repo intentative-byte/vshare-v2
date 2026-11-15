@@ -31,6 +31,33 @@
 
 ## Log
 
+### 2026-11-15 — Live Integration stage: connection readiness
+
+Still no hosted Supabase project or container runtime here, so the 72 live
+journeys stay blocked and are reported as blocked. Did the work that does not
+need the HTTP services:
+
+- Prepared the complete development-connection guide (`VSHARES_SUPABASE_SETUP.md`)
+  against the directive's 11-point checklist: project creation, env vars, secure
+  credentials, migrations (CLI and no-CLI routes), auth settings, magic-link
+  redirects, Google OAuth prerequisites, catalogue seeding, staff bootstrap,
+  troubleshooting.
+- Added two turnkey scripts: `apply:project` (applies migrations + seeds to a
+  project, refuses a local test DB, never applies the harness) and
+  `bootstrap:staff` (grants the first admin by email).
+- **Proved the app applies and runs against a Supabase-shaped database** — real
+  `auth.users`, the three roles, no harness. All 7 migrations and both seeds
+  apply; the signup trigger creates a profile and preferences; cards load as
+  drafts; grants reach `authenticated`/`anon`; RLS reads work with request
+  claims. The schema layer is ready; only the HTTP service layer is unreachable.
+- Found and fixed two bugs in `bootstrap-staff.mjs` by running it, not reviewing
+  it (psql variable interpolation; exit code on an unknown email).
+- Updated the release dashboard (§1a) and the test report.
+
+Connection is now turnkey the moment the owner creates a project. That one
+action (two public values) unblocks the bulk of the remaining verification.
+
+
 ### 2026-11-15 — Milestone 8: release hardening and MVP verification
 
 The honest summary first: **this milestone is incomplete.** Its acceptance standard is a real user completing real journeys against real services, and no live service exists here, so the bulk of verification is blocked and reported as blocked. What could be done independently was done fully.

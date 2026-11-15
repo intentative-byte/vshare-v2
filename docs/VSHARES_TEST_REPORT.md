@@ -760,3 +760,38 @@ From `VSHARES_SECURITY_REVIEW.md`, covering all 14 §8 items. No critical or hig
 ### Still not verified — the headline
 
 **Milestone 8 is incomplete, and the MVP is not production-ready.** 72 live-service checks remain blocked on a service that does not exist here; full erasure and the first-win benchmark are unverified end to end; no card can be published until its links are checked. The one owner action that unblocks most of it is a free development project (D17). Everything that *can* be verified without a live service passes.
+
+## 2026-11-15 — Live Integration stage: connection readiness
+
+No hosted Supabase project or container runtime is available in this
+environment, so the 72 live-service journeys remain **blocked** — and are
+reported as blocked, not simulated. What *could* be verified was: that the
+application applies and runs against a **Supabase-shaped** database.
+
+A fresh PostgreSQL database was given only what a real Supabase project
+provides — a real `auth.users` table, the `anon`/`authenticated`/`service_role`
+roles, pgcrypto — and **no test harness**. Against it:
+
+| Check | Result |
+|---|---|
+| All 7 migrations apply standalone, via `npm run apply:project` | **pass** |
+| Both seed files apply | **pass** — 8 categories, 40 topics, 10 cards |
+| Seeded cards load as drafts, none publishable | **pass** — 10 draft, 0 published |
+| Signup trigger (`on_auth_user_created`) fires on a real-shaped `auth.users` | **pass** — insert → profile + preferences created |
+| Table grants to `authenticated`/`anon` come from the migrations themselves | **pass** — 47 grants, not the test-only file |
+| RLS read as `authenticated` with request claims | **pass** |
+| `apply:project` refuses a local test database | **pass** |
+| `bootstrap:staff` grants by email, idempotent, aborts on an unknown email | **pass** — three paths |
+
+Two script bugs were found and fixed by running them (not by review):
+
+- `bootstrap-staff.mjs` used psql `:'var'` interpolation, which does not work
+  with `-c` or inside a dollar-quoted block. Rewritten to validate the email to
+  a quote-free shape and embed it as a literal, with `ON_ERROR_STOP` so an
+  unknown email aborts with a non-zero exit.
+- Its first form also exited 0 on an unknown email; it now exits 1.
+
+**This proves the application is ready to connect.** What stays blocked is the
+HTTP auth and data service layer, which `@supabase/supabase-js` requires and
+which needs a hosted project or a container runtime. The turnkey setup is in
+`VSHARES_SUPABASE_SETUP.md`; `VSHARES_RELEASE_DASHBOARD.md` §1a tracks it.
