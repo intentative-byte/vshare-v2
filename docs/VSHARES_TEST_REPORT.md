@@ -795,3 +795,5 @@ Two script bugs were found and fixed by running them (not by review):
 HTTP auth and data service layer, which `@supabase/supabase-js` requires and
 which needs a hosted project or a container runtime. The turnkey setup is in
 `VSHARES_SUPABASE_SETUP.md`; `VSHARES_RELEASE_DASHBOARD.md` §1a tracks it.
+
+**CI:** run `43679313262` on commit `67c11a9`, all five jobs passed.
