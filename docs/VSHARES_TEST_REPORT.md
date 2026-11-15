@@ -688,6 +688,10 @@ Environment: Node 22, PostgreSQL 16 with the project's test harness, preinstalle
 | Production build | `npm run build` | pass — **25 routes** |
 | Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
 
+### Continuous integration
+
+Run `43677143520` on commit `df85599`, pull request #8: **all five jobs passed** — hygiene, lint, types, unit tests and build; database policies and functions against a PostgreSQL service; end-to-end and accessibility; dependency audit; full-history secret scan.
+
 ### What was built: the admin catalogue and taxonomy interface
 
 The one feature release-blocker from Milestone 3 is now built and tested:
