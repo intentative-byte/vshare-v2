@@ -76,11 +76,16 @@ critical or high findings. No finding blocks release.
   repeated identical submissions inflated the preference without bound, and an
   edit did not move the evidence correctly.
 - **Remediation.** Recompute format affinity from the person's reviews (D-100),
-  making resubmission a no-op and edits exact. A review now also requires the
-  session to be completed (`ended_at`), enforced in the database (D-101).
+  making resubmission a no-op and edits exact; serialise the recompute per user
+  with a transaction advisory lock (D-104). Review eligibility is verified from
+  authoritative engagement records — ended AND ≥1 recommended card engaged in
+  the session window — not `ended_at` alone (D-103), after the owner found that
+  `end_feed_session` sets `ended_at` even for an abandoned, empty session.
 - **Regression test.** `250_feedback_security.sql` + `240_session_feedback.sql`:
-  duplicate reviews, format edits, format clearing, and incomplete-session
-  rejection.
+  not-complete and ended-but-not-engaged rejection, 0/1/6/7-item boundaries,
+  abandoned vs completed, stale-interaction isolation, duplicate reviews,
+  format edits and clearing, cross-account isolation; plus
+  `scripts/test-review-concurrency.mjs` for concurrent submissions.
 
 ### Broader SECURITY DEFINER review (2026-11-17)
 

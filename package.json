@@ -27,7 +27,8 @@
     "check:gallery-a11y": "node scripts/check-gallery-accessibility.mjs",
     "drill:backup": "node scripts/backup-restore-drill.mjs",
     "apply:project": "node scripts/apply-to-project.mjs",
-    "bootstrap:staff": "node scripts/bootstrap-staff.mjs"
+    "bootstrap:staff": "node scripts/bootstrap-staff.mjs",
+    "test:concurrency": "node scripts/test-review-concurrency.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

@@ -149,30 +149,61 @@ as $$
 declare
   v_user uuid := app.current_user_id();
   v_count integer;
-  v_ended boolean;
+  v_started timestamptz;
+  v_ended_at timestamptz;
+  v_engaged integer;
 begin
   if v_user is null then
     raise exception 'record_session_review: no session';
   end if;
 
-  -- The session must be the caller's AND finished through the normal
-  -- lifecycle: end_feed_session sets ended_at. A review is an end-of-session
-  -- act, so a session that was never completed cannot be reviewed. This
-  -- verifies completion from the existing lifecycle — it invents no
-  -- completion record (requirement: seven-piece completion). Enforcing it in
-  -- the database, not only the UI, is deliberate: the database is the
-  -- security boundary, so a direct API call cannot review an un-finished or
-  -- someone else's session.
-  select ended_at is not null into v_ended
+  -- Serialise all of this user's reviews. The format-preference recompute
+  -- below rewrites the whole user_format_affinity set, so two concurrent
+  -- reviews for the same person must not interleave their delete/insert. A
+  -- transaction-scoped advisory lock, keyed on the user, makes the second
+  -- call wait for the first to commit and then recompute over its result —
+  -- consistent without locking anyone else out. (Requirement: concurrency.)
+  perform pg_advisory_xact_lock(hashtext('vshares.session_review'), hashtext(v_user::text));
+
+  -- Ownership and the session window.
+  select started_at, ended_at into v_started, v_ended_at
   from public.feed_sessions
   where id = p_session_id and user_id = v_user;
 
-  if v_ended is null then
+  if v_started is null then
     raise exception 'record_session_review: not your session';
   end if;
 
-  if not v_ended then
+  -- The session must have finished through the lifecycle...
+  if v_ended_at is null then
     raise exception 'record_session_review: the session is not complete';
+  end if;
+
+  -- ...and the person must actually have gone through it. ended_at alone is
+  -- NOT proof: end_feed_session sets ended_at even for a session abandoned
+  -- with no engagement. So eligibility is verified from authoritative records
+  -- — at least one card recommended IN THIS SESSION that the person opened,
+  -- completed, saved or skipped WITHIN the session window. The window floor
+  -- (>= started_at) stops an interaction from an earlier session being
+  -- miscounted as this one's (so a card completed before this session does
+  -- not make an empty session look engaged). This invents no completion
+  -- record: it reads the interactions that already exist. Early abandonment
+  -- still qualifies — one engaged item is enough — so progress is never lost
+  -- and a genuinely poor session can still be rated "not useful".
+  select count(*) into v_engaged
+  from public.recommendations r
+  join public.content_interactions ci
+    on ci.user_id = v_user and ci.content_id = r.content_id
+  where r.session_id = p_session_id
+    and greatest(
+      coalesce(ci.opened_at, '-infinity'::timestamptz),
+      coalesce(ci.completed_at, '-infinity'::timestamptz),
+      coalesce(ci.saved_at, '-infinity'::timestamptz),
+      coalesce(ci.skipped_at, '-infinity'::timestamptz)
+    ) >= v_started;
+
+  if v_engaged = 0 then
+    raise exception 'record_session_review: no items from this session were engaged with';
   end if;
 
   if p_rating is not null and (p_rating < 1 or p_rating > 5) then

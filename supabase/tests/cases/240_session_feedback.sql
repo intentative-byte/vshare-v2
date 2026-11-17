@@ -58,8 +58,9 @@ begin
       'components', jsonb_build_object('quality', 0.7), 'isDiscovery', false)
   ));
 
-  -- The session is completed through the normal lifecycle before it can be
-  -- reviewed (seven-piece completion, verified from ended_at, not invented).
+  -- The learner engages with the session (completes one recommended card),
+  -- then finishes it through the lifecycle, making it review-eligible.
+  perform public.set_interaction(v_video, 'complete');
   perform public.end_feed_session(v_session);
 
   -- ============================================================= ACCEPTANCE
@@ -74,12 +75,19 @@ begin
   perform test.equals(
     (select content_count from public.session_reviews where session_id = v_session), 2,
     'the review is tied to the items actually presented (the two logged)');
-  -- No mastery/skill table exists, and the review does not record a completion
-  -- or any learning: satisfaction is kept separate from demonstrated learning.
+  -- No mastery/skill table exists, and the rating itself adds no learning:
+  -- the only completion is the one the learner genuinely made to make the
+  -- session eligible, and the review stored the rating separately from it.
+  -- Satisfaction is kept apart from demonstrated learning.
   perform test.equals(
     (select count(*)::int from public.content_interactions
-      where user_id = v_user and completed_at is not null), 0,
-    'a rating records satisfaction, never a completion or mastery');
+      where user_id = v_user and completed_at is not null), 1,
+    'the one completion is the learner''s genuine engagement — the rating added none');
+  perform test.ok(
+    (select rating from public.session_reviews where session_id = v_session) = 4
+      and not exists (select 1 from information_schema.tables
+                      where table_schema = 'public' and table_name in ('skill_mastery', 'quiz_attempts')),
+    'the 4/5 rating is stored as satisfaction; no mastery record exists or was created');
 
   -- 1 & 3. Positive feedback raises the video preference without locking it,
   -- and without excluding other formats.
@@ -280,6 +288,11 @@ begin
 
   perform test.become(v_user);
   v_session := public.start_feed_session(v_topic, 7);
+  perform public.record_recommendations(v_session, jsonb_build_array(
+    jsonb_build_object('contentId', v_card, 'position', 1, 'score', 0.8,
+      'components', jsonb_build_object('quality', 0.7), 'isDiscovery', false)
+  ));
+  perform public.set_interaction(v_card, 'complete');
   perform public.end_feed_session(v_session);
   perform public.record_session_review(v_session, true, 5::smallint, 'video', 'Great.');
 
