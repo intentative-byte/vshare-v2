@@ -64,7 +64,13 @@ create table public.session_reviews (
   rating_scale smallint not null default 5,
   preferred_format public.content_format,
   note text check (note is null or char_length(note) <= 1000),
+  -- Delivered: how many items the session recommended.
   content_count integer not null default 0,
+  -- Engaged: how many of those the person actually opened/completed/saved/
+  -- skipped in the session window. Lets analytics tell a partial-session
+  -- review (engaged_count < content_count) from a full seven-piece one
+  -- (engaged_count = content_count = the session size).
+  engaged_count integer not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -182,25 +188,33 @@ begin
   -- ...and the person must actually have gone through it. ended_at alone is
   -- NOT proof: end_feed_session sets ended_at even for a session abandoned
   -- with no engagement. So eligibility is verified from authoritative records
-  -- — at least one card recommended IN THIS SESSION that the person opened,
-  -- completed, saved or skipped WITHIN the session window. The window floor
-  -- (>= started_at) stops an interaction from an earlier session being
-  -- miscounted as this one's (so a card completed before this session does
-  -- not make an empty session look engaged). This invents no completion
-  -- record: it reads the interactions that already exist. Early abandonment
-  -- still qualifies — one engaged item is enough — so progress is never lost
-  -- and a genuinely poor session can still be rated "not useful".
+  -- — the count of cards recommended IN THIS SESSION that the person opened,
+  -- completed, saved or skipped, where that specific interaction timestamp
+  -- falls WITHIN the session window [started_at, ended_at] inclusive.
+  --
+  -- Each of the four event timestamps is tested on its own, with `between`,
+  -- so neither bound can be dodged: an interaction before the session started
+  -- (an earlier session's completion) is excluded by the lower bound, and one
+  -- after the session ended is excluded by the upper bound. `greatest()` is
+  -- deliberately NOT used — it would collapse the four events to the latest,
+  -- letting a later out-of-window action stand in for, or mask, a valid
+  -- in-window one. A card counts if ANY of its four timestamps is in window.
+  --
+  -- This invents no completion record; it reads interactions that already
+  -- exist. Early abandonment still qualifies — one engaged item is enough —
+  -- so progress is never lost and a genuinely poor session can still be rated
+  -- "not useful".
   select count(*) into v_engaged
   from public.recommendations r
   join public.content_interactions ci
     on ci.user_id = v_user and ci.content_id = r.content_id
   where r.session_id = p_session_id
-    and greatest(
-      coalesce(ci.opened_at, '-infinity'::timestamptz),
-      coalesce(ci.completed_at, '-infinity'::timestamptz),
-      coalesce(ci.saved_at, '-infinity'::timestamptz),
-      coalesce(ci.skipped_at, '-infinity'::timestamptz)
-    ) >= v_started;
+    and (
+      ci.opened_at    between v_started and v_ended_at or
+      ci.completed_at between v_started and v_ended_at or
+      ci.saved_at     between v_started and v_ended_at or
+      ci.skipped_at   between v_started and v_ended_at
+    );
 
   if v_engaged = 0 then
     raise exception 'record_session_review: no items from this session were engaged with';
@@ -215,10 +229,12 @@ begin
   from public.recommendations where session_id = p_session_id;
 
   insert into public.session_reviews (
-    session_id, user_id, useful, rating, rating_scale, preferred_format, note, content_count
+    session_id, user_id, useful, rating, rating_scale, preferred_format, note,
+    content_count, engaged_count
   )
   values (
-    p_session_id, v_user, p_useful, p_rating, 5, p_preferred_format, p_note, v_count
+    p_session_id, v_user, p_useful, p_rating, 5, p_preferred_format, p_note,
+    v_count, v_engaged
   )
   on conflict (session_id) do update
   set useful = excluded.useful,
@@ -226,6 +242,7 @@ begin
       preferred_format = excluded.preferred_format,
       note = excluded.note,
       content_count = excluded.content_count,
+      engaged_count = excluded.engaged_count,
       created_at = now();
 
   -- Format preference is RECOMPUTED from the person's reviews, not nudged per
@@ -361,7 +378,8 @@ begin
       select jsonb_agg(jsonb_build_object(
         'session_id', sr.session_id, 'useful', sr.useful, 'rating', sr.rating,
         'rating_scale', sr.rating_scale, 'preferred_format', sr.preferred_format,
-        'note', sr.note, 'content_count', sr.content_count, 'created_at', sr.created_at
+        'note', sr.note, 'content_count', sr.content_count,
+        'engaged_count', sr.engaged_count, 'created_at', sr.created_at
       ) order by sr.created_at)
       from public.session_reviews sr where sr.user_id = v_user
     ), '[]'::jsonb),
