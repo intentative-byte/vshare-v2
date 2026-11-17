@@ -50,6 +50,50 @@ critical or high findings. No finding blocks release.
   injection path, no error leak.
 - **Action.** None needed. Recorded so the review is complete.
 
+### SR-ADAPT-01 — `app.apply_affinity` was client-executable with a victim-id parameter (high, fixed)
+
+- **What.** `app.apply_affinity(p_user, …)` is a SECURITY DEFINER helper that
+  takes a user id and trusts it. PostgreSQL grants EXECUTE to PUBLIC by default,
+  and this was never revoked, while `authenticated` holds USAGE on the `app`
+  schema. So **any authenticated or anonymous caller could call it directly with
+  another account's id and corrupt that account's topic affinity.** Confirmed
+  empirically (`has_function_privilege` returned true; a cross-account write
+  succeeded) before the fix. It dates to Milestone 4, surfaced by the Milestone
+  adaptive security review.
+- **Severity.** High — account isolation breach (write to another user's
+  personalisation profile). Not a data-disclosure or publication breach.
+- **Remediation.** `revoke execute … from public, anon, authenticated`, in the
+  pending (unapplied) adaptive migration so no applied migration is rewritten.
+  Internal callers are unaffected: `set_interaction` runs as the function owner,
+  which keeps EXECUTE, and passes the caller's own id.
+- **Regression test.** `250_feedback_security.sql`: the attacker and an
+  anonymous visitor are both refused, the victim's profile stays empty, and the
+  legitimate `set_interaction` path still updates only the caller's own affinity.
+
+### SR-ADAPT-02 — session feedback was not idempotent (medium, fixed)
+
+- **What.** `record_session_review` nudged format affinity on every call, so
+  repeated identical submissions inflated the preference without bound, and an
+  edit did not move the evidence correctly.
+- **Remediation.** Recompute format affinity from the person's reviews (D-100),
+  making resubmission a no-op and edits exact. A review now also requires the
+  session to be completed (`ended_at`), enforced in the database (D-101).
+- **Regression test.** `250_feedback_security.sql` + `240_session_feedback.sql`:
+  duplicate reviews, format edits, format clearing, and incomplete-session
+  rejection.
+
+### Broader SECURITY DEFINER review (2026-11-17)
+
+All 44 SECURITY DEFINER functions were reviewed for execute permission and
+ownership checks. Findings: only `app.apply_affinity` was exploitable.
+`grant_role`/`revoke_role` check `has_role('admin')` internally;
+`merge_guest_into` requires the caller to be the target; every other function
+operates on the caller's own rows via `app.current_user_id()` and is gated by
+RLS. The policy and security-invoker-view helpers (`app.is_staff`,
+`app.can_read_content`, `has_role`, `app.day_of`, `app.suppression_threshold`)
+keep client EXECUTE because RLS and views evaluate them as the querying user;
+revoking them would break policy evaluation. No other change was required.
+
 ## 2. The §8 checklist, item by item
 
 | # | Area | Status | Evidence |

@@ -58,6 +58,10 @@ begin
       'components', jsonb_build_object('quality', 0.7), 'isDiscovery', false)
   ));
 
+  -- The session is completed through the normal lifecycle before it can be
+  -- reviewed (seven-piece completion, verified from ended_at, not invented).
+  perform public.end_feed_session(v_session);
+
   -- ============================================================= ACCEPTANCE
   -- 2. A 4/5 rating is stored accurately and does not imply mastery.
   v_review := public.record_session_review(v_session, true, 4::smallint, 'video', 'Liked the pace.');
@@ -92,12 +96,16 @@ begin
       where user_id = v_user and format = 'article'), 0,
     'and no other format is pushed down: article is simply left at its neutral default');
 
-  -- A second video review moves it further but still gradually (not to 1.0).
+  -- IDEMPOTENCY: re-submitting a review for the SAME session (the bug the
+  -- security review found) must not add learning evidence.
   v_before := (select affinity from public.user_format_affinity where user_id = v_user and format = 'video');
   perform public.record_session_review(v_session, true, 5::smallint, 'video', null);
   v_after := (select affinity from public.user_format_affinity where user_id = v_user and format = 'video');
-  perform test.ok(v_after > v_before and v_after < 1.000,
-    'repeated positive feedback keeps moving the preference gradually, never locking it');
+  perform test.equals(v_after, v_before,
+    'resubmitting the same session''s review changes nothing: feedback is idempotent');
+  perform test.equals(
+    (select observations from public.user_format_affinity where user_id = v_user and format = 'video'), 1,
+    'and the format still rests on exactly one observation, not two');
 
   -- 8 (part). A review for someone else's session is refused.
   perform test.become(v_other);
@@ -222,6 +230,7 @@ begin
 
   -- 6. The session is finite: the review, when given, is tied to exactly the
   -- items presented — there is no mechanism to extend the session.
+  perform public.end_feed_session(v_session);
   perform public.record_session_review(v_session, true);
   perform test.equals(
     (select content_count from public.session_reviews where session_id = v_session), 1,
@@ -271,6 +280,7 @@ begin
 
   perform test.become(v_user);
   v_session := public.start_feed_session(v_topic, 7);
+  perform public.end_feed_session(v_session);
   perform public.record_session_review(v_session, true, 5::smallint, 'video', 'Great.');
 
   -- 8. Auditable: a review writes an audit entry, with no personal content.

@@ -53,7 +53,7 @@ One row per consent decision, with the choice and when it was made. Cascades on 
 | `observations` | integer | **M8+ adaptive:** evidence count behind the affinity; confidence = observations/(observations+K) |
 
 ### `user_format_affinity` — learned format preference (adaptive learning)
-`(user_id, format)` PK; `affinity` numeric(4,3) default 0.300; `observations`; `updated_at`. A small ranker signal, never a filter. Owner-only select; written only by `record_session_review`.
+`(user_id, format)` PK; `affinity` numeric(4,3); `observations`; `updated_at`. A small ranker signal, never a filter. Owner-only select; **recomputed** (not incrementally nudged) from the person's `session_reviews` by `record_session_review`, so feedback is idempotent and edits are exact (D-100).
 
 ### `session_reviews` — session-end feedback (adaptive learning)
 `session_id` PK → `feed_sessions`; `user_id`; `useful` boolean; `rating` smallint (1–5) null; `rating_scale` default 5; `preferred_format` enum null; `note` text null; `content_count`; `created_at`. **Session satisfaction, kept separate from content quality, engagement and demonstrated learning.** Owner-only select; written only by `record_session_review`, which can never publish or admit content. The seven items a review refers to are the session's `recommendations` rows (no separate linkage table).

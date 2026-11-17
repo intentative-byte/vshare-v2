@@ -115,6 +115,19 @@ begin
 end;
 $$;
 
+-- Security fix (SECURITY DEFINER review, 2026-11-17). app.apply_affinity takes
+-- a user id as a parameter and trusts it, so if a client could call it
+-- directly it could write to ANOTHER account's affinity. It is an internal
+-- helper, called only by set_interaction (a security-definer function that
+-- runs as the owner and passes the authenticated caller's own id), so no
+-- client needs to execute it. PostgreSQL grants EXECUTE to PUBLIC by default,
+-- which was never revoked; this closes that. It is placed in this pending
+-- migration (not the applied feed migration) so no applied migration is
+-- rewritten. Internal callers are unaffected: a security-definer function
+-- executes as its owner, which retains EXECUTE.
+revoke execute on function app.apply_affinity(uuid, uuid, numeric, numeric)
+  from public, anon, authenticated;
+
 -- ---------------------------------------------------- record_session_review --
 
 -- Records a session's feedback and gently nudges the learned format
@@ -136,23 +149,37 @@ as $$
 declare
   v_user uuid := app.current_user_id();
   v_count integer;
+  v_ended boolean;
 begin
   if v_user is null then
     raise exception 'record_session_review: no session';
   end if;
 
-  if not exists (
-    select 1 from public.feed_sessions
-    where id = p_session_id and user_id = v_user
-  ) then
+  -- The session must be the caller's AND finished through the normal
+  -- lifecycle: end_feed_session sets ended_at. A review is an end-of-session
+  -- act, so a session that was never completed cannot be reviewed. This
+  -- verifies completion from the existing lifecycle — it invents no
+  -- completion record (requirement: seven-piece completion). Enforcing it in
+  -- the database, not only the UI, is deliberate: the database is the
+  -- security boundary, so a direct API call cannot review an un-finished or
+  -- someone else's session.
+  select ended_at is not null into v_ended
+  from public.feed_sessions
+  where id = p_session_id and user_id = v_user;
+
+  if v_ended is null then
     raise exception 'record_session_review: not your session';
+  end if;
+
+  if not v_ended then
+    raise exception 'record_session_review: the session is not complete';
   end if;
 
   if p_rating is not null and (p_rating < 1 or p_rating > 5) then
     raise exception 'record_session_review: rating must be 1 to 5';
   end if;
 
-  -- The seven items shown, from the recommendation log for this session.
+  -- The items shown, from the recommendation log for this session.
   select count(*) into v_count
   from public.recommendations where session_id = p_session_id;
 
@@ -170,19 +197,23 @@ begin
       content_count = excluded.content_count,
       created_at = now();
 
-  -- Nudge the chosen format up, gradually, without touching the others, so a
-  -- preference rises without ever excluding other formats (requirement 4).
-  if p_preferred_format is not null then
-    insert into public.user_format_affinity (user_id, format, affinity, observations)
-    values (v_user, p_preferred_format, round(0.300 + (1.0 - 0.300) * 0.20, 3), 1)
-    on conflict (user_id, format) do update
-    set affinity = round(
-          public.user_format_affinity.affinity
-          + (1.0 - public.user_format_affinity.affinity) * 0.20, 3
-        ),
-        observations = public.user_format_affinity.observations + 1,
-        updated_at = now();
-  end if;
+  -- Format preference is RECOMPUTED from the person's reviews, not nudged per
+  -- call. This makes feedback idempotent — resubmitting the same review
+  -- leaves the counts, and therefore the affinities, unchanged — and makes an
+  -- edit correct: changing a review's preferred format moves exactly one
+  -- observation from the old format to the new. The value is the same gradual
+  -- curve as before (a 0.20-rate approach to 1.0 from a 0.300 baseline, which
+  -- after n reviews choosing a format is 1 - 0.7 * 0.8^n), now derived from
+  -- the count rather than accumulated, so it cannot be inflated by repetition.
+  delete from public.user_format_affinity where user_id = v_user;
+
+  insert into public.user_format_affinity (user_id, format, affinity, observations)
+  select v_user, sr.preferred_format,
+         round(1.0 - 0.7 * power(0.8, count(*)), 3),
+         count(*)::integer
+  from public.session_reviews sr
+  where sr.user_id = v_user and sr.preferred_format is not null
+  group by sr.preferred_format;
 
   -- Auditable that a review happened, with no personal content in the trail
   -- (the rating/format/note are personal and stay in the owner-only table).
