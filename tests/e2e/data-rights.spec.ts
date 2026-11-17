@@ -38,8 +38,11 @@ test("the data page explains what deletion keeps and what it removes", async ({ 
     return;
   }
 
-  await expect(page.getByText("Take a copy")).toBeVisible();
-  await expect(page.getByText("Delete your account")).toBeVisible();
+  // "Take a copy" and "Delete your account" are each a section heading (an
+  // <h2>) and also appear inside the page description, so target the heading
+  // exactly rather than any text node.
+  await expect(page.getByRole("heading", { name: "Take a copy" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Delete your account" })).toBeVisible();
   await expect(page.getByRole("button", { name: "What stays, and why" })).toBeVisible();
 });
 

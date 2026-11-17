@@ -14,18 +14,26 @@ import { readMyPreferences } from "@/modules/personalisation";
 export const metadata = { title: "You" };
 
 export default async function YouPage() {
+  // Shown in every state of this tab, so the page always explains what it
+  // holds regardless of sign-in or configuration. It is a client component,
+  // which also gives the hydration end-to-end check a control that is present
+  // on this route in all environments (tests/e2e/shell.spec.ts).
+  const tabSummary = (
+    <Disclosure label="What this tab holds">
+      Your profile, your preferences, everything VSHARES has learned about what you want to learn,
+      and the controls to export or delete all of it.
+    </Disclosure>
+  );
+
   if (!isDatabaseConfigured()) {
     return (
       <>
         <PageHeader eyebrow="You" title="Your account" />
+        {tabSummary}
         <ErrorState
           title="Accounts are unavailable here"
           body="This instance has no account service configured, so there is nothing to show."
         />
-        <Disclosure label="What this tab holds">
-          Your profile, your preferences, everything VSHARES has learned about what you want to
-          learn, and the controls to export or delete all of it.
-        </Disclosure>
       </>
     );
   }
@@ -40,6 +48,7 @@ export default async function YouPage() {
           title="Your account"
           description="Sign in to keep what you learn, across any device."
         />
+        {tabSummary}
         <Card emphasis>
           <CardTitle>Nothing is saved yet</CardTitle>
           <CardBody className="mt-2">
@@ -64,6 +73,8 @@ export default async function YouPage() {
             : "Your account, your preferences and what VSHARES knows about you."
         }
       />
+
+      {tabSummary}
 
       {profile.isGuest ? (
         <Card emphasis className="mb-6">
