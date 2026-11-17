@@ -1,5 +1,23 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/**
+ * Make .env.local visible to the TEST RUNNER, as Next.js already makes it
+ * visible to the app under test. Without this the live-test skip guards, which
+ * read process.env in the runner, never see the Supabase URL/key even when
+ * .env.local has them (the cause of the "72 always skip" behaviour).
+ *
+ * process.loadEnvFile is a built-in on Node 20.12+/22 (this project runs 22),
+ * so no dependency is added. It does NOT override variables already set in the
+ * environment, so a shell `export` still wins. A missing or unreadable file is
+ * ignored, so a checkout without .env.local still runs the non-live suite.
+ * Values are loaded into process.env only; nothing is printed.
+ */
+try {
+  process.loadEnvFile(".env.local");
+} catch {
+  // No .env.local (e.g. CI) — the non-live suite runs; live tests skip.
+}
+
 const port = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = `http://127.0.0.1:${port}`;
 

@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
+import { enforceReadOnly, requireLive } from "./support/live";
 
 /**
  * Catalogue behaviour that needs a database with the seed applied.
  *
- * Skipped with a reason when none is configured, never replaced by a
- * weaker check. See docs/VSHARES_VERIFICATION_PROCEDURE.md.
+ * READ-ONLY: these only read. Skipped with a reason when no live service is
+ * configured, never replaced by a weaker check. The read-only tripwire fails
+ * the test if the browser issues any mutating request. See
+ * docs/VSHARES_VERIFICATION_PROCEDURE.md and docs/VSHARES_LIVE_TEST_INVENTORY.json.
  */
 
-const configured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
 test.describe("catalogue with a database", () => {
-  test.skip(!configured, "No database configured for this run.");
+  requireLive(test);
+  enforceReadOnly(test);
 
   test("explore lists the categories from the database", async ({ page }) => {
     await page.goto("/explore");

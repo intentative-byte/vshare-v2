@@ -1,23 +1,18 @@
 import { expect, test } from "@playwright/test";
+import { enforceReadOnly, requireLive, requireLiveWrites } from "./support/live";
 
 /**
  * The parts of the sign-in journey that need a running auth service.
  *
- * These are skipped, with a reason, when no service is configured. They are
- * never replaced by a weaker check that passes without one: a skipped test
- * is reported as skipped.
- *
- * To run them, point the app at a Supabase project (local stack or a
- * project you control) and set NEXT_PUBLIC_SUPABASE_URL and
- * NEXT_PUBLIC_SUPABASE_ANON_KEY before starting the server under test.
+ * Split by effect. Requesting a magic link WRITES — it creates an auth OTP and
+ * sends mail — so those are WRITE_REQUIRED (and INFRA_BLOCKED: they need an SMTP
+ * sink). Reading /you, and signing out when there is no session, are READ_ONLY.
+ * A skipped test is reported as skipped, never replaced by a weaker check. See
+ * docs/VSHARES_LIVE_TEST_INVENTORY.json.
  */
 
-const configured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
-test.describe("sign-in against a running auth service", () => {
-  test.skip(!configured, "No auth service configured for this run.");
+test.describe("sign-in: requesting a magic link (writes)", () => {
+  requireLiveWrites(test);
 
   test("the form accepts an address and reports that a link was sent", async ({ page }) => {
     await page.goto("/sign-in");
@@ -45,6 +40,11 @@ test.describe("sign-in against a running auth service", () => {
     // account (docs/VSHARES_SECURITY.md T6).
     expect(answers[0]).toBe(answers[1]);
   });
+});
+
+test.describe("sign-in: read-only checks", () => {
+  requireLive(test);
+  enforceReadOnly(test);
 
   test("a guest who acts gets an account, and keeps it when they register", async ({ page }) => {
     await page.goto("/you");

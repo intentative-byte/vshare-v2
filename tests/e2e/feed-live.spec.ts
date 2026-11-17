@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
+import { requireLiveWrites } from "./support/live";
 
 /**
  * The feed with a real catalogue behind it.
  *
- * Skipped with a reason when no database is configured, never replaced by
- * a weaker check. See docs/VSHARES_VERIFICATION_PROCEDURE.md.
+ * WRITE_REQUIRED: opening /learn starts a feed session and records
+ * recommendations server-side, so every test here mutates the database. Gated
+ * behind VSHARES_LIVE_WRITES=true as well as a configured service, and also
+ * CONTENT_BLOCKED (needs published cards). See
+ * docs/VSHARES_LIVE_TEST_INVENTORY.json.
  */
 
-const configured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
 test.describe("value session with a catalogue", () => {
-  test.skip(!configured, "No database configured for this run.");
+  requireLiveWrites(test);
 
   test("a session shows position, progress and a stopping point", async ({ page }) => {
     await page.goto("/learn");
@@ -63,7 +63,7 @@ test.describe("value session with a catalogue", () => {
 });
 
 test.describe("a visitor with no account", () => {
-  test.skip(!configured, "No database configured for this run.");
+  requireLiveWrites(test);
 
   test("gets a readable session without anything being stored about them", async ({ page }) => {
     await page.goto("/learn");

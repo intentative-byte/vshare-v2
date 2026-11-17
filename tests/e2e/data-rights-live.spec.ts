@@ -1,16 +1,18 @@
 import { expect, test } from "@playwright/test";
+import { enforceReadOnly, requireLive, requireLiveWrites } from "./support/live";
 
 /**
- * Submissions, reporting, sharing and data rights, with a service behind
- * them. Skipped with a reason when none is configured.
+ * Submissions, reporting, sharing and data rights, with a service behind them.
+ *
+ * Split by effect. Sending a submission, exporting (which may establish a guest
+ * account) and reporting all WRITE, so they are WRITE_REQUIRED. Reading "my
+ * submissions", and sharing a published card's public link, are READ_ONLY (the
+ * share and report tests are also CONTENT_BLOCKED and self-skip with no
+ * published cards). See docs/VSHARES_LIVE_TEST_INVENTORY.json.
  */
 
-const configured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
-test.describe("submissions and data rights", () => {
-  test.skip(!configured, "No database configured for this run.");
+test.describe("submissions and data rights (writes)", () => {
+  requireLiveWrites(test);
 
   test("a submission reaches the queue and says it is not published", async ({ page }) => {
     await page.goto("/you/submit");
@@ -30,13 +32,6 @@ test.describe("submissions and data rights", () => {
     await expect(page.getByText(/Nothing is published automatically/)).toBeVisible();
   });
 
-  test("my submissions shows only mine", async ({ page }) => {
-    await page.goto("/you/submissions");
-
-    const body = (await page.textContent("body")) ?? "";
-    expect(/not submitted anything|With a moderator|Published/.test(body)).toBe(true);
-  });
-
   test("the export downloads a documented file", async ({ page }) => {
     await page.goto("/you/data");
 
@@ -46,23 +41,6 @@ test.describe("submissions and data rights", () => {
     ]);
 
     expect(download.suggestedFilename()).toMatch(/^vshares-export-\d{4}-\d{2}-\d{2}\.json$/);
-  });
-
-  test("a card can be shared by its public address", async ({ page, context }) => {
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-    await page.goto("/explore");
-
-    // Reaching a published card, then sharing it.
-    const card = page.locator('a[href^="/c/"]').first();
-
-    if ((await card.count()) === 0) {
-      test.skip(true, "No published cards in this environment yet.");
-      return;
-    }
-
-    await card.click();
-    await page.getByRole("button", { name: "Share" }).click();
-    await expect(page.getByText("Link copied.")).toBeVisible();
   });
 
   test("reporting the same card twice is refused", async ({ page }) => {
@@ -79,5 +57,34 @@ test.describe("submissions and data rights", () => {
     await page.getByRole("button", { name: "Report a problem" }).click();
     await page.getByRole("button", { name: "Send the report" }).click();
     await expect(page.getByText(/Thank you|already reported/)).toBeVisible();
+  });
+});
+
+test.describe("submissions and data rights (read-only)", () => {
+  requireLive(test);
+  enforceReadOnly(test);
+
+  test("my submissions shows only mine", async ({ page }) => {
+    await page.goto("/you/submissions");
+
+    const body = (await page.textContent("body")) ?? "";
+    expect(/not submitted anything|With a moderator|Published/.test(body)).toBe(true);
+  });
+
+  test("a card can be shared by its public address", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.goto("/explore");
+
+    // Reaching a published card, then sharing it (clipboard only, no write).
+    const card = page.locator('a[href^="/c/"]').first();
+
+    if ((await card.count()) === 0) {
+      test.skip(true, "No published cards in this environment yet.");
+      return;
+    }
+
+    await card.click();
+    await page.getByRole("button", { name: "Share" }).click();
+    await expect(page.getByText("Link copied.")).toBeVisible();
   });
 });

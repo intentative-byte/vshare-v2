@@ -1,18 +1,17 @@
 import { expect, test } from "@playwright/test";
+import { requireLiveWrites } from "./support/live";
 
 /**
  * The complete first learning win, with a catalogue behind it.
  *
- * Skipped with a reason when no database is configured. See
- * docs/VSHARES_VERIFICATION_PROCEDURE.md.
+ * WRITE_REQUIRED: completing and saving record interactions and create a guest
+ * account server-side, so these mutate the database. Gated behind
+ * VSHARES_LIVE_WRITES=true and a configured service, and also CONTENT_BLOCKED
+ * (needs a published Budgeting card). See docs/VSHARES_LIVE_TEST_INVENTORY.json.
  */
 
-const configured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
 test.describe("first learning win", () => {
-  test.skip(!configured, "No database configured for this run.");
+  requireLiveWrites(test);
 
   test("a visitor reaches a useful card with no account", async ({ page }) => {
     await page.goto("/");
