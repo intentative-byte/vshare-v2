@@ -26,7 +26,9 @@ test.describe("catalogue with a database", () => {
 
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Personal Finance");
     await expect(page.getByText("Educational, not advice.")).toBeVisible();
-    await expect(page.getByText("Budgeting")).toBeVisible();
+    // "Budgeting" is the topic list item; the page also has an "In Budgeting"
+    // heading below it, so match the list item exactly rather than any text.
+    await expect(page.getByText("Budgeting", { exact: true })).toBeVisible();
   });
 
   test("an unpublished card is not reachable in public", async ({ page }) => {
