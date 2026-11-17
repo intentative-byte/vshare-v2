@@ -18,5 +18,6 @@ export {
   whyThis,
   getNextBest,
   endFeedSession,
+  recordSessionReview,
 } from "./actions";
 export type { FeedCard, FeedSession } from "./service";

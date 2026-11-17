@@ -31,6 +31,17 @@
 
 ## Log
 
+### 2026-11-17 — Adaptive learning: session-end feedback (L1–L3)
+
+Built the session-end feedback loop, additively, after auditing the learner model (the two audit docs). No existing column, policy or test was changed except the one assertion recording the active ranking-config version.
+
+- Migration `20261117120000_adaptive_learning.sql`: a confidence count on `user_topics`, a `user_format_affinity` table, a `session_reviews` table, `record_session_review`, and ranking config v2 (formatFit + confidence). All owner-only, server-write-only, in the export, removed on deletion.
+- Ranker v2: a format-fit signal (0 without a preference; a small bounded boost with one) and confidence scaling of learned affinity, both optional so v1 behaviour is reproduced exactly and no existing ranker test is weakened.
+- A skippable end-of-session review on the session-complete screen — never more cards.
+- 8 new ranker unit tests, 25 new database assertions covering all eight owner acceptance tests, including that a review cannot publish or admit content and that skipping loses no progress.
+- 200 unit, 420 DB assertions, 90 e2e passing. Production off, PR #8 untouched.
+
+
 ### 2026-11-15 — Live Integration stage: connection readiness
 
 Still no hosted Supabase project or container runtime here, so the 72 live

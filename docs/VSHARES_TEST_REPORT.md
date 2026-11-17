@@ -797,3 +797,41 @@ which needs a hosted project or a container runtime. The turnkey setup is in
 `VSHARES_SUPABASE_SETUP.md`; `VSHARES_RELEASE_DASHBOARD.md` §1a tracks it.
 
 **CI:** run `43679313262` on commit `67c11a9`, all five jobs passed.
+
+## 2026-11-17 — Adaptive learning: session-end feedback (phases L1–L3)
+
+Implemented the session-end feedback loop from the adaptive-learning plan, additively. No existing column, policy or test was altered except the one assertion that records the active ranking-config version (now 2); every other existing test passes unchanged.
+
+| Check | Command | Result |
+|---|---|---|
+| Unit tests | `npm test` | **200 passed, 0 failed** (14 files; 8 new in `adaptive-ranking.test.ts`) |
+| Database policies and functions | `npm run test:db` | **24 files, 420 assertions, 0 failed** (25 new in `240_session_feedback.sql`) |
+| End-to-end, accessibility, headers | `npm run test:e2e` | **90 passed, 72 skipped, 0 failed** |
+| Hygiene, lint, types, build | — | pass (25 routes) |
+| Audit, production dependencies | `npm audit --omit=dev` | 0 vulnerabilities |
+
+### What was built (additive)
+
+- Migration `20261117120000_adaptive_learning.sql`: `user_topics.observations` (confidence), `user_format_affinity` and `session_reviews` tables (owner-only RLS, server-write-only), `record_session_review()`, `apply_affinity` extended to count observations, `export_my_data` extended, and ranking config **v2** (adds `formatFit` 0.04 and `confidenceK` 8; weights still sum to 1.00).
+- Ranker: a `formatFit` component (0 without a preference, a small bounded boost with one) and confidence scaling of learned affinity — both optional, so a v1 config reproduces the old behaviour exactly and every existing ranker test stays valid.
+- The skippable end-of-session review UI (`session-review.tsx`), on the session-complete screen only — never more cards.
+
+### Against the eight acceptance tests
+
+| Acceptance test | Where | Result |
+|---|---|---|
+| Positive feedback updates preferences without permanently locking them | `240` | **pass** — format affinity rises and keeps moving, never reaches 1.0 |
+| A 4/5 rating is stored accurately and does not imply mastery | `240` | **pass** — stored as 4/5; no completion or mastery recorded |
+| Selecting video increases video preference but maintains diversity | `adaptive-ranking.test.ts` + `240` | **pass** — video boosted; a stronger article still outranks a weak video; others never excluded |
+| A negative subsequent session can reverse an earlier preference | `240` | **pass** — the affinity moving average reverses |
+| A new learner can receive recommendations without historical feedback | `adaptive-ranking.test.ts` + `240` | **pass** — cold-start ranks on quality; no format/affinity contribution |
+| Feedback is requested after seven pieces without creating an infinite-scroll experience | `240` + UI | **pass** — the review covers exactly the items shown; it lives on the finite end screen |
+| Users can skip the review without losing progress | `240` | **pass** — a completion stands with no review row |
+| Learning-profile changes remain explainable and auditable | `explain.ts` + `240` | **pass** — a format reason is generated; the review is audited (no personal content) and in the export |
+
+### Guardrails verified
+
+- **Admission independent** (req 9/10): a review cannot publish a draft or admit content — tested (`240`).
+- **Privacy** (req 8/9): new tables are owner-only, in `export_my_data`, removed by `delete_my_account`; the audit entry holds no rating/format/note.
+- **No weakening**: the one changed assertion reflects the real active config version (2); all 192 prior unit tests and 395 prior DB assertions still pass.
+- Production stays off; nothing deployed; PR #8 untouched.

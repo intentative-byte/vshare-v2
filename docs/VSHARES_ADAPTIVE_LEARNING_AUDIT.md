@@ -6,6 +6,10 @@
   individual learns.*
 - Deliverable, as directed: the gap analysis **first**, then the exact development plan. Nothing
   is built here; nothing working is proposed for rebuild.
+- **Update 2026-11-17: Phases L1–L3 are now implemented** (migration
+  `20261117120000_adaptive_learning.sql`, ranker v2, the session-end review UI), with 25 new
+  database assertions and 8 new ranker unit tests. See `VSHARES_TEST_REPORT.md`. L4 (goals +
+  User DNA view) and L5 (understanding/retention, R2) remain planned.
 
 ---
 

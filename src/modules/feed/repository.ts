@@ -39,6 +39,7 @@ type CandidateRow = {
   level: Candidate["level"];
   estimated_minutes: number;
   published_at: string;
+  format: Candidate["format"];
   content_versions: { source_name: string } | null;
   content_stats: { impressions: number; completions: number } | null;
   content_topics: Array<{ topic_id: string }> | null;
@@ -62,7 +63,7 @@ export async function loadCandidates(options: {
   let query = supabase
     .from("content_items")
     .select(
-      `id, primary_topic_id, quality_score, level, estimated_minutes, published_at,
+      `id, primary_topic_id, quality_score, level, estimated_minutes, published_at, format,
        content_versions!content_items_current_version_id_fkey ( source_name ),
        content_stats ( impressions, completions ),
        content_topics ( topic_id )`,
@@ -94,6 +95,7 @@ export async function loadCandidates(options: {
     level: row.level,
     estimatedMinutes: row.estimated_minutes,
     publishedAt: row.published_at,
+    format: row.format,
     stats: {
       impressions: row.content_stats?.impressions ?? 0,
       completions: row.content_stats?.completions ?? 0,
@@ -111,18 +113,21 @@ export type ViewerMemory = {
 export async function loadViewerMemory(repeatWindowHours: number): Promise<ViewerMemory> {
   const supabase = await createRequestClient();
 
-  const [topicsResult, interactionsResult] = await Promise.all([
-    supabase.from("user_topics").select("topic_id, declared, affinity, level"),
+  const [topicsResult, interactionsResult, formatsResult] = await Promise.all([
+    supabase.from("user_topics").select("topic_id, declared, affinity, level, observations"),
     supabase
       .from("content_interactions")
       .select(
         "content_id, impressions, opened_at, completed_at, skipped_at, feedback, last_impressed_at",
       ),
+    supabase.from("user_format_affinity").select("format, affinity"),
   ]);
 
   const declaredTopicIds: string[] = [];
   const affinityByTopic: Record<string, number> = {};
   const levelByTopic: Record<string, LearnerContext["levelByTopic"][string]> = {};
+  const observationsByTopic: Record<string, number> = {};
+  const formatAffinity: Record<string, number> = {};
 
   for (const row of topicsResult.data ?? []) {
     const topicId = row.topic_id as string;
@@ -133,6 +138,11 @@ export async function loadViewerMemory(repeatWindowHours: number): Promise<Viewe
 
     affinityByTopic[topicId] = Number(row.affinity);
     levelByTopic[topicId] = row.level as LearnerContext["levelByTopic"][string];
+    observationsByTopic[topicId] = Number(row.observations ?? 0);
+  }
+
+  for (const row of formatsResult.data ?? []) {
+    formatAffinity[row.format as string] = Number(row.affinity);
   }
 
   const impressionsByContent: Record<string, number> = {};
@@ -161,6 +171,8 @@ export async function loadViewerMemory(repeatWindowHours: number): Promise<Viewe
       declaredTopicIds,
       affinityByTopic,
       levelByTopic,
+      observationsByTopic,
+      formatAffinity,
       impressionsByContent,
       // Sources of things completed in the last day, so a session does not
       // read like one publisher's newsletter.
@@ -218,4 +230,29 @@ export async function loadRecommendationComponents(
     components: data.components as Record<string, number>,
     isDiscovery: data.is_discovery as boolean,
   };
+}
+
+/**
+ * Records a seven-piece session's feedback. Everything is optional; a call
+ * with only a session id is a usefulness-less skip that still stores the
+ * review row. The database nudges the learned format preference.
+ */
+export async function recordReview(input: {
+  sessionId: string;
+  useful?: boolean;
+  rating?: number;
+  preferredFormat?: string;
+  note?: string;
+}): Promise<string | null> {
+  const supabase = await createRequestClient();
+
+  const { error } = await supabase.rpc("record_session_review", {
+    p_session_id: input.sessionId,
+    p_useful: input.useful ?? null,
+    p_rating: input.rating ?? null,
+    p_preferred_format: input.preferredFormat ?? null,
+    p_note: input.note ?? null,
+  });
+
+  return error ? error.message : null;
 }

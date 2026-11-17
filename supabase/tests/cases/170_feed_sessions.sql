@@ -171,8 +171,8 @@ begin
   perform test.ok(v_session is not null, 'a session can be started');
 
   perform test.equals(
-    (select config_version from public.feed_sessions where id = v_session), 1,
-    'the session records which ranking configuration produced it');
+    (select config_version from public.feed_sessions where id = v_session), 2,
+    'the session records which ranking configuration produced it (v2, the active one)');
 
   perform public.record_recommendations(v_session, jsonb_build_array(
     jsonb_build_object('contentId', v_card_a, 'position', 1, 'score', 0.8123,

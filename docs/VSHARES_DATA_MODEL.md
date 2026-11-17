@@ -50,6 +50,13 @@ One row per consent decision, with the choice and when it was made. Cascades on 
 | `affinity` | numeric(4,3) | 0–1; learned; see ranking spec |
 | `level` | enum `beginner` / `intermediate` / `advanced` | default beginner |
 | `level_overridden` | boolean | user set it manually |
+| `observations` | integer | **M8+ adaptive:** evidence count behind the affinity; confidence = observations/(observations+K) |
+
+### `user_format_affinity` — learned format preference (adaptive learning)
+`(user_id, format)` PK; `affinity` numeric(4,3) default 0.300; `observations`; `updated_at`. A small ranker signal, never a filter. Owner-only select; written only by `record_session_review`.
+
+### `session_reviews` — session-end feedback (adaptive learning)
+`session_id` PK → `feed_sessions`; `user_id`; `useful` boolean; `rating` smallint (1–5) null; `rating_scale` default 5; `preferred_format` enum null; `note` text null; `content_count`; `created_at`. **Session satisfaction, kept separate from content quality, engagement and demonstrated learning.** Owner-only select; written only by `record_session_review`, which can never publish or admit content. The seven items a review refers to are the session's `recommendations` rows (no separate linkage table).
 
 Policies: owner select; owner may set `declared`, `level`; `affinity` server only (column-level grant). Owner may delete (reset).
 

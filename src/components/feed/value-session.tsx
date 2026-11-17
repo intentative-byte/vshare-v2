@@ -6,6 +6,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { HighImpactNotice } from "@/components/catalogue/high-impact-notice";
 import { endFeedSession, recordImpressions, whyThis, type FeedSession } from "@/modules/feed";
+import { SessionReview } from "./session-review";
 import { setInteraction, type InteractionState } from "@/modules/progress";
 
 /**
@@ -144,6 +145,8 @@ export function ValueSession({ session, onRestart }: ValueSessionProps) {
             Go to your library
           </ButtonLink>
         </div>
+
+        {session.sessionId ? <SessionReview sessionId={session.sessionId} /> : null}
       </Card>
     );
   }

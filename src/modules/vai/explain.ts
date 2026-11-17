@@ -37,6 +37,7 @@ const phrasing: Record<string, (context: ExplainContext) => string> = {
   engagementQuality: () => "Most people who started this finished it.",
   freshness: () => "It was added recently.",
   timeFit: () => "It fits the time you set aside.",
+  formatFit: () => "It is in a format you have told us you prefer.",
 };
 
 const penaltyPhrasing: Record<string, string> = {

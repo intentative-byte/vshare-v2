@@ -18,6 +18,7 @@ import {
   loadRecommendationComponents,
   loadViewerMemory,
   recordRecommendations,
+  recordReview,
   startSession,
 } from "./repository";
 
@@ -261,6 +262,16 @@ export async function buildNextBestMove(
     completedCount,
     now: Date.now(),
   });
+}
+
+export async function submitSessionReview(input: {
+  sessionId: string;
+  useful?: boolean;
+  rating?: number;
+  preferredFormat?: string;
+  note?: string;
+}): Promise<string | null> {
+  return recordReview(input);
 }
 
 export async function finishSession(sessionId: string) {

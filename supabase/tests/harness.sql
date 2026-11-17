@@ -199,7 +199,9 @@ begin
     public.analytics_events,
     public.analytics_daily,
     public.analytics_rollups,
-    public.learner_milestones
+    public.learner_milestones,
+    public.session_reviews,
+    public.user_format_affinity
   restart identity cascade;
 end;
 $$;

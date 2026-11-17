@@ -25,6 +25,12 @@ export type RankingWeights = {
   engagementQuality: number;
   freshness: number;
   timeFit: number;
+  /**
+   * Added in config v2. Optional, so a v1 config (which omits it) produces
+   * exactly its old behaviour: the component is computed but multiplied by a
+   * zero weight, so nothing changes.
+   */
+  formatFit?: number;
 };
 
 export type RankingParams = {
@@ -40,6 +46,13 @@ export type RankingParams = {
   maxPerSource: number;
   discoveryPosition: number;
   levelStepUpCompletions: number;
+  /**
+   * Confidence smoothing for learned affinity (config v2). When present,
+   * learned affinity is scaled by observations/(observations + confidenceK),
+   * so a one-action guess counts for little and a well-evidenced preference
+   * counts for more. Absent (v1) means no scaling — full strength, as before.
+   */
+  confidenceK?: number;
 };
 
 export type RankingConfig = {
@@ -60,6 +73,8 @@ export type Candidate = {
   level: Level;
   estimatedMinutes: number;
   publishedAt: string;
+  /** The content format (article, video, …), for the format-fit signal. */
+  format?: string;
   /** Real platform counters. Zero means no data, never a made-up number. */
   stats: { impressions: number; completions: number };
 };
@@ -72,6 +87,10 @@ export type LearnerContext = {
   affinityByTopic: Record<string, number>;
   /** Topic id to the level that fits them. */
   levelByTopic: Record<string, Level>;
+  /** Topic id to how many evidence events its affinity was built from. */
+  observationsByTopic?: Record<string, number>;
+  /** Format name to the person's learned preference in [0,1]. */
+  formatAffinity?: Record<string, number>;
   /** Content id to how many times it has been shown and not opened. */
   impressionsByContent: Record<string, number>;
   /** Sources of cards completed in the last day. */
@@ -193,6 +212,44 @@ export function timeFitComponent(candidate: Candidate, context: LearnerContext):
   return clamp01(1 - overrun / (preferred * 3));
 }
 
+/**
+ * How well the card's format matches the person's learned preference.
+ *
+ * Zero when there is no preference for this format — so a new learner, or a
+ * format they have never favoured, gets no boost and no spurious "you prefer
+ * this format" explanation. A format they have asked for sits above zero and
+ * gets a small, bounded boost. It never excludes other formats: those simply
+ * do not get the boost and still rank on every other signal.
+ */
+export function formatFitComponent(candidate: Candidate, context: LearnerContext): number {
+  if (!candidate.format || !context.formatAffinity) {
+    return 0;
+  }
+
+  return clamp01(context.formatAffinity[candidate.format] ?? 0);
+}
+
+/**
+ * How much to trust the learned affinity, from the evidence behind it.
+ *
+ * Returns 1 (full strength) when the config sets no confidenceK — that is the
+ * v1 behaviour. With confidenceK set, a topic touched once counts for little
+ * and one touched many times counts for more, so a weak behavioural inference
+ * never overrides an explicit choice.
+ */
+export function affinityConfidence(
+  candidate: Candidate,
+  context: LearnerContext,
+  params: RankingParams,
+): number {
+  if (params.confidenceK === undefined) {
+    return 1;
+  }
+
+  const observations = context.observationsByTopic?.[candidate.topicId] ?? 0;
+  return observations / (observations + params.confidenceK);
+}
+
 export function scoreCandidate(
   candidate: Candidate,
   context: LearnerContext,
@@ -207,12 +264,17 @@ export function scoreCandidate(
 
   const components: ScoreComponents = {
     declaredInterest: declaredInterestComponent(candidate, context),
-    learnedAffinity: personalised ? learnedAffinityComponent(candidate, context) : 0,
+    // Learned affinity is scaled by confidence, so a weak inference stays
+    // weak and an explicit declared interest always leads (v1: confidence 1).
+    learnedAffinity: personalised
+      ? learnedAffinityComponent(candidate, context) * affinityConfidence(candidate, context, params)
+      : 0,
     quality: qualityComponent(candidate),
     levelFit: personalised ? levelFitComponent(candidate, context) : 0,
     engagementQuality: engagementQualityComponent(candidate, params),
     freshness: freshnessComponent(candidate, context, params),
     timeFit: personalised ? timeFitComponent(candidate, context) : 0,
+    formatFit: personalised ? formatFitComponent(candidate, context) : 0,
     impressionPenalty: 0,
     sameSourcePenalty: 0,
     engagementSample: Math.max(0, candidate.stats.impressions),
@@ -237,7 +299,8 @@ export function scoreCandidate(
     weights.levelFit * components.levelFit +
     weights.engagementQuality * components.engagementQuality +
     weights.freshness * components.freshness +
-    weights.timeFit * components.timeFit;
+    weights.timeFit * components.timeFit +
+    (weights.formatFit ?? 0) * components.formatFit;
 
   const score = weighted + components.impressionPenalty + components.sameSourcePenalty;
 

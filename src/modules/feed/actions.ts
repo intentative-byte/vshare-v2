@@ -7,7 +7,7 @@ import { rateLimitRules } from "@/platform/rate-limit";
 import { createRequestClient } from "@/platform/db/server";
 import { readMyPreferences } from "@/modules/personalisation";
 import { getNextBestFacts } from "@/modules/progress";
-import { buildNextBestMove, buildSession, explainRecommendation, finishSession } from "./service";
+import { buildNextBestMove, buildSession, explainRecommendation, finishSession, submitSessionReview } from "./service";
 
 /**
  * Feed actions.
@@ -137,5 +137,40 @@ export const endFeedSession = defineAction({
     }
 
     return ok(summary);
+  },
+});
+
+/**
+ * The optional end-of-session review. Every field is optional: a call with
+ * only a session id records an (empty) review and changes nothing but the
+ * fact that it was offered. Skipping it entirely (not calling this) loses no
+ * progress. It can never publish or admit content.
+ */
+export const recordSessionReview = defineAction({
+  name: "feed.recordSessionReview",
+  access: "account",
+  input: z
+    .object({
+      sessionId: z.string().uuid(),
+      useful: z.boolean().optional(),
+      rating: z.number().int().min(1).max(5).optional(),
+      preferredFormat: z
+        .enum(["article", "video", "podcast", "course", "tool", "book"])
+        .optional(),
+      note: z.string().trim().max(1000).optional(),
+    })
+    .strict(),
+  rateLimit: rateLimitRules.interactionPerUser,
+  handler: async (input) => {
+    const failure = await submitSessionReview(input);
+
+    if (failure) {
+      if (failure.includes("not your session")) {
+        return failWithDefault("FORBIDDEN");
+      }
+      return failWithDefault("UNAVAILABLE");
+    }
+
+    return ok({ recorded: true } as const);
   },
 });
