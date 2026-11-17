@@ -246,3 +246,33 @@ If neither is possible yet, the work continues: the tests stay written and
 skipped, and nothing is reported as verified that has not run. The schema,
 seeds and setup scripts are proven ready, so connection is turnkey the moment
 a project exists.
+
+---
+
+## Appendix — running the live suite from the cloud session (verified 2026-11-17)
+
+Connectivity from this Claude Code cloud session to the project was verified:
+
+| Path | Result | Consequence |
+|---|---|---|
+| HTTPS to `apgchptregdpswiwmyua.supabase.co` (REST + Auth) | **Reachable** (HTTP 401 — needs the key) | The app and live e2e can reach Supabase |
+| Node `fetch` through the egress proxy | **Works** with `node --use-env-proxy` and the proxy CA (`NODE_EXTRA_CA_CERTS`, already set) | No dependency needed; the Next server routes correctly |
+| Browser → Supabase | **Not needed** | All Supabase access is server-side (`@supabase/ssr`); Chromium only hits `localhost` |
+| `api.supabase.com` (Management API) | **Reachable** (HTTP 401 — needs a token) | Optional path to apply migrations from the session |
+| Direct Postgres `:5432` | **Not reachable** (no DNS/TCP egress; the proxy only tunnels HTTPS) | `psql`-based steps (`apply:project`, `check:links`, `test:db` against the project) **cannot run from the session** — they run on your machine, or migrations go via `supabase db push` / the Management API |
+
+So the live e2e run from the session is:
+
+```bash
+# The Next server (started by Playwright) must route Supabase calls through
+# the proxy. --use-env-proxy reads HTTPS_PROXY; the CA is already trusted.
+NODE_OPTIONS='--use-env-proxy' \
+NEXT_PUBLIC_SUPABASE_URL=https://apgchptregdpswiwmyua.supabase.co \
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<the anon key> \
+  npm run test:e2e
+```
+
+Because `:5432` is unreachable here, **migrations must be applied either from
+your machine** (`supabase db push`, or the dashboard SQL editor) **or by me via
+the Management API** (`POST /v1/projects/<ref>/database/query`), which needs a
+Management API token supplied through the secure credential form — never chat.
