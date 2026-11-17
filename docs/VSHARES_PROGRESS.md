@@ -3,7 +3,7 @@
 - **Phase:** 11 (MVP-level hardening), in progress. Milestones 1 to 7 are built and tested; Milestone 8 is **in progress and incomplete** because live verification is blocked.
 - **Branch:** `claude/gallant-mendel-xey567`. Nothing merged to `main`, nothing deployed.
 - **Headline:** the application is internally complete and passes everything that can run without a live service, but **it is not production-ready.** 72 authentication-dependent checks have never run, full erasure is unverified end to end, and no catalogue card can be published until its links are checked. `VSHARES_RELEASE_DASHBOARD.md` is the single honest view.
-- **Verified this session:** 192 unit tests, 395 database assertions over 23 files against real PostgreSQL 16, 90 end-to-end passing and 72 skipped, 0 axe violations on every route and component, a backup/restore drill executed 9/9, 25 routes built, 0 production advisories.
+- **Verified (latest, commit `95ba9f7`):** 200 unit tests, 450 database assertions over 26 files against real PostgreSQL 16, 90 end-to-end passing and 72 skipped (live-service, blocked on the anon key), concurrency test green, 25 routes built, 0 production advisories. `docs/VSHARES_PHASE9_VERIFICATION.md` holds the Phase 9 evidence.
 - **Built this milestone:** the admin catalogue and taxonomy interface (`/admin/taxonomy`, `/admin/cards/*`, `/admin/audit`) — the one feature release-blocker from M3. Guarded in three layers and proven by DB tests that call the functions as the wrong role.
 - **Executed this milestone:** a real backup-and-restore drill (pg_dump/pg_restore), a security review (3 low/info findings, all fixed), and front-end performance measurement (~224 KB first-load JS, within budget).
 - **Blocked on a live service (D17):** the 72 live checks, end-to-end erasure, the 60-second first-win benchmark, Core Web Vitals on real journeys, a manual screen-reader pass.
@@ -257,6 +257,29 @@ Not done / limitations:
 - The earlier Lovable version was not inspected; it is historical reference only and nothing depends on it.
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
+
+### 2026-11-17 — Phase 9 (live integration & security verification)
+
+- Measured this session's reach, not assumed it: dev project URL is in
+  `.env.local`, but the **anon key is absent everywhere** (config, shell,
+  environment, network secrets) and direct Postgres to the dev project is
+  unreachable. REST/auth return HTTP 401 (alive, needs the key).
+- Verified every named security property against real PostgreSQL 16 by building
+  a fresh DB from the 8 migrations and introspecting it: `app.apply_affinity`
+  EXECUTE revoked from anon/authenticated/public; `record_session_review` is
+  SECURITY DEFINER with ownership, the inclusive `[started_at, ended_at]`
+  engagement window, and the per-user advisory lock; `engaged_count` present;
+  RLS on all adaptive tables; ranking config v2 active.
+- Confirmed the VAI admission gate: `content_items.status` defaults to `draft`,
+  RLS on, feed serves only `published`; the ten seeded drafts stay unpublished.
+- Ran the full quality gate at `95ba9f7`: typecheck, lint, hygiene, 200 unit,
+  450 DB assertions (26 files), concurrency, 90 e2e + 72 skipped, build, prod
+  audit 0 — all green. Dev-tree `picomatch` advisory still open; gate unchanged.
+- Classified the 72 skipped live tests: all blocked on the missing anon key
+  (subsets also need approved content / a staff account); 0 executable now,
+  0 failing on a defect. No test weakened, no mock substituted.
+- **No defect found → no code change.** No remote write, no migration applied,
+  no merge, no publish. Evidence: `docs/VSHARES_PHASE9_VERIFICATION.md`.
 
 ### 2026-11-14 — Phase 0
 
