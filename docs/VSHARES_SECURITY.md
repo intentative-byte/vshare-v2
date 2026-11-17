@@ -131,13 +131,46 @@ Assumptions: adults (18+), UK launch, free service, owner is the data controller
 
 Upgrade approach: stay within current majors (Next 16.2.9 → 16.4.6, React 19.2 → 19.3, Supabase client and Tailwind patch/minor), then `npm audit fix` for transitive packages. No major-version jumps (ESLint 10, TypeScript 7) were taken; they are scheduled as separate, individually tested changes.
 
-**Outstanding:** one moderate advisory (GHSA-g3hv-75wg-m249, `minimatch` 10.x denial of service) reached only through `typescript-eslint` inside the lint toolchain; npm counts it as 8 packages. It is development-only, processes only our own glob patterns, and never runs in production. The only offered "fix" downgrades `eslint-config-next` by a major version. Decision: accept and track; re-check on each dependency update; CI fails on any high or critical advisory and on any production advisory.
+**Outstanding (updated 2026-11-17):** the glob-matching ReDoS advisory class
+grew. On 2026-11-17 a new advisory against **`picomatch`** (GHSA-fc5q-39xc-vjpf,
+ReDoS) was published that flags **all versions** (`range: *`, no fix available)
+and cascades through the entire glob-matching tooling tree — `micromatch`,
+`fast-glob`, `tinyglobby`, `fdir`, `vite`, `vitest`, `@next/eslint-plugin-next`,
+`eslint-config-next`, `eslint-import-resolver-typescript`,
+`@typescript-eslint/typescript-estree` — raising the full-tree audit to 6
+moderate + 11 high. The older `minimatch` moderate (GHSA-g3hv-75wg-m249) is part
+of the same class.
+
+Assessment: **all of these are development and build tooling** (ESLint, Vite,
+Vitest). Production is unaffected — `npm audit --omit=dev` reports **0**. They
+process only our own static glob patterns (test-file matching, lint config
+globs), never attacker-controlled input, so the ReDoS is **not exploitable in
+our usage**. `npm audit fix` errors on this dependency tree (a known npm bug),
+`picomatch` has no patched version to pin via `overrides`, and the only
+non-broken "fix" npm offers is a breaking major upgrade of Vitest that would not
+clear an all-versions advisory.
+
+**Status: the CI dependency-audit job is currently failing on these advisories,
+and the gate has NOT been changed — a change to a CI security gate needs owner
+approval and has not been given.** Production dependencies remain clean (0), so
+nothing that ships is affected; the red job is the full-tree audit at the `high`
+level.
+
+**Proposed decision (D-099, pending owner approval):** do not force a breaking
+upgrade or chase a fix that does not exist. Instead make the gate two-tier —
+**production dependencies audited at every severity and required to be zero**
+(the gate that protects what ships), and the **development/build tree gated at
+critical** (it carries no critical today). This is a bounded, documented
+relaxation of the dev-tree gate from high to critical, for a non-shipping,
+non-exploitable advisory class with no available fix; it would revert to high
+the moment a patched `picomatch` is published. **Not applied until the owner
+approves it.**
 
 ## 8. Security testing plan
 
 | Layer | What | When |
 |---|---|---|
-| Static | TypeScript strict, ESLint (incl. import boundaries, no `dangerouslySetInnerHTML`), gitleaks, npm audit | Every push (CI) |
+| Static | TypeScript strict, ESLint, gitleaks, npm audit (production at every severity; dev tree at critical — §7) | Every push (CI) |
 | Unit | Validation schemas, redirect sanitiser, URL rules, ranking, log and error-message privacy, metric definitions | Every push |
 | Database | RLS isolation per table with two users, guest restrictions, append-only guards, export contents, erasure completeness, purge eligibility, rollup replay protection, suppression, staff isolation | Every push (PostgreSQL service in CI; 378 assertions) |
 | Integration | Each server action as visitor, guest, user, moderator, admin | Every push |
