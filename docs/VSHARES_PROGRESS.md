@@ -258,6 +258,26 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.3M (multimedia knowledge engine & embedded feed)
+
+- Built a provider-independent, embed-only multimedia engine (`src/factory/media/`):
+  YouTube/Vimeo URL validation, privacy-respecting embeds (youtube-nocookie,
+  captions, no autoplay, provider controls preserved, attribution kept),
+  candidate verification, a DISCOVER→…→REVIEW pipeline that never approves or
+  publishes (default-deny), and VAI ranking that forces platform stats to zero so
+  popularity never ranks a video.
+- Live-verified 5 real educational videos (3Blue1Brown ×2, Kurzgesagt, TED, free
+  CodeCamp) via public YouTube oEmbed (no API key) and built an accessible,
+  social-style vertical feed prototype (`docs/samples/media/multimedia-feed.html`)
+  mixing video, image and text cards — scroll-snap, keyboard nav, pause-inactive,
+  reduced-motion and data-saver aware.
+- 19 offline tests (provider validation, embedding restrictions, invalid media,
+  no auto-approval, high-impact escalation, popularity-is-not-quality ranking,
+  oEmbed, prototype accessibility); live demo gated behind FACTORY_LIVE.
+- Full suite: typecheck, lint, 289 unit (2 live tests skipped offline), 90 e2e /
+  72 skipped, build, hygiene (340) all pass. Nothing downloaded, published or
+  written to the database. Report: `docs/VSHARES_PHASE10_3M_REPORT.md`; D-108.
+
 ### 2026-11-18 — Phase 10.3 (live research, live TAI & evidence verification)
 
 - Built the network-capable live layer (`src/factory/live/`, injected
