@@ -1,0 +1,846 @@
+{
+  "generatedAt": "2026-11-18T03:33:30.201Z",
+  "liveDataConnected": true,
+  "feeds": [
+    {
+      "feedId": "gov-uk-news-atom",
+      "url": "https://www.gov.uk/search/news-and-communications.atom",
+      "status": "ok",
+      "httpStatus": 200,
+      "entriesSeen": 20,
+      "usableObservations": 20,
+      "skippedNoTimestamp": 0
+    },
+    {
+      "feedId": "ncsc-report-rss",
+      "url": "https://www.ncsc.gov.uk/api/1/services/v1/report-rss-feed.xml",
+      "status": "ok",
+      "httpStatus": 200,
+      "entriesSeen": 20,
+      "usableObservations": 20,
+      "skippedNoTimestamp": 0
+    }
+  ],
+  "totalObservations": 40,
+  "proposedCount": 0,
+  "note": "Momentum is computed from real feed observations. Most subjects have too few observations to report momentum, which is correctly reported as INSUFFICIENT_DATA rather than fabricated.",
+  "proposals": [
+    {
+      "key": "35th mod sanctuary award showcase sustainability defence",
+      "display": "35th MOD Sanctuary Awards showcase sustainability in Defence",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "35th mod sanctuary award showcase sustainability defence",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2026-11-17T13:30:00.000Z",
+      "lastSeen": "2026-11-17T13:30:00.000Z",
+      "expiresAt": "2026-12-01T13:30:00.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1"
+      ]
+    },
+    {
+      "key": "acd fifth year",
+      "display": "ACD - The Fifth Year",
+      "momentum": {
+        "key": "acd fifth year",
+        "status": "insufficient_data",
+        "observationCount": 2,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 2 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2022-05-10T12:00:00.000Z",
+      "lastSeen": "2023-07-06T12:00:00.000Z",
+      "expiresAt": "2023-07-20T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 2 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "active cyber defence acd fourth year",
+      "display": "Active Cyber Defence (ACD) - the fourth year",
+      "momentum": {
+        "key": "active cyber defence acd fourth year",
+        "status": "insufficient_data",
+        "observationCount": 2,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 2 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2021-02-19T12:00:00.000Z",
+      "lastSeen": "2021-05-10T12:00:00.000Z",
+      "expiresAt": "2021-05-24T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 2 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "alan milburn appointed chair new youth opportunitie unit",
+      "display": "Alan Milburn Appointed Chair of the new Youth Opportunities Unit",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "alan milburn appointed chair new youth opportunitie unit",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2026-11-17T14:17:26.000Z",
+      "lastSeen": "2026-11-17T14:17:26.000Z",
+      "expiresAt": "2026-12-01T14:17:26.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1"
+      ]
+    },
+    {
+      "key": "artificial intelligence and cyber intrusion",
+      "display": "Artificial intelligence and cyber intrusion",
+      "momentum": {
+        "key": "artificial intelligence and cyber intrusion",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-03T12:00:00.000Z",
+      "lastSeen": "2026-11-03T12:00:00.000Z",
+      "expiresAt": "2026-11-17T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "bridge scanner and wearable safety alert among 23 rail innovation backed with 4 8 million",
+      "display": "Bridge scanners and wearable safety alerts among 23 rail innovations backed with £4.8 million",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "bridge scanner and wearable safety alert among 23 rail innovation backed with 4 8 million",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2026-11-17T12:59:20.000Z",
+      "lastSeen": "2026-11-17T12:59:20.000Z",
+      "expiresAt": "2026-12-01T12:59:20.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1"
+      ]
+    },
+    {
+      "key": "chemical manufacturer fined more than 100k after pollution",
+      "display": "Chemical manufacturer fined more than £100k after pollution",
+      "momentum": {
+        "key": "chemical manufacturer fined more than 100k after pollution",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T12:53:12.000Z",
+      "lastSeen": "2026-11-17T12:53:12.000Z",
+      "expiresAt": "2026-12-01T12:53:12.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "cnc climb six place national workplace inclusion ranking",
+      "display": "CNC climbs six places in national workplace inclusion ranking",
+      "momentum": {
+        "key": "cnc climb six place national workplace inclusion ranking",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T15:15:32.000Z",
+      "lastSeen": "2026-11-17T15:15:32.000Z",
+      "expiresAt": "2026-12-01T15:15:32.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "commissioner statement facial recognition consultation response",
+      "display": "Commissioner's statement on facial recognition consultation response",
+      "momentum": {
+        "key": "commissioner statement facial recognition consultation response",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T13:59:03.000Z",
+      "lastSeen": "2026-11-17T13:59:03.000Z",
+      "expiresAt": "2026-12-01T13:59:03.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "cyber threat report uk legal sector",
+      "display": "Cyber Threat Report: UK Legal Sector",
+      "momentum": {
+        "key": "cyber threat report uk legal sector",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2023-06-22T12:00:00.000Z",
+      "lastSeen": "2023-06-22T12:00:00.000Z",
+      "expiresAt": "2023-07-06T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "cyber threat sport organisation",
+      "display": "The cyber threat to sports organisations",
+      "momentum": {
+        "key": "cyber threat sport organisation",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2020-07-23T12:00:00.000Z",
+      "lastSeen": "2020-07-23T12:00:00.000Z",
+      "expiresAt": "2020-08-06T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "decrypting diversity diversity and inclusion cyber security report 2020",
+      "display": "Decrypting diversity: Diversity and inclusion in cyber security report 2020",
+      "momentum": {
+        "key": "decrypting diversity diversity and inclusion cyber security report 2020",
+        "status": "insufficient_data",
+        "observationCount": 2,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 2 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2020-07-28T12:00:00.000Z",
+      "lastSeen": "2021-11-23T12:00:00.000Z",
+      "expiresAt": "2021-12-07T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 2 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "dscc online multi factor authentication",
+      "display": "DSCC Online: Multi-factor Authentication",
+      "momentum": {
+        "key": "dscc online multi factor authentication",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T12:29:26.000Z",
+      "lastSeen": "2026-11-17T12:29:26.000Z",
+      "expiresAt": "2026-12-01T12:29:26.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "government commit new settlement young people and invest succes rather than pay failure",
+      "display": "Government commits to new settlement for young people and to invest in success rather than pay for failure",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "government commit new settlement young people and invest succes rather than pay failure",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2026-11-17T15:01:52.000Z",
+      "lastSeen": "2026-11-17T15:01:52.000Z",
+      "expiresAt": "2026-12-01T15:01:52.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1"
+      ]
+    },
+    {
+      "key": "government fire starting gun new settlement young people",
+      "display": "Government fires starting gun on new settlement for young people",
+      "momentum": {
+        "key": "government fire starting gun new settlement young people",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T22:30:02.000Z",
+      "lastSeen": "2026-11-17T22:30:02.000Z",
+      "expiresAt": "2026-12-01T22:30:02.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "high level privacy and security design nh covid 19 contact tracing app",
+      "display": "High level privacy and security design for NHS COVID-19 contact tracing app",
+      "momentum": {
+        "key": "high level privacy and security design nh covid 19 contact tracing app",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2020-05-04T12:00:00.000Z",
+      "lastSeen": "2020-05-04T12:00:00.000Z",
+      "expiresAt": "2020-05-18T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "impact ai cyber threat from now 2027",
+      "display": "Impact of AI on cyber threat from now to 2027",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "impact ai cyber threat from now 2027",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2025-05-07T12:00:00.000Z",
+      "lastSeen": "2025-05-07T12:00:00.000Z",
+      "expiresAt": "2025-05-21T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "independent young people and work review what it mean young people",
+      "display": "The independent Young People and Work Review: what it means for young people",
+      "momentum": {
+        "key": "independent young people and work review what it mean young people",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T14:57:45.000Z",
+      "lastSeen": "2026-11-17T14:57:45.000Z",
+      "expiresAt": "2026-12-01T14:57:45.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "local government reorganisation committee system letter north warwickshire leader",
+      "display": "Local government reorganisation: committee system letter to North Warwickshire leader",
+      "momentum": {
+        "key": "local government reorganisation committee system letter north warwickshire leader",
+        "status": "insufficient_data",
+        "observationCount": 2,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 2 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T15:32:40.000Z",
+      "lastSeen": "2026-11-17T15:33:53.000Z",
+      "expiresAt": "2026-12-01T15:33:53.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 2 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "local government reorganisation committee system letter worcestershire leader",
+      "display": "Local government reorganisation: committee system letter to Worcestershire leaders",
+      "momentum": {
+        "key": "local government reorganisation committee system letter worcestershire leader",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T15:34:57.000Z",
+      "lastSeen": "2026-11-17T15:34:57.000Z",
+      "expiresAt": "2026-12-01T15:34:57.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "malware analysi report sparrowdoor malware",
+      "display": "Malware analysis report on SparrowDoor malware",
+      "category": "technology-and-ai",
+      "topic": "security-basics",
+      "momentum": {
+        "key": "malware analysi report sparrowdoor malware",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2022-04-25T12:00:00.000Z",
+      "lastSeen": "2022-04-25T12:00:00.000Z",
+      "expiresAt": "2022-05-09T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "method asses forgivable v unforgivable vulnerabilitie",
+      "display": "A method to assess 'forgivable' vs 'unforgivable' vulnerabilities",
+      "momentum": {
+        "key": "method asses forgivable v unforgivable vulnerabilitie",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2025-01-28T12:00:00.000Z",
+      "lastSeen": "2025-01-28T12:00:00.000Z",
+      "expiresAt": "2025-02-11T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "minister mcgovern speech at hospice uk conference",
+      "display": "Minister McGovern speech at the Hospice UK conference",
+      "momentum": {
+        "key": "minister mcgovern speech at hospice uk conference",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T14:23:08.000Z",
+      "lastSeen": "2026-11-17T14:23:08.000Z",
+      "expiresAt": "2026-12-01T14:23:08.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "more than 1 000 air defence missile ukraine a uk deliver 240 million winter support",
+      "display": "More than 1,000 air defence missiles for Ukraine as UK delivers £240 million in winter support",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "more than 1 000 air defence missile ukraine a uk deliver 240 million winter support",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2026-11-17T15:00:00.000Z",
+      "lastSeen": "2026-11-17T15:00:00.000Z",
+      "expiresAt": "2026-12-01T15:00:00.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1"
+      ]
+    },
+    {
+      "key": "national highway speed enforcement camera issue",
+      "display": "National Highways speed enforcement camera issue",
+      "momentum": {
+        "key": "national highway speed enforcement camera issue",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T13:32:14.000Z",
+      "lastSeen": "2026-11-17T13:32:14.000Z",
+      "expiresAt": "2026-12-01T13:32:14.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "near term impact ai cyber threat",
+      "display": "The near-term impact of AI on the cyber threat",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "near term impact ai cyber threat",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.8,
+      "firstSeen": "2024-01-24T12:00:00.000Z",
+      "lastSeen": "2024-01-24T12:00:00.000Z",
+      "expiresAt": "2024-02-07T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "organisational use enterprise connected device",
+      "display": "Organisational use of Enterprise Connected Devices",
+      "momentum": {
+        "key": "organisational use enterprise connected device",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2022-05-10T12:00:00.000Z",
+      "lastSeen": "2022-05-10T12:00:00.000Z",
+      "expiresAt": "2022-05-24T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "sentence increase illegal e bike rider who killed 86 year old woman",
+      "display": "Sentence increase for illegal e-bike rider who killed 86-year-old woman",
+      "momentum": {
+        "key": "sentence increase illegal e bike rider who killed 86 year old woman",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T14:12:00.000Z",
+      "lastSeen": "2026-11-17T14:12:00.000Z",
+      "expiresAt": "2026-12-01T14:12:00.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "stable sale support long term decline animal antibiotic use",
+      "display": "Stable sales support long-term decline in animal antibiotic use",
+      "momentum": {
+        "key": "stable sale support long term decline animal antibiotic use",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T13:38:00.000Z",
+      "lastSeen": "2026-11-17T13:38:00.000Z",
+      "expiresAt": "2026-12-01T13:38:00.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "summary ncsc analysi may 2020 u sanction",
+      "display": "Summary of the NCSC analysis of May 2020 US sanction",
+      "momentum": {
+        "key": "summary ncsc analysi may 2020 u sanction",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2020-07-14T12:00:00.000Z",
+      "lastSeen": "2020-07-14T12:00:00.000Z",
+      "expiresAt": "2020-07-28T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "technical report responsible use border gateway protocol bgp isp interworking",
+      "display": "Technical report: Responsible use of the Border Gateway Protocol (BGP) for ISP interworking",
+      "momentum": {
+        "key": "technical report responsible use border gateway protocol bgp isp interworking",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2021-01-20T12:00:00.000Z",
+      "lastSeen": "2021-01-20T12:00:00.000Z",
+      "expiresAt": "2021-02-03T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "threat from commercial cyber proliferation",
+      "display": "The threat from commercial cyber proliferation",
+      "momentum": {
+        "key": "threat from commercial cyber proliferation",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2023-04-19T12:00:00.000Z",
+      "lastSeen": "2023-04-19T12:00:00.000Z",
+      "expiresAt": "2023-05-03T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "threat report application store",
+      "display": "Threat report on application stores",
+      "momentum": {
+        "key": "threat report application store",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2022-05-04T12:00:00.000Z",
+      "lastSeen": "2022-05-04T12:00:00.000Z",
+      "expiresAt": "2022-05-18T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "uk eu summit package factsheet and mythbuster",
+      "display": "UK-EU Summit package - factsheet and mythbuster",
+      "momentum": {
+        "key": "uk eu summit package factsheet and mythbuster",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T17:43:46.000Z",
+      "lastSeen": "2026-11-17T17:43:46.000Z",
+      "expiresAt": "2026-12-01T17:43:46.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    },
+    {
+      "key": "vendor security assessment",
+      "display": "Vendor Security Assessment",
+      "momentum": {
+        "key": "vendor security assessment",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2022-03-22T12:00:00.000Z",
+      "lastSeen": "2022-03-22T12:00:00.000Z",
+      "expiresAt": "2022-04-05T12:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    },
+    {
+      "key": "work and pension secretary statement milburn review into young people and work",
+      "display": "Work and Pensions Secretary statement on the Milburn review into young people and work",
+      "momentum": {
+        "key": "work and pension secretary statement milburn review into young people and work",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-11-17T15:34:51.000Z",
+      "lastSeen": "2026-11-17T15:34:51.000Z",
+      "expiresAt": "2026-12-01T15:34:51.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy"
+      ]
+    }
+  ]
+}

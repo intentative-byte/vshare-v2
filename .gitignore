@@ -23,3 +23,21 @@ pnpm-debug.log*
 
 # misc
 .DS_Store
+
+# secrets and credentials — never commit
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+secrets.*
+supabase/.temp/
+supabase/.branches/
+
+# test output
+coverage/
+playwright-report/
+test-results/

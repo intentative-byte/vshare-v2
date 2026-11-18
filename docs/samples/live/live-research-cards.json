@@ -1,0 +1,422 @@
+[
+  {
+    "slug": "secure-your-main-email-and-accounts",
+    "category": "technology-and-ai",
+    "topic": "security-basics",
+    "level": "beginner",
+    "objective": "Take the few steps that protect everyday online accounts.",
+    "title": "The security steps the NCSC says matter most",
+    "takeaways": [
+      "Use a strong and separate password for your email.",
+      "Turn on two-factor authentication to protect important accounts."
+    ],
+    "nextStep": "Turn on two-factor authentication for your main email account today.",
+    "source": {
+      "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+      "publisher": "National Cyber Security Centre",
+      "retrievedAt": "2026-11-18T03:33:30.201Z",
+      "sourceDate": "2026-11-17T17:00:05.000Z"
+    },
+    "retrieval": {
+      "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+      "status": "ok",
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-18T03:33:30.201Z",
+      "sourceDate": "2026-11-17T17:00:05.000Z",
+      "missingTimestamp": false,
+      "passageCount": 11
+    },
+    "verifications": [
+      {
+        "claim": "Use a strong and separate password for your email.",
+        "verdict": "unsupported",
+        "overlap": 0.25,
+        "note": "no passage strongly supports the claim"
+      },
+      {
+        "claim": "Turn on two-factor authentication to protect important accounts.",
+        "verdict": "unsupported",
+        "overlap": 0.5,
+        "note": "no passage strongly supports the claim"
+      }
+    ],
+    "counts": {
+      "verified": 0,
+      "unsupported": 2,
+      "contradictory": 0,
+      "unavailable": 0
+    },
+    "evidenceOverall": "not_verified",
+    "quality": {
+      "scores": {
+        "accuracy": 0,
+        "sourceReliability": 5,
+        "usefulness": 5,
+        "clarity": 5,
+        "practicalApplication": 5,
+        "originality": 5,
+        "safety": 5,
+        "freshness": 5
+      },
+      "reasons": {
+        "accuracy": "no credible source / unsupported claims",
+        "sourceReliability": "publisher class score 5/5",
+        "usefulness": "clear takeaways and an actionable step",
+        "clarity": "within field limits",
+        "practicalApplication": "imperative, concrete next step",
+        "originality": "distinct from catalogue (nearest similarity 0.00)",
+        "safety": "no safety concerns",
+        "freshness": "source ~0 months old"
+      },
+      "composite": 88,
+      "floorBreaches": [
+        "accuracy: no credible, verifiable source for the claims"
+      ],
+      "verdict": "reject"
+    },
+    "safety": {
+      "isHighImpact": false,
+      "requiresSecondReviewer": false,
+      "disclaimers": [],
+      "riskNotes": []
+    },
+    "reviewStatus": "rejected",
+    "requiresSecondReviewer": false
+  },
+  {
+    "slug": "where-to-get-free-debt-advice",
+    "category": "personal-finance",
+    "topic": "debt-and-credit",
+    "level": "beginner",
+    "objective": "Know where to get free, confidential debt help.",
+    "title": "Where to get free and confidential debt advice",
+    "takeaways": [
+      "You can get free debt advice if you are struggling with money.",
+      "Debt advice is confidential and will not judge you."
+    ],
+    "nextStep": "Use the debt advice locator to find free help near you.",
+    "source": {
+      "url": "https://www.gov.uk/debt-advice",
+      "publisher": "GOV.UK",
+      "retrievedAt": "2026-11-18T03:33:30.201Z"
+    },
+    "retrieval": {
+      "url": "https://www.gov.uk/debt-advice",
+      "status": "ok",
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-18T03:33:30.201Z",
+      "missingTimestamp": true,
+      "passageCount": 21
+    },
+    "verifications": [
+      {
+        "claim": "You can get free debt advice if you are struggling with money.",
+        "verdict": "verified",
+        "passage": "You can also use the Money Helper website to find more free debt advice services.",
+        "overlap": 0.8,
+        "note": "a retrieved passage supports the claim"
+      },
+      {
+        "claim": "Debt advice is confidential and will not judge you.",
+        "verdict": "unsupported",
+        "overlap": 0.5,
+        "note": "no passage strongly supports the claim"
+      }
+    ],
+    "counts": {
+      "verified": 1,
+      "unsupported": 1,
+      "contradictory": 0,
+      "unavailable": 0
+    },
+    "evidenceOverall": "not_verified",
+    "quality": {
+      "scores": {
+        "accuracy": 0,
+        "sourceReliability": 5,
+        "usefulness": 5,
+        "clarity": 5,
+        "practicalApplication": 5,
+        "originality": 5,
+        "safety": 4,
+        "freshness": 3
+      },
+      "reasons": {
+        "accuracy": "no credible source / unsupported claims",
+        "sourceReliability": "publisher class score 5/5",
+        "usefulness": "clear takeaways and an actionable step",
+        "clarity": "within field limits",
+        "practicalApplication": "imperative, concrete next step",
+        "originality": "distinct from catalogue (nearest similarity 0.00)",
+        "safety": "high-impact; second reviewer required",
+        "freshness": "source date unknown; needs a freshness check"
+      },
+      "composite": 80,
+      "floorBreaches": [
+        "accuracy: no credible, verifiable source for the claims"
+      ],
+      "verdict": "reject"
+    },
+    "safety": {
+      "isHighImpact": true,
+      "requiresSecondReviewer": true,
+      "disclaimers": [
+        "Educational, not advice.",
+        "General information, not financial advice about your circumstances."
+      ],
+      "riskNotes": []
+    },
+    "reviewStatus": "rejected",
+    "requiresSecondReviewer": true
+  },
+  {
+    "slug": "a-consistent-wake-time-for-sleep",
+    "category": "health-and-wellbeing",
+    "topic": "sleep",
+    "level": "beginner",
+    "objective": "Use evidence-led basics that help with sleep.",
+    "title": "What the NHS says actually helps you sleep",
+    "takeaways": [
+      "Going to bed and getting up at the same time every day helps you sleep.",
+      "Most adults need around 7 to 9 hours of sleep a night."
+    ],
+    "nextStep": "Set the same wake-time alarm every day this week, including the weekend.",
+    "source": {
+      "url": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+      "publisher": "NHS",
+      "retrievedAt": "2026-11-18T03:33:30.201Z"
+    },
+    "retrieval": {
+      "url": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+      "status": "ok",
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-18T03:33:30.201Z",
+      "missingTimestamp": true,
+      "passageCount": 0
+    },
+    "verifications": [
+      {
+        "claim": "Going to bed and getting up at the same time every day helps you sleep.",
+        "verdict": "unsupported",
+        "overlap": 0,
+        "note": "no passage strongly supports the claim"
+      },
+      {
+        "claim": "Most adults need around 7 to 9 hours of sleep a night.",
+        "verdict": "unsupported",
+        "overlap": 0,
+        "note": "no passage strongly supports the claim"
+      }
+    ],
+    "counts": {
+      "verified": 0,
+      "unsupported": 2,
+      "contradictory": 0,
+      "unavailable": 0
+    },
+    "evidenceOverall": "not_verified",
+    "quality": {
+      "scores": {
+        "accuracy": 0,
+        "sourceReliability": 5,
+        "usefulness": 5,
+        "clarity": 5,
+        "practicalApplication": 5,
+        "originality": 5,
+        "safety": 4,
+        "freshness": 3
+      },
+      "reasons": {
+        "accuracy": "no credible source / unsupported claims",
+        "sourceReliability": "publisher class score 5/5",
+        "usefulness": "clear takeaways and an actionable step",
+        "clarity": "within field limits",
+        "practicalApplication": "imperative, concrete next step",
+        "originality": "distinct from catalogue (nearest similarity 0.00)",
+        "safety": "high-impact; second reviewer required",
+        "freshness": "source date unknown; needs a freshness check"
+      },
+      "composite": 80,
+      "floorBreaches": [
+        "accuracy: no credible, verifiable source for the claims"
+      ],
+      "verdict": "reject"
+    },
+    "safety": {
+      "isHighImpact": true,
+      "requiresSecondReviewer": true,
+      "disclaimers": [
+        "Educational, not advice.",
+        "Not medical advice; speak to a qualified professional about your situation."
+      ],
+      "riskNotes": []
+    },
+    "reviewStatus": "rejected",
+    "requiresSecondReviewer": true
+  },
+  {
+    "slug": "prepare-for-a-job-interview",
+    "category": "career-development",
+    "topic": "interviews",
+    "level": "beginner",
+    "objective": "Prepare for an interview methodically.",
+    "title": "Preparing for a job interview, step by step",
+    "takeaways": [
+      "Research the organisation and the role before your interview.",
+      "Prepare examples of your skills using real situations."
+    ],
+    "nextStep": "Write out one example of your work using situation, task, action and result.",
+    "source": {
+      "url": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+      "publisher": "National Careers Service",
+      "retrievedAt": "2026-11-18T03:33:30.201Z"
+    },
+    "retrieval": {
+      "url": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+      "status": "ok",
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-18T03:33:30.201Z",
+      "missingTimestamp": true,
+      "passageCount": 40
+    },
+    "verifications": [
+      {
+        "claim": "Research the organisation and the role before your interview.",
+        "verdict": "unsupported",
+        "overlap": 0.4,
+        "note": "no passage strongly supports the claim"
+      },
+      {
+        "claim": "Prepare examples of your skills using real situations.",
+        "verdict": "unsupported",
+        "overlap": 0.17,
+        "note": "no passage strongly supports the claim"
+      }
+    ],
+    "counts": {
+      "verified": 0,
+      "unsupported": 2,
+      "contradictory": 0,
+      "unavailable": 0
+    },
+    "evidenceOverall": "not_verified",
+    "quality": {
+      "scores": {
+        "accuracy": 0,
+        "sourceReliability": 5,
+        "usefulness": 5,
+        "clarity": 5,
+        "practicalApplication": 5,
+        "originality": 5,
+        "safety": 5,
+        "freshness": 3
+      },
+      "reasons": {
+        "accuracy": "no credible source / unsupported claims",
+        "sourceReliability": "publisher class score 5/5",
+        "usefulness": "clear takeaways and an actionable step",
+        "clarity": "within field limits",
+        "practicalApplication": "imperative, concrete next step",
+        "originality": "distinct from catalogue (nearest similarity 0.00)",
+        "safety": "no safety concerns",
+        "freshness": "source date unknown; needs a freshness check"
+      },
+      "composite": 83,
+      "floorBreaches": [
+        "accuracy: no credible, verifiable source for the claims"
+      ],
+      "verdict": "reject"
+    },
+    "safety": {
+      "isHighImpact": false,
+      "requiresSecondReviewer": false,
+      "disclaimers": [],
+      "riskNotes": []
+    },
+    "reviewStatus": "rejected",
+    "requiresSecondReviewer": false
+  },
+  {
+    "slug": "steps-to-set-up-a-business",
+    "category": "entrepreneurship",
+    "topic": "running-a-small-business",
+    "level": "beginner",
+    "objective": "Know the first administrative steps to set up in the UK.",
+    "title": "The first steps to set up a business in the UK",
+    "takeaways": [
+      "Most people set up as a sole trader, a limited company or a partnership.",
+      "The structure you choose affects your tax and your personal liability."
+    ],
+    "nextStep": "Decide whether you would be a sole trader or a limited company, and write down why.",
+    "source": {
+      "url": "https://www.gov.uk/set-up-business",
+      "publisher": "GOV.UK",
+      "retrievedAt": "2026-11-18T03:33:30.201Z"
+    },
+    "retrieval": {
+      "url": "https://www.gov.uk/set-up-business",
+      "status": "ok",
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-18T03:33:30.201Z",
+      "missingTimestamp": true,
+      "passageCount": 49
+    },
+    "verifications": [
+      {
+        "claim": "Most people set up as a sole trader, a limited company or a partnership.",
+        "verdict": "verified",
+        "passage": "It’s usually easier to move from being a sole trader to a limited company.",
+        "overlap": 0.67,
+        "note": "a retrieved passage supports the claim"
+      },
+      {
+        "claim": "The structure you choose affects your tax and your personal liability.",
+        "verdict": "unsupported",
+        "overlap": 0.4,
+        "note": "no passage strongly supports the claim"
+      }
+    ],
+    "counts": {
+      "verified": 1,
+      "unsupported": 1,
+      "contradictory": 0,
+      "unavailable": 0
+    },
+    "evidenceOverall": "not_verified",
+    "quality": {
+      "scores": {
+        "accuracy": 0,
+        "sourceReliability": 5,
+        "usefulness": 5,
+        "clarity": 5,
+        "practicalApplication": 5,
+        "originality": 5,
+        "safety": 5,
+        "freshness": 3
+      },
+      "reasons": {
+        "accuracy": "no credible source / unsupported claims",
+        "sourceReliability": "publisher class score 5/5",
+        "usefulness": "clear takeaways and an actionable step",
+        "clarity": "within field limits",
+        "practicalApplication": "imperative, concrete next step",
+        "originality": "distinct from catalogue (nearest similarity 0.00)",
+        "safety": "no safety concerns",
+        "freshness": "source date unknown; needs a freshness check"
+      },
+      "composite": 83,
+      "floorBreaches": [
+        "accuracy: no credible, verifiable source for the claims"
+      ],
+      "verdict": "reject"
+    },
+    "safety": {
+      "isHighImpact": false,
+      "requiresSecondReviewer": false,
+      "disclaimers": [],
+      "riskNotes": []
+    },
+    "reviewStatus": "rejected",
+    "requiresSecondReviewer": false
+  }
+]

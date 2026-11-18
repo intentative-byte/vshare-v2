@@ -1,0 +1,76 @@
+# VSHARES — multimedia editorial review inventory
+
+## Five-stage approval gate (none of these candidates is past stage 2)
+
+A candidate advances one stage at a time. **oEmbed metadata is stage 1–2 only;
+it is NOT approval.**
+
+| Stage | What it means | The five videos |
+|---|---|---|
+| 1. Metadata verified | real title/channel confirmed via oEmbed | **DONE** (5/5) |
+| 2. Embedding eligibility checked | provider exposes an embeddable player | **DONE** (5/5) |
+| 3. Educational claims fact-checked | a human watched the content and verified it | **NOT DONE** |
+| 4. Editorial approval granted | a moderator approved it (2nd reviewer if high-impact) | **NOT DONE** |
+| 5. Publication authorised | written into `content_media` as published, owner-authorised | **NOT DONE** |
+
+No candidate may advance to stage 4/5 merely because oEmbed returned metadata.
+
+
+
+- **Date:** 2026-11-18 · Candidates prepared for **human** review. None is
+  approved or published; approval happens via `moderate_content` through the
+  database gates, with an independent second reviewer for high-impact topics.
+- **Attribution** and **embed eligibility** were confirmed live via the public
+  YouTube oEmbed endpoint (no API key); see `docs/samples/media/media-verification.json`.
+- **Factual verification:** NOT DONE by the engine. oEmbed confirms the video
+  exists, is public and embeddable and gives the real title/channel — it does
+  **not** check the educational content. A human must watch and verify before
+  approval.
+
+| # | Video (objective) | Creator (verified) | Original source | Embed eligible | Quality assessment | Factual status | Moderation decision required |
+|---|---|---|---|---|---|---|---|
+| 1 | **But what is a neural network?** — see, visually, what a neural network is and how it represents a function | 3Blue1Brown (oEmbed ✓) | https://www.youtube.com/watch?v=aircAruvnKk | yes (nocookie embed) | editorial, captions available; not view-count based | **NOT fact-checked** — human review of content | Approve/reject; confirm level (intermediate) |
+| 2 | **Why Black Holes Could Delete The Universe** — understand the information paradox and why it matters | Kurzgesagt – In a Nutshell (oEmbed ✓) | https://www.youtube.com/watch?v=yWO-cvGETRQ | yes | editorial; engaging but check scientific framing | **NOT fact-checked** | Approve/reject; verify it is not sensationalised |
+| 3 | **The essence of calculus** — build intuition before the mechanics | 3Blue1Brown (oEmbed ✓) | https://www.youtube.com/watch?v=WUvTyaaNkzM | yes | editorial; strong conceptual pedagogy | **NOT fact-checked** | Approve/reject |
+| 4 | **Grit: Passion and Perseverance** — what 'grit' is and the evidence it predicts achievement | TED — Angela Lee Duckworth (oEmbed ✓) | https://www.youtube.com/watch?v=H14bBuluwB8 | yes | editorial; note the research has been debated — reviewer should frame honestly | **NOT fact-checked** | Approve/reject; consider a balancing note on the evidence |
+| 5 | **Learn Python – Full Course for Beginners** — a complete beginner's intro to programming | freeCodeCamp.org (oEmbed ✓) | https://www.youtube.com/watch?v=rfscVS0vtbw | yes | editorial; long-form, high practical value | **NOT fact-checked** | Approve/reject; confirm duration/level |
+
+**High-impact:** none of these five are in a high-impact category, so no
+second-reviewer is forced; a reviewer may still flag one. The pipeline validated
+all five (`runMediaPipeline`: 5 validated, 0 rejected, 0 requiring a second
+reviewer).
+
+**What approval requires (per video):** a human watches the content; confirms the
+educational objective is met; confirms attribution and that embedding is allowed
+on our domain; sets category/topic/level; records a factual-verification note;
+then `moderate_content('approve')` — which writes to `content_media` only via the
+server/moderation path (the table is server-write-only). No automatic approval.
+
+## Per-video evidence (Task 10.5B-1)
+
+**Educational claims reviewed by a human: NO — for all five.** oEmbed confirmed
+metadata and embeddability only. A reviewer must watch each video before any
+approval; the factual concerns below are prompts for that review, not findings.
+
+1. **But what is a neural network?** — 3Blue1Brown. Embedding: verified (oEmbed).
+   Metadata: verified. Claims reviewed: **NO**. Factual concerns to check: it is a
+   conceptual/visual intro — confirm it is still accurate to current practice and
+   not overstated; level is "intermediate". Human decision required: approve/reject + level.
+2. **Why Black Holes Could Delete The Universe** — Kurzgesagt. Embedding/metadata:
+   verified. Claims reviewed: **NO**. Concerns: popular-science simplification of an
+   unsettled area (information paradox); check it is framed as open, not settled,
+   and not sensationalised. Human decision required.
+3. **The essence of calculus** — 3Blue1Brown. Embedding/metadata: verified. Claims
+   reviewed: **NO**. Concerns: conceptual framing; confirm accuracy and that it
+   complements rather than replaces formal study. Human decision required.
+4. **Grit** — TED (Angela Lee Duckworth). Embedding/metadata: verified. Claims
+   reviewed: **NO**. Concerns: the grit construct and its predictive power have been
+   **academically debated**; a reviewer should decide whether to add a balancing
+   note or pair it with critique. Human decision required.
+5. **Learn Python – Full Course for Beginners** — freeCodeCamp.org.
+   Embedding/metadata: verified. Claims reviewed: **NO**. Concerns: long-form
+   (hours) — confirm duration/level metadata and that the content is current.
+   Human decision required.
+
+No video here is fact-checked. None may be approved on the strength of its title,
+description or oEmbed metadata.
