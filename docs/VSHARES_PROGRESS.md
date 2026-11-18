@@ -258,6 +258,20 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 9.3 (controlled integration readiness)
+
+- Documentation-only readiness pass at commit `880b6a6`. Confirmed the baseline
+  (162 collected, 90/72/0 e2e, 211 unit, typecheck/lint/build pass, write
+  governor operational) and wrote `docs/VSHARES_PHASE9_3_READINESS.md`.
+- Audited the authenticated journey (12 steps — all covered at the code/DB
+  layer; live execution blocked on key/content/writes), the 10 draft cards
+  (reputable UK/official sources, all drafts with no link check; Budgeting
+  present and high-impact), the 62 skips (grouped by prerequisite), and the
+  security/privacy controls (all PASS; no RLS change).
+- Produced a staged Phase 9.4 execution plan with entry/exit/rollback/STOP per
+  stage, an editorial plan for ≥7 approved cards incl. Budgeting (no publishing),
+  and a blocker register (B1–B8). No remote write, no account, no publish.
+
 ### 2026-11-17 — Phase 9 (live integration & security verification)
 
 - Measured this session's reach, not assumed it: dev project URL is in

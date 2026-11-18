@@ -1,5 +1,7 @@
 {
   "generated": "2026-11-17",
+  "lastReviewed": "2026-11-18",
+  "reviewNote": "Phase 9.3: re-verified against commit 880b6a6. The data-rights-live 'my submissions' read-only test is now backed by a server-rendered page (Phase 9.2D), so it issues no server action on load; classification unchanged (READ_ONLY).",
   "branch": "claude/gallant-mendel-xey567",
   "note": "Classification is identical for the desktop and mobile projects, so each entry applies to both (projectCount 2). Categories: READ_ONLY, WRITE_REQUIRED, CONTENT_BLOCKED, ACCOUNT_BLOCKED, INFRA_BLOCKED. status is the current default-run state in a session with no VSHARES_LIVE_WRITES and (here) no anon key.",
   "governor": {
