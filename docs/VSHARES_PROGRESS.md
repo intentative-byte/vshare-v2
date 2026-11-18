@@ -258,6 +258,24 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.5B-2 Gate 2 (multimedia editorial verification)
+
+- Migration 9 confirmed applied to the dev project by the owner. Re-confirmed all
+  five videos embeddable via live oEmbed; remote content_media not readable from
+  this session (no anon key → 401; owner verifies with the Gate-1 read-only SQL).
+- Editorial verification: this agent cannot watch video content, so every video
+  is FACT-CHECK INCOMPLETE at the content level (oEmbed metadata is not treated as
+  fact-checking). Verified the substantive topic claims against independent
+  sources: grit is real-but-modest and overlaps conscientiousness (Credé et al.
+  2017); the black-hole information paradox remains unresolved.
+- Decisions: 0 READY, 2 REVISION REQUIRED (Kurzgesagt open-problem framing; Grit
+  balancing note), 0 REJECTED, 3 VERIFICATION BLOCKED (human viewing required).
+- Publication readiness: found a real blocker — content_media is publicly visible
+  only under a PUBLISHED parent card, and the catalogue has 0 published cards, so
+  approved media cannot be shown yet. Documented the owner-authorised, server-
+  write-only insert pathway and per-video approval requirements. No media inserted
+  or published. Doc: VSHARES_GATE2_EDITORIAL_VERIFICATION.md.
+
 ### 2026-11-18 — Phase 10.5B-2 (Gate 1 preparation — apply migration 9 to dev)
 
 - Read-only preparation for applying migration 9 to the dev project. Verified
