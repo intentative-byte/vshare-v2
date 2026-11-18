@@ -31,6 +31,34 @@
 
 ## Log
 
+### 2026-11-18 — Phase 10.11A (hosted readiness & acceptance preflight, read-only)
+
+Read-only preflight for the first authenticated editorial acceptance test on hosted
+dev. **No hosted writes, no accounts, no roles, no seed, no publication.**
+
+- **Env diagnostics:** the one missing variable is `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  (public client key). `SUPABASE_SERVICE_ROLE_KEY` is also empty but is **not**
+  needed for review (service role is only for named privileged ops, never the review
+  path). Without the anon key `isDatabaseConfigured()` is false, so `/admin/editorial`
+  404s and no one can sign in.
+- **Hosted schema / reviewers / Originals:** **BLOCKED** — hosted REST/auth return
+  401 (no key), no Supabase CLI/token. Verified the equivalents against **local
+  PostgreSQL**: migrations 1–11 produce the correct governance schema (3 SECURITY
+  DEFINER funcs search_path="", authenticated-only EXECUTE, RLS staff-select,
+  SELECT-only grant, append-only triggers on editorial_decisions/audit_log/
+  account_merges); the seed yields 10 draft Originals (3 high-impact, 7 standard),
+  each with an immutable current revision, 0 link-checked, 0 decisions. **Critical:
+  the Originals seed is NOT a migration** — "11 migrations applied" does not imply the
+  seed ran, so hosted Originals presence is unknown.
+- **Application:** CONFIRMED (code + local) — route gating, action wiring via
+  `createRequestClient` (anon key + session, no service role), RLS audit reads, error
+  handling, and dev-route 404s. Full local regression green (typecheck, lint, hygiene
+  399, 319 unit, 29 DB files / 478 assertions, 94 e2e, build).
+- **Verdict: NO-GO** for the acceptance test until (1) anon key set, (2) ≥2 distinct
+  moderator/admin reviewers granted, (3) Originals seed confirmed on dev. The app
+  itself is GO. Acceptance plan + safe activation steps:
+  `docs/VSHARES_PHASE10_11A_HOSTED_READINESS.md`. Decision D-115.
+
 ### 2026-11-18 — Phase 10.10 (authenticated editorial workbench activation)
 
 Turned the browser-only prototype into an authenticated, database-backed review
