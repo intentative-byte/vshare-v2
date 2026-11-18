@@ -258,6 +258,26 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.4 (real multimedia feed integration & editorial readiness)
+
+- Turned the multimedia prototype into a tested React feed: accessible,
+  mobile-first `MediaFeed` (scroll-snap, keyboard + touch, no autoplay,
+  pause-when-inactive, reduced-motion + data-saver, attribution) rendered at a
+  dev-gated `/dev/media` route (404 in production), VAI-ranked (popularity never
+  an input). Axe: 0 violations at both viewports.
+- Added migration 9 `content_media` (provider reference + attribution + licence,
+  FK to content_items) with content_items-style RLS: published+parent-readable
+  for the public, all for staff, server-write-only. Proven by
+  `270_content_media.sql` (approved-only visibility, cross-user isolation, no
+  client write). NOT applied to any remote database.
+- Built a licensed-image adapter (Openverse) that records source/licence/
+  attribution and rejects unclear reuse rights (conservative allowlist). Prepared
+  the five oEmbed-verified videos for human review
+  (`VSHARES_MEDIA_EDITORIAL_INVENTORY.md`) — none approved or published.
+- Full suite: typecheck, lint, 293 unit (2 live skipped), 27 DB files / 456
+  assertions, 92 e2e / 72 skipped (incl. `/dev/media` 404), build, hygiene (354),
+  and 0 axe violations on the feed. Report: `VSHARES_PHASE10_4_REPORT.md`; D-109.
+
 ### 2026-11-18 — Phase 10.3M (multimedia knowledge engine & embedded feed)
 
 - Built a provider-independent, embed-only multimedia engine (`src/factory/media/`):

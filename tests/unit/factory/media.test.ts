@@ -8,6 +8,8 @@ import {
   verifyCandidate,
   verifyViaOEmbed,
   renderPrototype,
+  searchLicensedImages,
+  validateLicensedImage,
   type VideoCandidate,
 } from "@/factory/media";
 import { DEMO_VIDEOS, DEMO_MIXED_FEED } from "@/factory/media/fixtures";
@@ -151,6 +153,34 @@ describe("feed prototype is accessible and safe by construction", () => {
     expect(html).toContain("prefers-reduced-motion");
     expect(html).toContain("pauseVideo");
     expect(html).toContain("saveData");
+  });
+});
+
+describe("licensed-image adapter (reuse rights enforced)", () => {
+  const f = (text: string, status = 200): HttpFetcher => async () => ({ status, headers: {}, text });
+  it("accepts a clearly-licensed image with attribution", async () => {
+    const r = await searchLicensedImages(
+      f(JSON.stringify({ results: [{ title: "Compound interest", url: "https://img.test/a.jpg", creator: "Jane Doe", license: "by", license_version: "4.0", provider: "wikimedia" }] })),
+      "compound interest",
+    );
+    expect(r.status).toBe("ok");
+    expect(r.accepted).toHaveLength(1);
+    expect(r.accepted[0]?.licence).toBe("by");
+    expect(r.accepted[0]?.attribution).toContain("Jane Doe");
+  });
+  it("rejects an image with no licence and one with a non-reusable licence", async () => {
+    const r = await searchLicensedImages(
+      f(JSON.stringify({ results: [{ title: "No licence", url: "https://img.test/b.jpg", creator: "x" }, { title: "NC only", url: "https://img.test/c.jpg", creator: "y", license: "by-nc" }] })),
+      "q",
+    );
+    expect(r.accepted).toHaveLength(0);
+    expect(r.rejected.map((x) => x.reason).join(" ")).toMatch(/unclear|not on the reusable allowlist/);
+  });
+  it("validateLicensedImage rejects a missing creator even with a good licence", () => {
+    expect(validateLicensedImage({ url: "https://img.test/d.jpg", license: "cc0" }).ok).toBe(false);
+  });
+  it("records an http error without inventing images", async () => {
+    expect((await searchLicensedImages(f("", 503), "q")).status).toBe("http_error");
   });
 });
 

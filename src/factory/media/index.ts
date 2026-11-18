@@ -17,3 +17,5 @@ export { verifyViaOEmbed } from "./oembed";
 export type { OEmbedResult, OEmbedStatus } from "./oembed";
 export { renderPrototype } from "./prototype";
 export type { PrototypeOptions } from "./prototype";
+export { validateLicensedImage, searchLicensedImages, REUSABLE_LICENCES } from "./images";
+export type { LicensedImage, ImageValidation, ImageSearchResult } from "./images";

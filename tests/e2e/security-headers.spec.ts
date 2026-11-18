@@ -55,3 +55,10 @@ test("the development component gallery is not reachable in production", async (
   // The build under test runs with NODE_ENV=production, so this route is gone.
   expect(response.status()).toBe(404);
 });
+
+test("the development multimedia prototype is not reachable in production", async ({ request }) => {
+  // Approved-only governance: the multimedia prototype renders fixtures and must
+  // never be a public route. In a production build it answers 404.
+  const response = await request.get("/dev/media");
+  expect(response.status()).toBe(404);
+});

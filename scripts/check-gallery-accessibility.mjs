@@ -22,24 +22,27 @@ for (const [label, options] of [
 ]) {
   const context = await browser.newContext(options);
   const page = await context.newPage();
-  const response = await page.goto(`${baseUrl}/dev/ui`, { waitUntil: "networkidle" });
 
-  if (response?.status() !== 200) {
-    console.error(`The gallery answered ${response?.status()}. Start the server with DEV_TOOLS_ENABLED=true.`);
-    process.exit(2);
-  }
+  for (const route of ["/dev/ui", "/dev/media"]) {
+    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 
-  const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-    .analyze();
+    if (response?.status() !== 200) {
+      console.error(`${route} answered ${response?.status()}. Start the server with DEV_TOOLS_ENABLED=true.`);
+      process.exit(2);
+    }
 
-  console.log(`${label}: ${results.violations.length} violations`);
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .analyze();
 
-  for (const violation of results.violations) {
-    violations += 1;
-    console.error(`  ${violation.id} (${violation.impact}): ${violation.help}`);
-    for (const node of violation.nodes) {
-      console.error(`    ${node.target.join(" ")}`);
+    console.log(`${label} ${route}: ${results.violations.length} violations`);
+
+    for (const violation of results.violations) {
+      violations += 1;
+      console.error(`  ${violation.id} (${violation.impact}): ${violation.help}`);
+      for (const node of violation.nodes) {
+        console.error(`    ${node.target.join(" ")}`);
+      }
     }
   }
 
