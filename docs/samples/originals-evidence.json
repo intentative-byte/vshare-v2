@@ -1,0 +1,352 @@
+{
+  "generatedAt": "2026-11-18T10:58:54.213Z",
+  "note": "Real retrieval. A claim is 'verified' only when a retrieved passage supports it; 'unavailable' means the source could not be read (robots-disallowed, JS-rendered or throttled). No quote or citation is fabricated.",
+  "cards": [
+    {
+      "slug": "a-first-monthly-budget",
+      "source": {
+        "publisher": "MoneyHelper",
+        "url": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner"
+      },
+      "retrieval": {
+        "url": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner",
+        "status": "disallowed",
+        "missingTimestamp": true,
+        "passageCount": 0
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Writing fixed costs down is what makes them negotiable.",
+          "verdict": "unavailable",
+          "overlap": 0
+        },
+        {
+          "claim": "A budget is a plan for money you have, not money you might get.",
+          "verdict": "unavailable",
+          "overlap": 0
+        }
+      ]
+    },
+    {
+      "slug": "secure-your-main-accounts",
+      "source": {
+        "publisher": "National Cyber Security Centre",
+        "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online"
+      },
+      "retrieval": {
+        "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2026-11-18T10:31:48.000Z",
+        "missingTimestamp": false,
+        "passageCount": 11
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Use a strong and separate password for your email.",
+          "verdict": "unsupported",
+          "overlap": 0.25
+        },
+        {
+          "claim": "Turn on two-factor authentication to protect important accounts.",
+          "verdict": "unsupported",
+          "overlap": 0.5
+        }
+      ]
+    },
+    {
+      "slug": "getting-to-sleep",
+      "source": {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/"
+      },
+      "retrieval": {
+        "url": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "missingTimestamp": true,
+        "passageCount": 0
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "A consistent wake time does more for sleep than a fixed bedtime.",
+          "verdict": "unsupported",
+          "overlap": 0
+        },
+        {
+          "claim": "Persistent sleep problems are worth raising with a doctor.",
+          "verdict": "unsupported",
+          "overlap": 0
+        }
+      ]
+    },
+    {
+      "slug": "what-a-neural-network-is",
+      "source": {
+        "publisher": "Google",
+        "url": "https://developers.google.com/machine-learning/crash-course"
+      },
+      "retrieval": {
+        "url": "https://developers.google.com/machine-learning/crash-course",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2026-01-09T16:02:43.000Z",
+        "missingTimestamp": false,
+        "passageCount": 37
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Training a model means adjusting it until its predictions match known answers.",
+          "verdict": "unsupported",
+          "overlap": 0
+        },
+        {
+          "claim": "Most of the work in practice is preparing data, not choosing an algorithm.",
+          "verdict": "unsupported",
+          "overlap": 0
+        }
+      ]
+    },
+    {
+      "slug": "preparing-for-an-interview",
+      "source": {
+        "publisher": "National Careers Service",
+        "url": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice"
+      },
+      "retrieval": {
+        "url": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "missingTimestamp": true,
+        "passageCount": 40
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "A structured answer about a real situation beats a general claim about yourself.",
+          "verdict": "unsupported",
+          "overlap": 0.13
+        },
+        {
+          "claim": "The questions you ask are part of what is assessed.",
+          "verdict": "unsupported",
+          "overlap": 0.25
+        }
+      ]
+    },
+    {
+      "slug": "writing-people-understand",
+      "source": {
+        "publisher": "Government Digital Service",
+        "url": "https://www.gov.uk/guidance/content-design/writing-for-gov-uk"
+      },
+      "retrieval": {
+        "url": "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2026-11-18T09:50:35.000Z",
+        "missingTimestamp": false,
+        "passageCount": 1
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Write for the person with the least time and the most to lose.",
+          "verdict": "unsupported",
+          "overlap": 0
+        },
+        {
+          "claim": "Shorter sentences are not simpler ideas, only clearer ones.",
+          "verdict": "unsupported",
+          "overlap": 0
+        }
+      ]
+    },
+    {
+      "slug": "the-essence-of-calculus",
+      "source": {
+        "publisher": "Khan Academy",
+        "url": "https://www.khanacademy.org/math/calculus-1"
+      },
+      "retrieval": {
+        "url": "https://www.khanacademy.org/math/calculus-1",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2026-11-18T02:01:00.000Z",
+        "missingTimestamp": false,
+        "passageCount": 0
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Calculus is about how things change and how those changes accumulate.",
+          "verdict": "unsupported",
+          "overlap": 0
+        },
+        {
+          "claim": "Intuition for the idea makes the formal rules easier to learn.",
+          "verdict": "unsupported",
+          "overlap": 0
+        }
+      ]
+    },
+    {
+      "slug": "reading-the-evidence-on-black-holes",
+      "source": {
+        "publisher": "NASA",
+        "url": "https://science.nasa.gov/universe/black-holes/"
+      },
+      "retrieval": {
+        "url": "https://science.nasa.gov/universe/black-holes/",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2024-03-13T15:40:49.000Z",
+        "missingTimestamp": false,
+        "passageCount": 38
+      },
+      "counts": {
+        "verified": 1,
+        "unsupported": 1,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "A black hole is a region where gravity is so strong that nothing, not even light, escapes.",
+          "verdict": "verified",
+          "overlap": 0.7,
+          "passage": "A black hole is so dense that gravity just beneath its surface, the event horizon, is strong enough that nothing – not even light – can escape."
+        },
+        {
+          "claim": "Much about black holes is still an open research question.",
+          "verdict": "unsupported",
+          "overlap": 0.43
+        }
+      ]
+    },
+    {
+      "slug": "perseverance-and-the-limits-of-grit",
+      "source": {
+        "publisher": "Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Grit_(personality_trait)"
+      },
+      "retrieval": {
+        "url": "https://en.wikipedia.org/wiki/Grit_(personality_trait)",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2026-11-17T23:17:55.000Z",
+        "missingTimestamp": false,
+        "passageCount": 60
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Grit is real but overlaps heavily with conscientiousness.",
+          "verdict": "unsupported",
+          "overlap": 0.4
+        },
+        {
+          "claim": "Its independent effect on success is small, so treat strong claims with care.",
+          "verdict": "unsupported",
+          "overlap": 0.13
+        }
+      ]
+    },
+    {
+      "slug": "starting-to-program-with-python",
+      "source": {
+        "publisher": "Python Software Foundation",
+        "url": "https://docs.python.org/3/tutorial/index.html"
+      },
+      "retrieval": {
+        "url": "https://docs.python.org/3/tutorial/index.html",
+        "status": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-18T10:58:54.213Z",
+        "sourceDate": "2026-11-18T08:29:47.000Z",
+        "missingTimestamp": false,
+        "passageCount": 38
+      },
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "evidenceOverall": "not_verified",
+      "verifications": [
+        {
+          "claim": "Python is designed to be readable, which helps beginners learn.",
+          "verdict": "unsupported",
+          "overlap": 0.29
+        },
+        {
+          "claim": "You learn to program by writing small programs, not only by reading.",
+          "verdict": "unsupported",
+          "overlap": 0.43
+        }
+      ]
+    }
+  ]
+}
