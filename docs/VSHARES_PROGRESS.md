@@ -31,6 +31,36 @@
 
 ## Log
 
+### 2026-11-18 — Phase 10.10 (authenticated editorial workbench activation)
+
+Turned the browser-only prototype into an authenticated, database-backed review
+surface. **No publication, no remote writes, no merge.**
+
+- `/admin/editorial` is now a server component (staff-gated) that reads real
+  `content_items` + immutable `content_versions` and the real `editorial_decisions`
+  ledger through RLS, shows the signed-in reviewer's identity, and records
+  decisions (approve/request_revision/reject/escalate, rationale required) via the
+  authenticated action `content.recordEditorialDecision`. Identity/timestamps are
+  DB-set; eligibility is read from the DB (`editorial_publication_eligible`), never
+  computed in the browser; nothing publishes. Immutable revision shown and bound;
+  superseded approvals flagged; DB audit history rendered; honest empty/evidence
+  states.
+- New repository reads (`listEditorialReviewItems`, `listEditorialDecisions`) via
+  the RLS request client; new client component
+  `authenticated-editorial-workbench.tsx`. Manually-typed reviewer identity removed
+  from the authoritative path.
+- `/dev/editorial` stays the labelled localStorage simulation; new
+  `/dev/editorial-auth` is an accessibility preview of the authenticated component
+  (preview mode, records nothing). Both dev routes 404 in prod (e2e asserts it).
+- **Blocker — hosted-dev runtime verification not possible:** this session has the
+  dev URL but **no anon key** (REST/auth → 401), so no reviewer can sign in here.
+  Reported honestly; no identity invented, no auth bypassed. Needs: anon key + ≥2
+  moderator/admin reviewer accounts + the card seed present on dev.
+- Verified local: typecheck, lint, 319 unit, **29 DB files / 478 assertions**,
+  94 e2e (72 skip), build, hygiene (394), **axe 0** on `/dev/editorial-auth`
+  (412/1280). Report: `docs/VSHARES_PHASE10_10_REPORT.md`; decision D-114;
+  screenshots in `docs/samples/`.
+
 ### 2026-11-18 — Audit-table append-only hardening (10.9A follow-up)
 
 Acted on the 10.9A observation that the project's other append-only audit tables

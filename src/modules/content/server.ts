@@ -22,4 +22,10 @@ export {
   getCardForAdmin,
   listAuditLog,
   listMySubmissions,
+  listEditorialReviewItems,
+  listEditorialDecisions,
+  getEditorialPublicationEligible,
+  getEditorialLedgerValid,
+  type EditorialReviewItem,
+  type EditorialDecisionRecord,
 } from "./repository";

@@ -70,4 +70,6 @@ test("editorial review material is not reachable without authorisation", async (
   // must reach neither.
   expect((await request.get("/admin/editorial")).status()).toBe(404);
   expect((await request.get("/dev/editorial")).status()).toBe(404);
+  // The authenticated-workbench accessibility preview is also dev-only.
+  expect((await request.get("/dev/editorial-auth")).status()).toBe(404);
 });

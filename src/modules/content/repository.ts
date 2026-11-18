@@ -511,6 +511,136 @@ export async function getCardForAdmin(contentId: string): Promise<CardDetail | n
   };
 }
 
+// ------------------------------------------------ editorial review ------
+
+export type EditorialReviewItem = {
+  id: string;
+  slug: string;
+  status: string;
+  isHighImpact: boolean;
+  currentVersionId: string | null;
+  topicName: string;
+  sourceUrl: string;
+  linkCheckedAt: string | null;
+  version: {
+    title: string;
+    summary: string;
+    takeaways: string[];
+    nextStep: string;
+    sourceName: string;
+    sourceAuthor: string | null;
+  } | null;
+};
+
+export type EditorialDecisionRecord = {
+  id: string;
+  contentId: string;
+  contentVersionId: string;
+  reviewerId: string;
+  decision: "approve" | "request_revision" | "reject" | "escalate";
+  rationale: string;
+  evidenceRef: string | null;
+  publicationEligible: boolean;
+  decidedAt: string;
+};
+
+/**
+ * Content awaiting editorial review, with its current (immutable) revision.
+ * Staff only — row-level security filters every table here, so a non-staff
+ * caller sees nothing. These are REAL persisted records; the workbench never
+ * invents content.
+ */
+export async function listEditorialReviewItems(): Promise<EditorialReviewItem[]> {
+  const supabase = await createRequestClient();
+
+  const { data, error } = await supabase
+    .from("content_items")
+    .select(
+      `id, slug, status, is_high_impact, current_version_id, source_url, link_checked_at,
+       topic:topics!content_items_primary_topic_id_fkey ( name ),
+       version:content_versions!content_items_current_version_id_fkey (
+         title, summary, takeaways, next_step, source_name, source_author
+       )`,
+    )
+    .in("status", ["draft", "pending"])
+    .order("created_at", { ascending: true })
+    .limit(100);
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((row) => {
+    const topic = row.topic as unknown as { name: string } | null;
+    const v = row.version as unknown as {
+      title: string;
+      summary: string;
+      takeaways: string[] | null;
+      next_step: string;
+      source_name: string;
+      source_author: string | null;
+    } | null;
+
+    return {
+      id: row.id as string,
+      slug: row.slug as string,
+      status: row.status as string,
+      isHighImpact: row.is_high_impact as boolean,
+      currentVersionId: (row.current_version_id as string | null) ?? null,
+      topicName: topic?.name ?? "",
+      sourceUrl: row.source_url as string,
+      linkCheckedAt: (row.link_checked_at as string | null) ?? null,
+      version: v
+        ? {
+            title: v.title,
+            summary: v.summary,
+            takeaways: v.takeaways ?? [],
+            nextStep: v.next_step,
+            sourceName: v.source_name,
+            sourceAuthor: v.source_author ?? null,
+          }
+        : null,
+    };
+  });
+}
+
+/**
+ * The authoritative editorial decision ledger for the given content, from
+ * PostgreSQL. Staff only (RLS). Returns [] when the governance schema is not
+ * present (e.g. migration 10 not applied), so the page never breaks.
+ */
+export async function listEditorialDecisions(contentIds: string[]): Promise<EditorialDecisionRecord[]> {
+  if (contentIds.length === 0) {
+    return [];
+  }
+
+  const supabase = await createRequestClient();
+
+  const { data, error } = await supabase
+    .from("editorial_decisions")
+    .select(
+      "id, content_id, content_version_id, reviewer_id, decision, rationale, evidence_ref, publication_eligible, decided_at",
+    )
+    .in("content_id", contentIds)
+    .order("decided_at", { ascending: true });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((row) => ({
+    id: row.id as string,
+    contentId: row.content_id as string,
+    contentVersionId: row.content_version_id as string,
+    reviewerId: row.reviewer_id as string,
+    decision: row.decision as EditorialDecisionRecord["decision"],
+    rationale: row.rationale as string,
+    evidenceRef: (row.evidence_ref as string | null) ?? null,
+    publicationEligible: row.publication_eligible as boolean,
+    decidedAt: row.decided_at as string,
+  }));
+}
+
 /** The audit log. Admin only — the policy on the table enforces it. */
 export async function listAuditLog(limit = 100): Promise<AuditEntry[]> {
   const supabase = await createRequestClient();
