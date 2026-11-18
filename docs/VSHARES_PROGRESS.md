@@ -258,6 +258,22 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.5B-2 (Gate 1 preparation — apply migration 9 to dev)
+
+- Read-only preparation for applying migration 9 to the dev project. Verified
+  branch/commit (7283816), dev project ref (apgchptregdpswiwmyua, no creds), and
+  that migration 9's dependencies all exist in migration 3 (correctly ordered).
+- Audited migration 9 safety (constraints, least-privilege grants, RLS, parent
+  visibility, staff, server-write-only, indexes; flagged non-idempotent/
+  forward-only as the only limitation). No discrepancy.
+- Preflight: applied harness + all 9 migrations to a FRESH local DB clean;
+  introspection confirmed RLS on, 2 select policies, SELECT-only app grants,
+  expected indexes. Suite green (typecheck, 305 unit, 27 DB / 457 assertions).
+- Produced the Gate-1 execution plan (owner-run commands, read-only verification,
+  failure/recovery, stop points) and a GO/NO-GO report: recommendation **GO
+  (development only)**. No remote command executed; this session cannot reach the
+  remote DB. Docs: VSHARES_GATE1_EXECUTION_PLAN.md, VSHARES_GATE1_REPORT.md.
+
 ### 2026-11-18 — Phase 10.5B-1 (multimedia activation readiness & reliability)
 
 - Hardened the media read: listApprovedMedia now routes results through pure,
