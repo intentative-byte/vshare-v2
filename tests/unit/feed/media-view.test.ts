@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isMissingMediaTableError } from "@/modules/feed/media-errors";
+import { classifyMediaReadError, handleMediaReadResult, isMissingMediaTableError } from "@/modules/feed/media-errors";
 import { approvedMediaToFeedItems } from "@/components/feed/media-view";
 import type { ApprovedMediaRow } from "@/modules/feed/server";
 
@@ -30,6 +30,36 @@ describe("isMissingMediaTableError — safe fallback when migration 9 is absent"
   it("does not misclassify an unrelated error or a null", () => {
     expect(isMissingMediaTableError({ code: "23505", message: "duplicate key" })).toBe(false);
     expect(isMissingMediaTableError(null)).toBe(false);
+  });
+});
+
+describe("classifyMediaReadError — missing schema vs permission vs connection vs other", () => {
+  it("classifies each error category", () => {
+    expect(classifyMediaReadError({ code: "42P01" })).toBe("missing_schema");
+    expect(classifyMediaReadError({ message: "Could not find the table 'public.content_media' in the schema cache" })).toBe("missing_schema");
+    expect(classifyMediaReadError({ code: "42501" })).toBe("permission_denied");
+    expect(classifyMediaReadError({ message: "permission denied for table content_media" })).toBe("permission_denied");
+    expect(classifyMediaReadError({ code: "08006" })).toBe("connection");
+    expect(classifyMediaReadError({ message: "fetch failed: ECONNREFUSED" })).toBe("connection");
+    expect(classifyMediaReadError({ code: "23505", message: "duplicate" })).toBe("other");
+  });
+});
+
+describe("handleMediaReadResult — safe fallback and selective logging", () => {
+  it("returns rows on success with no log", () => {
+    expect(handleMediaReadResult({ data: [{ id: "x" }], error: null })).toEqual({ rows: [{ id: "x" }], logCategory: null });
+  });
+  it("treats empty results as an empty feed with no log", () => {
+    expect(handleMediaReadResult({ data: [], error: null })).toEqual({ rows: [], logCategory: null });
+    expect(handleMediaReadResult({ data: null, error: null })).toEqual({ rows: [], logCategory: null });
+  });
+  it("is silent for the expected missing-schema error", () => {
+    expect(handleMediaReadResult({ data: null, error: { code: "42P01" } })).toEqual({ rows: [], logCategory: null });
+  });
+  it("flags permission and connection failures for logging, still returning an empty feed", () => {
+    expect(handleMediaReadResult({ data: null, error: { code: "42501" } })).toEqual({ rows: [], logCategory: "permission_denied" });
+    expect(handleMediaReadResult({ data: null, error: { code: "08006" } })).toEqual({ rows: [], logCategory: "connection" });
+    expect(handleMediaReadResult({ data: null, error: { code: "99999", message: "weird" } })).toEqual({ rows: [], logCategory: "other" });
   });
 });
 

@@ -1,7 +1,8 @@
 import "server-only";
 
 import { createRequestClient } from "@/platform/db/server";
-import { isMissingMediaTableError } from "./media-errors";
+import { logger } from "@/platform/logger";
+import { handleMediaReadResult } from "./media-errors";
 import type { Candidate, LearnerContext, RankingConfig } from "@/modules/vai";
 
 /**
@@ -144,14 +145,18 @@ export async function listApprovedMedia(topicContentIds?: string[]): Promise<App
 
   const { data, error } = await query;
 
-  if (error) {
-    // Missing schema (migration 9 not applied) or any read error: cards-only.
-    // isMissingMediaTableError distinguishes the expected "not applied yet" case.
-    void isMissingMediaTableError(error);
-    return [];
+  // Missing schema (migration 9 not applied) and empty results both yield an
+  // empty feed silently; any unexpected failure is logged as a safe, structured
+  // event (category + error code only — never a message, credential or PII) and
+  // still falls back to cards-only, so the public feed stays usable.
+  const { rows, logCategory } = handleMediaReadResult<ApprovedMediaRow>({
+    data: (data ?? null) as ApprovedMediaRow[] | null,
+    error,
+  });
+  if (logCategory) {
+    logger.warn({ event: "media_read_failed", outcome: logCategory, code: error?.code ?? "unknown" });
   }
-
-  return (data ?? []) as ApprovedMediaRow[];
+  return rows;
 }
 
 export type ViewerMemory = {

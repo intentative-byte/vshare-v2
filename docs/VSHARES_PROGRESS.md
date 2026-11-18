@@ -258,6 +258,24 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.5B-1 (multimedia activation readiness & reliability)
+
+- Hardened the media read: listApprovedMedia now routes results through pure,
+  tested helpers that return an empty feed for missing-schema and empty results
+  (no log) and log a safe structured warning (category + code only, no PII) for
+  permission/connection/other failures — the public feed stays usable in every
+  case. Unit tests distinguish missing_schema / permission_denied / connection /
+  other and empty vs populated success.
+- Expanded the editorial inventory with per-video evidence and an explicit
+  "claims reviewed: NO" plus factual concerns for each of the five videos.
+- Wrote a development-only activation procedure (preconditions, migration + read
+  checks, RLS verification, failure handling, recovery, explicit owner STOP
+  points) and the unified-feed architecture roadmap (one VAI-ranked session;
+  design only, separate from activation).
+- Full suite: typecheck, lint, 305 unit (3 live skipped), 27 DB files / 457
+  assertions, 92 e2e / 72 skipped, build, hygiene (368), 0 axe violations on
+  /dev/media. Report: VSHARES_PHASE10_5B1_REPORT.md. No remote change.
+
 ### 2026-11-18 — Phase 10.5A (production feed integration, local-first)
 
 - Wired approved media into the real /learn feed: `listApprovedMedia` reads

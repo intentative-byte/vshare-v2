@@ -45,3 +45,32 @@ educational objective is met; confirms attribution and that embedding is allowed
 on our domain; sets category/topic/level; records a factual-verification note;
 then `moderate_content('approve')` — which writes to `content_media` only via the
 server/moderation path (the table is server-write-only). No automatic approval.
+
+## Per-video evidence (Task 10.5B-1)
+
+**Educational claims reviewed by a human: NO — for all five.** oEmbed confirmed
+metadata and embeddability only. A reviewer must watch each video before any
+approval; the factual concerns below are prompts for that review, not findings.
+
+1. **But what is a neural network?** — 3Blue1Brown. Embedding: verified (oEmbed).
+   Metadata: verified. Claims reviewed: **NO**. Factual concerns to check: it is a
+   conceptual/visual intro — confirm it is still accurate to current practice and
+   not overstated; level is "intermediate". Human decision required: approve/reject + level.
+2. **Why Black Holes Could Delete The Universe** — Kurzgesagt. Embedding/metadata:
+   verified. Claims reviewed: **NO**. Concerns: popular-science simplification of an
+   unsettled area (information paradox); check it is framed as open, not settled,
+   and not sensationalised. Human decision required.
+3. **The essence of calculus** — 3Blue1Brown. Embedding/metadata: verified. Claims
+   reviewed: **NO**. Concerns: conceptual framing; confirm accuracy and that it
+   complements rather than replaces formal study. Human decision required.
+4. **Grit** — TED (Angela Lee Duckworth). Embedding/metadata: verified. Claims
+   reviewed: **NO**. Concerns: the grit construct and its predictive power have been
+   **academically debated**; a reviewer should decide whether to add a balancing
+   note or pair it with critique. Human decision required.
+5. **Learn Python – Full Course for Beginners** — freeCodeCamp.org.
+   Embedding/metadata: verified. Claims reviewed: **NO**. Concerns: long-form
+   (hours) — confirm duration/level metadata and that the content is current.
+   Human decision required.
+
+No video here is fact-checked. None may be approved on the strength of its title,
+description or oEmbed metadata.
