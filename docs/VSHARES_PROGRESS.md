@@ -31,6 +31,32 @@
 
 ## Log
 
+### 2026-11-18 — Audit-table append-only hardening (10.9A follow-up)
+
+Acted on the 10.9A observation that the project's other append-only audit tables
+shared a direct-DELETE gap. Verified against real PostgreSQL and fixed additively
+(migration `20261120120000`). **Local only; nothing applied remotely.**
+
+- **Finding:** `audit_log` and `account_merges` triggers fired on UPDATE only, so
+  `service_role` (holds a DELETE grant) could delete rows directly — proven: a
+  service-role `DELETE` wiped an `audit_log` row (1→0) and an `account_merges` row.
+- **No F4-class conflict elsewhere:** editorial_decisions was the only table that
+  paired `ON DELETE CASCADE` with a delete-blocking trigger; `account_merges`
+  (cascade target / set-null guest) and `audit_log` (set-null actor) were already
+  erasure-safe.
+- **Fix:** `audit_log` now blocks DELETE outright (no legitimate delete path —
+  actor is nulled, never deleted). `account_merges` keeps its UPDATE guard
+  (nulling `guest_user_id` on guest erasure) and adds a cascade-aware DELETE guard
+  — direct delete blocked while the target exists, cascade allowed when the target
+  is erased. Mirrors the editorial ledger.
+- **TRUNCATE** stays a documented privileged-operator residual across all audit
+  tables (a TRUNCATE trigger can't tell a cascade from a direct truncate).
+  Documented in `docs/VSHARES_SECURITY.md` (T16 + note). Decision D-113.
+- New test `290_audit_append_only_hardening.sql` (6 assertions; incl.
+  service-role direct-delete blocked, guest-erasure set-null preserved, target
+  cascade allowed). Gate green: **29 DB files / 478 assertions**, typecheck, lint,
+  hygiene (392); `070`/`140`/`190` erasure tests still pass.
+
 ### 2026-11-18 — Phase 10.9A (editorial governance security acceptance)
 
 Independently red-teamed migration 10 against real PostgreSQL 16 before any remote

@@ -59,10 +59,37 @@ Boundaries: browser ↔ application (all input untrusted) · application ↔ dat
 | T13 | Vulnerable dependencies (A06) | Pinned versions; `npm ci`; audit in CI — zero tolerance in production deps, no high/critical in dev deps | CI audit job |
 | T14 | Missing security headers, clickjacking (A05) | CSP, HSTS, `frame-ancestors 'none'`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` | Header test |
 | T15 | Insecure file upload — avatars (A04) | Type and size limits; server-side re-encode; random storage path; no SVG | Upload tests |
-| T16 | Insufficient audit trail (A09) | Append-only `audit_log` and `moderation_actions`; update/delete revoked | SQL tests |
+| T16 | Insufficient audit trail (A09) | Append-only `audit_log`, `account_merges`, `moderation_actions` and the editorial-decision ledger: no client write grant, and triggers block UPDATE and direct DELETE (a cascade from erasing the referenced account/content is allowed, so the right to erasure is not blocked); the editorial ledger adds a hash chain. `TRUNCATE` is a documented privileged-operator residual (see note below) | SQL tests (incl. `280`, `290`) |
 | T17 | Data loss | Backups and point-in-time recovery (paid tier — needs approval); restore drill before launch | Runbook; drill recorded in test report |
 | T18 | Manipulated ranking or analytics | Completion, save, like, skip recorded server-side; beacon events rate-limited and vocabulary-checked; smoothed engagement score | Tests |
 | T19 | Denial of service / cost | Rate limits; pagination caps; body-size limits; no LLM spend in MVP | Tests |
+
+### Append-only audit tables — enforcement and residual (2026-11-18)
+
+The Phase 10.9A security acceptance checked every append-only audit table against
+real PostgreSQL and hardened two gaps (migration `20261120120000`):
+
+- **Direct DELETE was not actually blocked** on `audit_log` and `account_merges`:
+  their triggers fired on UPDATE only, so a role holding a DELETE privilege
+  (`service_role`) could delete rows directly. They now also guard DELETE.
+  `audit_log` has no legitimate delete path (its actor is nulled on erasure, never
+  deleted), so direct deletes are blocked outright. `account_merges` must stay
+  deletable by the cascade when the referenced target account is erased, so a
+  **direct** delete is blocked while the target still exists and the **cascade**
+  (target already gone) is allowed — the same pattern the editorial ledger uses to
+  keep account erasure (`delete_my_account`) working. The UPDATE guards are
+  unchanged, so nulling `account_merges.guest_user_id` on guest erasure still
+  works. Proven by `supabase/tests/cases/290_audit_append_only_hardening.sql`.
+- **TRUNCATE remains a privileged-operator residual** across all these tables. A
+  statement-level TRUNCATE trigger was considered and rejected: it cannot
+  distinguish a direct `TRUNCATE` from one cascaded through a parent table, so it
+  would break legitimate cascade truncation (and the test harness's reset). A role
+  with TRUNCATE privilege (`service_role`, owner) or a superuser can therefore
+  still wipe a table wholesale; the application never does, and wholesale deletion
+  is far more visible than a silent row edit. The only cryptographic defence is
+  external anchoring of the editorial hash chain, which is out of scope for the
+  MVP. This is the same posture as the superuser-can-disable-a-trigger residual
+  documented in `VSHARES_EDITORIAL_GOVERNANCE.md`.
 
 ## 4. Authorisation matrix (MVP)
 
