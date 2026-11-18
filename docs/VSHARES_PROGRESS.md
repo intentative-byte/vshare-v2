@@ -258,6 +258,25 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.7 (Originals evidence hardening & review pack)
+
+- Claim-level audit of all ten Originals with real, independent evidence. Key
+  correction: the sleep card's "consistent wake time does more than a fixed
+  bedtime" is overstated — independent research (UK Biobank regularity study;
+  clinical circadian sources) supports overall regularity and wake time as a good
+  anchor, but there is no head-to-head wake-vs-bedtime proof; the claim was
+  revised to avoid unproven certainty.
+- Produced docs/VSHARES_ORIGINALS_REVIEW_PACK.md: per-card revised copy, claim-by
+  -claim evidence (source, authority, method, supports?, qualifying, confidence),
+  outstanding concerns, media relationships, reviewer sign-off fields, and a
+  high-impact independent second-review checklist (agent is NOT the reviewer).
+  Statuses: 7 READY FOR HUMAN REVIEW, 3 REVISION REQUIRED, 0 EVIDENCE BLOCKED;
+  READY never implies approval.
+- Remote read-only: no key/DB route from this session, so hosted catalogue state
+  is unread; distinguished the local fresh-seed baseline from the hosted state
+  (owner verifies). No publication, no approval. Suite green (306 unit / 4 live
+  skipped, 27 DB / 457, 92 e2e / 72 skipped, build, hygiene 379).
+
 ### 2026-11-18 — Phase 10.6 (first Originals collection & media readiness)
 
 - DB-verified baseline (fresh apply of 9 migrations + seeds): 10 cards, all
