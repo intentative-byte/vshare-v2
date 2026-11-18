@@ -258,6 +258,31 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.3 (live research, live TAI & evidence verification)
+
+- Built the network-capable live layer (`src/factory/live/`, injected
+  HttpFetcher so tests stay offline): robots-aware/rate-limited source adapter
+  with passage + timestamp extraction and failure recording; claim verification
+  against retrieved passages (verified/unsupported/contradictory/unavailable,
+  rejecting fabricated quotes; reputation is never verification); an Atom/RSS
+  trend adapter with real timestamps + provenance; and a research integration
+  wired into the existing rubric/safety/dedup.
+- 25 offline tests cover network failure, timeout, rate limit, http error, robots
+  disallow/unavailable, missing timestamp, fake-citation rejection, feed parsing,
+  insufficient momentum, stale trends, duplicate clustering, high-impact
+  escalation, default-deny publishing and deterministic cache replay.
+- Real demonstration (through the proxy, `docs/samples/live/`): 5 real sources
+  retrieved (robots-checked, rate-limited; NCSC had a real Last-Modified), **2
+  claims genuinely verified against real passages**, the rest honestly
+  unsupported (NHS page JS-rendered → 0 passages); MoneyHelper BLOCKED (robots
+  403, not crawled); both trend feeds returned 40 real timestamped observations,
+  correctly reported INSUFFICIENT_DATA. An editorial evidence workbench
+  (read-only HTML) shows every claim with its supporting passage. Nothing
+  published; no DB write; nothing fabricated.
+- Full suite: typecheck, lint, 269 unit (1 live test skipped offline), 90 e2e /
+  72 skipped, build, hygiene (326) all pass. Report:
+  `docs/VSHARES_PHASE10_3_REPORT.md`; decision D-107. STOP for review.
+
 ### 2026-11-18 — Phase 10.2 (Content Factory + TAI, first working version)
 
 - Built a local-first, dry-run Content Factory and TAI under `src/factory/`
