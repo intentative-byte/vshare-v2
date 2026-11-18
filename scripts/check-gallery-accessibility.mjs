@@ -23,7 +23,7 @@ for (const [label, options] of [
   const context = await browser.newContext(options);
   const page = await context.newPage();
 
-  for (const route of ["/dev/ui", "/dev/media"]) {
+  for (const route of ["/dev/ui", "/dev/media", "/dev/editorial"]) {
     const response = await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 
     if (response?.status() !== 200) {

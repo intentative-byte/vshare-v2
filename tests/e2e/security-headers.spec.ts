@@ -62,3 +62,12 @@ test("the development multimedia prototype is not reachable in production", asyn
   const response = await request.get("/dev/media");
   expect(response.status()).toBe(404);
 });
+
+test("editorial review material is not reachable without authorisation", async ({ request }) => {
+  // Reviewer-only: /admin/editorial is gated server-side by the admin layout
+  // (staff role, and 404 when no database is configured); /dev/editorial is the
+  // dev-only preview, gone in production. An ordinary/unauthenticated request
+  // must reach neither.
+  expect((await request.get("/admin/editorial")).status()).toBe(404);
+  expect((await request.get("/dev/editorial")).status()).toBe(404);
+});

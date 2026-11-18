@@ -258,6 +258,25 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.8 (Editorial Review Workbench)
+
+- Built a reviewer-only Editorial Review Workbench: a dashboard of the ten
+  Originals with statuses, content states (all draft), claim-level evidence
+  (source/authority/direct-vs-indirect/contradictory/date/concerns), a
+  qualitative evidence indicator computed from recorded fields, related
+  multimedia (marked NOT fact-checked), and publication blockers.
+- Human decision workflow (approve / request revision / reject / escalate) with
+  reviewer name + rationale + time, persisted LOCAL-ONLY (localStorage) — never
+  writes the DB, never publishes. validateDecision refuses the generating agent
+  as reviewer and blocks high-impact approval without an independent second
+  review (unit-tested).
+- Real surface /admin/editorial is staff-gated by the admin layout (server-side);
+  /dev/editorial is a dev-only accessibility preview. E2E asserts both 404 to
+  unauthorised/unconfigured requests. 0 axe violations on /dev/editorial.
+- Suite: typecheck, lint, 319 unit (4 live skipped, 13 editorial), 27 DB / 457,
+  94 e2e / 72 skipped, build, hygiene 380. Screenshot + preview instructions +
+  persistence roadmap in VSHARES_PHASE10_8_REPORT.md. No remote write/publish.
+
 ### 2026-11-18 — Phase 10.7 (Originals evidence hardening & review pack)
 
 - Claim-level audit of all ten Originals with real, independent evidence. Key
