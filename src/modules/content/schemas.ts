@@ -127,6 +127,25 @@ export const reportInput = z
   })
   .strict();
 
+/**
+ * Recording an authenticated editorial decision. The reviewer identity, the
+ * timestamp and the publication-eligibility are NOT here: the server sets them
+ * (`record_editorial_decision` uses `app.current_user_id()` and `now()`), so a
+ * client can never choose who reviewed, when, or whether something may publish.
+ * The decision binds to one immutable revision (`contentVersionId`).
+ */
+export const editorialDecisionInput = z
+  .object({
+    contentId: z.string().uuid(),
+    contentVersionId: z.string().uuid("Pin the decision to a specific revision."),
+    decision: z.enum(["approve", "request_revision", "reject", "escalate"]),
+    rationale: z.string().trim().min(10, "Give a rationale a colleague can read.").max(2000),
+    evidenceRef: z.string().trim().max(500).optional(),
+  })
+  .strict();
+
+export type EditorialDecisionInput = z.infer<typeof editorialDecisionInput>;
+
 export const searchInput = z
   .object({ query: z.string().trim().min(2).max(80) })
   .strict();

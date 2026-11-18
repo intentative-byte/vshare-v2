@@ -31,6 +31,39 @@
 
 ## Log
 
+### 2026-11-18 — Phase 10.9 (editorial governance, identity & audit)
+
+Prepared the Editorial Review Workbench for authenticated human decisions,
+independent second reviews and a tamper-evident decision history — **built and
+database-tested locally, nothing applied remotely, nothing activated, nothing
+published.**
+
+- Migration 10 `20261119120000_editorial_governance.sql` (additive): new
+  `editorial_decisions` table, server-write-only (staff `select` via RLS, no
+  write policy/grant, append-only trigger blocking UPDATE/DELETE), bound to an
+  immutable `content_versions` revision. Three SECURITY DEFINER functions
+  (`search_path = ''`): `record_editorial_decision` (reviewer from
+  `app.current_user_id()`, time from `now()`, eligibility computed server-side —
+  none client-supplied; two **distinct** reviewers for high-impact; same account
+  cannot approve twice), `editorial_publication_eligible` (current-revision
+  quorum; a new revision auto-invalidates prior approvals), `editorial_ledger_valid`
+  (recomputes the `sha256(prev ‖ fields)` chain). A monotonic `seq` orders the
+  chain (so a shared transaction `now()` and random uuids cannot).
+- DB test `280_editorial_governance.sql` — 12 assertions incl. **forced-tamper
+  detection** (disable trigger as superuser, mutate, re-enable → chain invalid).
+- Server action `content.recordEditorialDecision` (`access: "moderator"`, full
+  pipeline) with repository calls; no client identity/timestamp/eligibility;
+  publication stays separate (`moderate_content`).
+- Workbench relabelled: local decisions are a browser-only **simulation** — not
+  authenticated, not persisted, not authoritative; authenticated path named as
+  built but **not yet activated**.
+- Design + honest tamper-evidence limitations (privileged superuser can still
+  rewrite history; no external anchoring): `docs/VSHARES_EDITORIAL_GOVERNANCE.md`
+  (incl. owner-controlled activation procedure). Decision D-111.
+- Full gate green: typecheck, lint, **28 DB files / 469 assertions**, 319 unit
+  (4 gated-skip), 94 e2e (72 skip), build, hygiene (387 files), prod audit 0,
+  axe 0 on `/dev/editorial`. Evidence: `docs/VSHARES_PHASE10_9_REPORT.md`.
+
 ### 2026-11-17 — Adaptive learning: session-end feedback (L1–L3)
 
 Built the session-end feedback loop, additively, after auditing the learner model (the two audit docs). No existing column, policy or test was changed except the one assertion recording the active ranking-config version.

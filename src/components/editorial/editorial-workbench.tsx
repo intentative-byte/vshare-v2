@@ -14,10 +14,17 @@ import {
  *
  * A reviewer-only inspection surface for the ten Originals: statuses, claim-level
  * evidence, source limitations, outstanding revisions, high-impact second-review
- * requirements, related multimedia and publication blockers. The decision
- * workflow records locally only (prototype) — it NEVER writes to the database
- * and NEVER publishes. The agent's statuses are readiness assessments, not
- * approvals, and the agent cannot be the reviewer.
+ * requirements, related multimedia and publication blockers.
+ *
+ * The decision workflow here is a SIMULATION. It saves to the browser
+ * (localStorage) only — it is not authenticated, not persisted to the server,
+ * and is NOT an authoritative editorial decision. A typed reviewer name is not
+ * an identity. The authoritative path is the authenticated server action
+ * `content.recordEditorialDecision`, which writes the append-only, hash-chained
+ * ledger with the signed-in reviewer's identity and a server timestamp — that
+ * path is built and database-tested but NOT yet activated in this UI. The
+ * agent's statuses are readiness assessments, not approvals, and the agent
+ * cannot be the reviewer.
  */
 
 const STORAGE_KEY = "vshares-editorial-decisions";
@@ -65,9 +72,13 @@ export function EditorialWorkbench({ cards }: { cards: EditorialCard[] }) {
   return (
     <section aria-label="Editorial review workbench">
       <p className="rounded-[var(--radius-control)] border border-border bg-raised p-3 text-sm text-silver">
-        <strong className="text-white">Prototype — decisions are recorded locally only.</strong> Nothing here publishes
-        or writes to the database. The statuses are the assistant&rsquo;s readiness assessment, <strong>not approvals</strong>;
-        a human reviewer decides, and the generating agent cannot be that reviewer.
+        <strong className="text-white">Simulation — decisions here are not authenticated and not saved to the server.</strong>{" "}
+        They are kept in this browser only (localStorage) and are <strong>not authoritative</strong>: a typed reviewer name is
+        not a verified identity. The authoritative path is the authenticated server action{" "}
+        <code className="text-white">content.recordEditorialDecision</code> (append-only, hash-chained ledger, signed-in
+        reviewer, server timestamp) — built and database-tested, but <strong>not yet activated here</strong>. Nothing on this
+        page publishes. The statuses are the assistant&rsquo;s readiness assessment, <strong>not approvals</strong>; a human
+        reviewer decides, and the generating agent cannot be that reviewer.
       </p>
 
       <h2 className="mt-6 text-lg text-white">Overview</h2>
@@ -225,10 +236,14 @@ function DecisionForm({
       onSubmit={(e) => e.preventDefault()}
       aria-label={`Decision for ${card.title}`}
     >
-      <h3 className="text-sm font-bold text-white">Human decision</h3>
+      <h3 className="text-sm font-bold text-white">Human decision (simulated)</h3>
+      <p className="mt-1 text-xs text-silver">
+        For practice and review only. When the authenticated path is activated, the reviewer identity comes from the
+        signed-in account — not from this field.
+      </p>
       <div className="mt-2 grid gap-2">
         <label htmlFor={`reviewer-${id}`} className="text-xs text-silver">
-          Reviewer name (the generating agent cannot be the reviewer)
+          Reviewer name (simulation input — the generating agent cannot be the reviewer)
         </label>
         <input
           id={`reviewer-${id}`}
@@ -281,7 +296,8 @@ function DecisionForm({
       <div role="status" className="mt-2">
         {saved ? (
           <p className="text-xs text-success">
-            Recorded locally: <strong>{saved.action}</strong> by {saved.reviewer} at {new Date(saved.at).toLocaleString("en-GB")}. Not published.
+            Simulated (saved in this browser only): <strong>{saved.action}</strong> by {saved.reviewer} at{" "}
+            {new Date(saved.at).toLocaleString("en-GB")}. Not authenticated, not persisted to the server, not published.
           </p>
         ) : null}
       </div>

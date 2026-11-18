@@ -8,14 +8,17 @@ import {
   cardVersionInput,
   categoryInput,
   createCardInput,
+  editorialDecisionInput,
   topicInput,
 } from "./schemas";
 import {
   callAddVersion,
   callCreateCard,
+  callRecordEditorialDecision,
   callSetArchived,
   callUpsertCategory,
   callUpsertTopic,
+  getEditorialPublicationEligible,
 } from "./repository";
 
 /**
@@ -118,5 +121,40 @@ export const addCardVersion = defineAction({
   handler: async (input) => {
     const failure = await callAddVersion(input);
     return failure ? failWithDefault("UNAVAILABLE") : ok({ done: true } as const);
+  },
+});
+
+/**
+ * Record an authenticated editorial decision in the append-only ledger.
+ *
+ * The pipeline authorises a moderator/admin, and the database function
+ * authorises again and sets the reviewer identity, the timestamp and the
+ * publication-eligibility itself — none of which the client can supply. This
+ * records a decision only; it never publishes (publication stays a separate,
+ * explicit moderation step). A duplicate approval by the same reviewer is the
+ * one error a careful reviewer will hit, so it becomes a clear message.
+ */
+export const recordEditorialDecision = defineAction({
+  name: "content.recordEditorialDecision",
+  access: "moderator",
+  input: editorialDecisionInput,
+  rateLimit: rateLimitRules.staffWritePerUser,
+  handler: async (input) => {
+    const result = await callRecordEditorialDecision(input);
+
+    if ("error" in result) {
+      if (/already approved/i.test(result.error)) {
+        return fail("CONFLICT", "You have already approved this revision.");
+      }
+      if (/not an authorised staff|revision does not belong/i.test(result.error)) {
+        return failWithDefault("FORBIDDEN");
+      }
+      return failWithDefault("UNAVAILABLE");
+    }
+
+    // Eligibility is reported read-only; it never triggers publication here.
+    const publicationEligible = await getEditorialPublicationEligible(input.contentId);
+
+    return ok({ id: result.id, publicationEligible });
   },
 });

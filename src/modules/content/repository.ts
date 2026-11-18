@@ -626,6 +626,51 @@ export async function callCreateCard(input: {
   return error ? { error: error.message } : { id: data as string };
 }
 
+/**
+ * Record an authenticated editorial decision. The database function sets the
+ * reviewer (`app.current_user_id()`), the timestamp and the eligibility; this
+ * passes only what the reviewer chose. Returns the new decision id, or an error
+ * message (e.g. the reviewer is not staff, or already approved this revision).
+ */
+export async function callRecordEditorialDecision(input: {
+  contentId: string;
+  contentVersionId: string;
+  decision: string;
+  rationale: string;
+  evidenceRef?: string;
+}): Promise<{ id: string } | { error: string }> {
+  const supabase = await createRequestClient();
+  const { data, error } = await supabase.rpc("record_editorial_decision", {
+    p_content_id: input.contentId,
+    p_content_version_id: input.contentVersionId,
+    p_decision: input.decision,
+    p_rationale: input.rationale,
+    p_evidence_ref: input.evidenceRef ?? null,
+  });
+
+  return error ? { error: error.message } : { id: data as string };
+}
+
+/** Whether the content's current revision meets the reviewer quorum. Staff only. */
+export async function getEditorialPublicationEligible(contentId: string): Promise<boolean> {
+  const supabase = await createRequestClient();
+  const { data, error } = await supabase.rpc("editorial_publication_eligible", {
+    p_content_id: contentId,
+  });
+
+  return error ? false : Boolean(data);
+}
+
+/** Whether the decision ledger's hash chain still validates. Staff only. */
+export async function getEditorialLedgerValid(contentId: string): Promise<boolean> {
+  const supabase = await createRequestClient();
+  const { data, error } = await supabase.rpc("editorial_ledger_valid", {
+    p_content_id: contentId,
+  });
+
+  return error ? false : Boolean(data);
+}
+
 export async function callAddVersion(input: {
   contentId: string;
   title: string;

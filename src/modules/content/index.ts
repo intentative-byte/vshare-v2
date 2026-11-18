@@ -32,6 +32,7 @@ export {
   setTopicArchived,
   createCard,
   addCardVersion,
+  recordEditorialDecision,
 } from "./admin-actions";
 
 export {
@@ -47,7 +48,9 @@ export {
   archiveInput,
   createCardInput,
   cardVersionInput,
+  editorialDecisionInput,
   type SubmitResourceInput,
+  type EditorialDecisionInput,
 } from "./schemas";
 
 export type {
