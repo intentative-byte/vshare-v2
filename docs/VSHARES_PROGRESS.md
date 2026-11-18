@@ -258,6 +258,29 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.2 (Content Factory + TAI, first working version)
+
+- Built a local-first, dry-run Content Factory and TAI under `src/factory/`
+  (pure TypeScript, no database, no network, no new dependencies): source
+  verification, duplicate detection, claim-level evidence/fact-check, the 8-axis
+  rubric with hard floors, high-impact safety escalation, the
+  RESEARCH→VERIFY→DRAFT→FACT-CHECK→GRADE→EDITORIAL QUEUE pipeline (default-deny
+  writes, never publishes), and TAI (normalize/cluster/momentum/classify/
+  credibility/expiry/propose) plus a curriculum planner where trends never
+  displace essentials.
+- Test-first: 30 factory unit tests + a demonstration integration test cover
+  invalid-source rejection, missing-evidence handling, dedup, quality floors,
+  high-impact escalation, classification, insufficient momentum, stale trends,
+  default-deny writes, no-auto-publish and deterministic fixtures.
+- Demonstration (`docs/samples/`): 8 evidence-backed draft cards all reaching the
+  editorial queue, all flagged for human fact-check, 2 high-impact needing a
+  second reviewer; a TAI report that declares no live source is connected and
+  marks real momentum NOT VERIFIED. No page was fetched, so no claim is marked
+  verified — honest by construction.
+- Full suite green: typecheck, lint, 243 unit (18 files), hygiene (308), 90 e2e /
+  72 skipped, build. No remote write, no publish, no migration, no RLS change.
+  Report: `docs/VSHARES_PHASE10_2_REPORT.md`; decision D-106. STOP for review.
+
 ### 2026-11-18 — Phase 10.1 (content universe architecture & factory blueprint)
 
 - Documentation and planning only. Audited the existing content system (schema,
