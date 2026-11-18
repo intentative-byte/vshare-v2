@@ -258,6 +258,24 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.1 (content universe architecture & factory blueprint)
+
+- Documentation and planning only. Audited the existing content system (schema,
+  DB admission gates, `source_url` dedup, moderation workflow, VAI ranker) and
+  confirmed it is reusable as-is — the factory sits in front of `create_card`
+  and moderation; the database stays the final admission authority.
+- Wrote `docs/VSHARES_CONTENT_FACTORY.md` (10-agent architecture with a strict
+  evidence/no-fabricated-citations contract, an 8-axis quality rubric with
+  rejection/escalation thresholds where a high score never bypasses human
+  approval, the RESEARCH→…→REFRESH/RETIRE lifecycle mapped to the schema,
+  scaling plan for 100/500/2,000/10,000 with per-step quality gates, and a
+  Phase 10.2 sequence) and `docs/VSHARES_CONTENT_TAXONOMY.md` (20-category
+  universe — 8 existing reused, 12 proposed — with overlap control, plus a
+  balanced 100-card pilot curriculum including Budgeting).
+- No migration, no taxonomy/content rows, no publishing, no change to VAI
+  admission or RLS. Proposed future migrations (evidence table, review_due_at,
+  coverage view) are additive and owner-gated. STOP for owner review.
+
 ### 2026-11-18 — Phase 9.3 (controlled integration readiness)
 
 - Documentation-only readiness pass at commit `880b6a6`. Confirmed the baseline
