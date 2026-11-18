@@ -1,6 +1,8 @@
 import { PageHeader } from "@/components/ui/page-header";
 import { ErrorState } from "@/components/ui/states";
 import { FeedClient } from "@/components/feed/feed-client";
+import { LearnMediaSection } from "@/components/feed/media-section";
+import { listApprovedMedia } from "@/modules/feed/server";
 import { isDatabaseConfigured } from "@/platform/env";
 
 export const metadata = { title: "Learn" };
@@ -39,10 +41,16 @@ export default async function LearnPage({ searchParams }: { searchParams: Search
     );
   }
 
+  // Approved, published media (RLS-gated; [] when migration 9 is not applied),
+  // rendered below the value session. When there is none, nothing is added and
+  // the existing card feed is unchanged.
+  const media = await listApprovedMedia();
+
   return (
     <>
       {header}
       <FeedClient topicSlug={params.topic ?? null} />
+      <LearnMediaSection rows={media} />
     </>
   );
 }

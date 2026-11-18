@@ -25,6 +25,8 @@ create table public.content_media (
   channel text not null check (char_length(btrim(channel)) between 2 and 160),
   channel_url text check (channel_url is null or (channel_url ~ '^https://' and char_length(channel_url) <= 2000)),
   title text not null check (char_length(btrim(title)) between 3 and 200),
+  -- The educational objective shown with the media in the feed.
+  objective text check (objective is null or char_length(btrim(objective)) between 10 and 300),
   -- Source/licence where relevant (e.g. 'CC-BY-4.0', 'standard-youtube-terms').
   licence text check (licence is null or char_length(btrim(licence)) between 2 and 120),
   -- Embedding eligibility, confirmed before display.

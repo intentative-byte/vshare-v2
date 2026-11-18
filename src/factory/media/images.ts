@@ -97,13 +97,25 @@ export async function searchLicensedImages(
   });
   let res;
   try {
-    res = await fetcher(`${OPENVERSE}?${params.toString()}`, { timeoutMs: 15000 });
+    res = await fetcher(`${OPENVERSE}?${params.toString()}`, { timeoutMs: 15000, accept: "application/json" });
   } catch (err) {
     const status = err instanceof HttpError && err.kind === "timeout" ? "timeout" : "network_error";
     return { status, accepted: [], rejected: [], error: (err as Error).message };
   }
   if (res.status >= 400) {
     return { status: "http_error", accepted: [], rejected: [], error: `http ${res.status}` };
+  }
+
+  // A JSON endpoint that answers 200 with HTML is a throttle/interstitial page
+  // (Openverse's anonymous tier does this). Report it honestly, never parse it.
+  const contentType = (res.headers["content-type"] ?? "").toLowerCase();
+  if (contentType.includes("html") || /^\s*</.test(res.text)) {
+    return {
+      status: "http_error",
+      accepted: [],
+      rejected: [],
+      error: "non-JSON (HTML) response — source throttled or unavailable (anonymous rate limit)",
+    };
   }
 
   let data: { results?: OpenverseResult[] };

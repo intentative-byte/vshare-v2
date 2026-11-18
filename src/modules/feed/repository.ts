@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createRequestClient } from "@/platform/db/server";
+import { isMissingMediaTableError } from "./media-errors";
 import type { Candidate, LearnerContext, RankingConfig } from "@/modules/vai";
 
 /**
@@ -101,6 +102,56 @@ export async function loadCandidates(options: {
       completions: row.content_stats?.completions ?? 0,
     },
   }));
+}
+
+export type ApprovedMediaRow = {
+  id: string;
+  content_id: string;
+  provider: "youtube" | "vimeo" | "image";
+  provider_id: string | null;
+  original_url: string;
+  media_type: string;
+  channel: string;
+  channel_url: string | null;
+  title: string;
+  objective: string | null;
+  licence: string | null;
+  embeddable: boolean;
+  captions_available: boolean;
+};
+
+/**
+ * Approved, published, embeddable media — read through the ordinary request
+ * client, so row-level security does the gating (published media whose parent
+ * card is readable; nothing unpublished or rejected; no service-role bypass).
+ * Returns [] when migration 9 is not applied, so /learn never breaks.
+ */
+export async function listApprovedMedia(topicContentIds?: string[]): Promise<ApprovedMediaRow[]> {
+  const supabase = await createRequestClient();
+
+  let query = supabase
+    .from("content_media")
+    .select(
+      "id, content_id, provider, provider_id, original_url, media_type, channel, channel_url, title, objective, licence, embeddable, captions_available",
+    )
+    .eq("status", "published")
+    .eq("embeddable", true)
+    .limit(20);
+
+  if (topicContentIds && topicContentIds.length > 0) {
+    query = query.in("content_id", topicContentIds);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    // Missing schema (migration 9 not applied) or any read error: cards-only.
+    // isMissingMediaTableError distinguishes the expected "not applied yet" case.
+    void isMissingMediaTableError(error);
+    return [];
+  }
+
+  return (data ?? []) as ApprovedMediaRow[];
 }
 
 export type ViewerMemory = {

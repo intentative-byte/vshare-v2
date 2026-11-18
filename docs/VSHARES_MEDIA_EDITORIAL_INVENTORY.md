@@ -1,5 +1,22 @@
 # VSHARES — multimedia editorial review inventory
 
+## Five-stage approval gate (none of these candidates is past stage 2)
+
+A candidate advances one stage at a time. **oEmbed metadata is stage 1–2 only;
+it is NOT approval.**
+
+| Stage | What it means | The five videos |
+|---|---|---|
+| 1. Metadata verified | real title/channel confirmed via oEmbed | **DONE** (5/5) |
+| 2. Embedding eligibility checked | provider exposes an embeddable player | **DONE** (5/5) |
+| 3. Educational claims fact-checked | a human watched the content and verified it | **NOT DONE** |
+| 4. Editorial approval granted | a moderator approved it (2nd reviewer if high-impact) | **NOT DONE** |
+| 5. Publication authorised | written into `content_media` as published, owner-authorised | **NOT DONE** |
+
+No candidate may advance to stage 4/5 merely because oEmbed returned metadata.
+
+
+
 - **Date:** 2026-11-18 · Candidates prepared for **human** review. None is
   approved or published; approval happens via `moderate_content` through the
   database gates, with an independent second reviewer for high-impact topics.

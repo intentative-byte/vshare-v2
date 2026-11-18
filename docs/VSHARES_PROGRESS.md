@@ -258,6 +258,25 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.5A (production feed integration, local-first)
+
+- Wired approved media into the real /learn feed: `listApprovedMedia` reads
+  content_media through the ordinary request client (RLS gates it; no
+  service-role bypass; returns [] when migration 9 is absent). /learn renders a
+  VAI-ranked media section below the value session only when approved media
+  exists — otherwise unchanged (safe fallback). Media never ranked by views/likes.
+- Added migration 9's objective column; extended 270_content_media.sql with a
+  parent-card-visibility case (published media on a draft card stays hidden).
+  Migration 9 remains local only.
+- Licensed-image adapter now requests JSON and detects Openverse's anonymous
+  HTML throttle page, reporting it honestly (BLOCKED) rather than faking an
+  image; the image card stays a labelled placeholder. Prepared the five videos
+  with an explicit five-stage approval gate (only metadata + embedding done).
+- Produced the migration-9 readiness review + owner-approval checklist (not
+  applied). Full suite: typecheck, lint, 300 unit (3 live skipped), 27 DB files /
+  457 assertions, 92 e2e / 72 skipped, build, hygiene (361), 0 axe violations on
+  /dev/media. Report: VSHARES_PHASE10_5A_REPORT.md; decision D-110.
+
 ### 2026-11-18 — Phase 10.4 (real multimedia feed integration & editorial readiness)
 
 - Turned the multimedia prototype into a tested React feed: accessible,

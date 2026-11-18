@@ -61,6 +61,25 @@ begin
     (select count(*)::int from public.content_media), 2,
     'staff see all media (published and draft)');
 
+  -- Parent-card visibility: published media on a DRAFT (unreadable) card must
+  -- stay hidden from a normal user, even though the media itself is published.
+  perform test.become(v_mod);
+  declare v_draft_card uuid;
+  begin
+    v_draft_card := public.create_card('media-draft-card', v_topic, 'https://example.com/media-draft',
+      'Example Publisher', 'A draft card hosting media',
+      'A summary long enough to satisfy the minimum length rule the database applies to every card version here.',
+      array['Something worth taking away.'], 'Do the thing it suggests.',
+      'video', 'beginner', 8, 70);
+    perform test.become_service();
+    insert into public.content_media(content_id, provider, provider_id, original_url, channel, title, embeddable, status, reviewed_at)
+    values (v_draft_card, 'youtube', 'yWO-cvGETRQ', 'https://www.youtube.com/watch?v=yWO-cvGETRQ', 'Kurzgesagt', 'Black holes', true, 'published', now());
+    perform test.become(v_user);
+    perform test.equals(
+      (select count(*)::int from public.content_media where content_id = v_draft_card), 0,
+      'published media on an unreadable (draft) parent card is hidden');
+  end;
+
   -- Server-write-only: a client role cannot insert media.
   perform test.become(v_user);
   perform test.refuses(

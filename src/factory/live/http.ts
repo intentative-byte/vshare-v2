@@ -26,7 +26,7 @@ export class HttpError extends Error {
 }
 
 export interface HttpFetcher {
-  (url: string, opts?: { timeoutMs?: number }): Promise<HttpResponse>;
+  (url: string, opts?: { timeoutMs?: number; accept?: string }): Promise<HttpResponse>;
 }
 
 export const DEFAULT_USER_AGENT = "VSHARES-ContentFactory/0.1 (+educational source verification)";
@@ -41,7 +41,7 @@ export function createHttpFetcher(userAgent = DEFAULT_USER_AGENT): HttpFetcher {
         method: "GET",
         headers: {
           "user-agent": userAgent,
-          accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          accept: opts.accept ?? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         },
         redirect: "follow",
         signal: controller.signal,
