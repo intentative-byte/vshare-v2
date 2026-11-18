@@ -49,13 +49,29 @@ create policy editorial_decisions_select_staff on public.editorial_decisions
 
 grant select on public.editorial_decisions to authenticated;
 
--- Append-only: block UPDATE and DELETE for everyone (a superuser disabling the
--- trigger is the documented residual risk).
+-- Append-only: block UPDATE, DELETE and TRUNCATE. The one DELETE that is
+-- allowed is the cascade when the parent content item is itself deleted (e.g.
+-- account erasure removing an unpublished submission): at that point the parent
+-- row is already gone, which a direct delete attempt — where the parent still
+-- exists — never is. SECURITY DEFINER so the parent check sees the row
+-- regardless of the caller's row-level visibility. A superuser disabling the
+-- trigger is the documented residual risk.
 create or replace function app.editorial_decisions_append_only()
 returns trigger
 language plpgsql
+security definer
+set search_path = ''
 as $$
 begin
+  if tg_op = 'DELETE' then
+    if exists (select 1 from public.content_items where id = old.content_id) then
+      raise exception 'editorial_decisions is append-only: DELETE is not permitted';
+    end if;
+    -- Parent content is gone: this is a cascade from content deletion. Allow it,
+    -- so the ledger never blocks an authorised deletion of its own content
+    -- (account erasure included), while a direct delete stays blocked.
+    return old;
+  end if;
   raise exception 'editorial_decisions is append-only: % is not permitted', tg_op;
 end;
 $$;
@@ -63,6 +79,13 @@ $$;
 create trigger editorial_decisions_no_update
   before update or delete on public.editorial_decisions
   for each row execute function app.editorial_decisions_append_only();
+
+-- Note on TRUNCATE: a statement-level TRUNCATE guard was considered but not
+-- added, because a TRUNCATE trigger cannot tell a direct truncate from one
+-- cascaded through content_items, so it would also block legitimate cascade
+-- truncation. TRUNCATE therefore remains a privileged-operator residual risk
+-- (service_role / owner), documented in docs/VSHARES_EDITORIAL_GOVERNANCE.md
+-- alongside the superuser risk — the same posture as the other audit tables.
 
 -- Whether the content's CURRENT revision meets the approval quorum. A new
 -- revision has no approvals, so prior approvals are invalidated automatically.
@@ -125,6 +148,13 @@ begin
     raise exception 'record_editorial_decision: reviewer is not an authorised staff member';
   end if;
 
+  -- Serialize all decisions for one content item. Without this, two concurrent
+  -- reviewers can both read the same "latest" row and chain from it, forking the
+  -- hash chain so an honest history fails validation. The lock is transaction-
+  -- scoped and keyed on the content, so decisions on different content never wait
+  -- on each other.
+  perform pg_advisory_xact_lock(hashtext('vshares.editorial_decision'), hashtext(p_content_id::text));
+
   -- The revision must belong to the content (immutable binding).
   select content_id into v_version_content from public.content_versions where id = p_content_version_id;
   if v_version_content is null or v_version_content <> p_content_id then
@@ -156,11 +186,14 @@ begin
   order by seq desc
   limit 1;
 
+  -- extract(epoch ...) is an absolute instant, so the hash does not depend on
+  -- the session's time zone (v_now::text would, and would make an honest ledger
+  -- fail validation in any non-UTC session).
   v_hash := encode(
     public.digest(
       coalesce(v_prev_hash, 'GENESIS') || '|' || p_content_id::text || '|' || p_content_version_id::text || '|' ||
       v_reviewer::text || '|' || p_decision::text || '|' || btrim(p_rationale) || '|' ||
-      coalesce(p_evidence_ref, '') || '|' || v_eligible::text || '|' || v_now::text,
+      coalesce(p_evidence_ref, '') || '|' || v_eligible::text || '|' || extract(epoch from v_now)::text,
       'sha256'
     ),
     'hex'
@@ -206,7 +239,7 @@ begin
       public.digest(
         v_prev || '|' || r.content_id::text || '|' || r.content_version_id::text || '|' ||
         r.reviewer_id::text || '|' || r.decision::text || '|' || btrim(r.rationale) || '|' ||
-        coalesce(r.evidence_ref, '') || '|' || r.publication_eligible::text || '|' || r.decided_at::text,
+        coalesce(r.evidence_ref, '') || '|' || r.publication_eligible::text || '|' || extract(epoch from r.decided_at)::text,
         'sha256'
       ),
       'hex'
@@ -222,6 +255,13 @@ $$;
 
 -- Staff may call the read helpers and record decisions; the function enforces
 -- the staff check and sets identity itself. No client may write the table.
+-- CREATE FUNCTION grants EXECUTE to PUBLIC by default, which would let anon and
+-- every role call these; revoke that and grant only to authenticated (the
+-- internal app.is_staff() check is still the real guard — this is least
+-- privilege / defence in depth, matching record_link_check's hardening).
+revoke execute on function public.editorial_publication_eligible(uuid) from public;
+revoke execute on function public.editorial_ledger_valid(uuid) from public;
+revoke execute on function public.record_editorial_decision(uuid, uuid, public.editorial_decision, text, text) from public;
 grant execute on function public.editorial_publication_eligible(uuid) to authenticated;
 grant execute on function public.editorial_ledger_valid(uuid) to authenticated;
 grant execute on function public.record_editorial_decision(uuid, uuid, public.editorial_decision, text, text) to authenticated;

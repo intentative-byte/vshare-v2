@@ -117,6 +117,15 @@ or removed, because every later hash depends on it. The chain is ordered by the
 monotonic `seq`, not by the timestamp (several decisions in one transaction share
 `now()`) and not by the random `id`.
 
+**Concurrency and determinism (hardened in Phase 10.9A).** `record_editorial_decision`
+takes a transaction-scoped advisory lock keyed on the content id before it reads
+the previous row, so two reviewers deciding on the same content at the same time
+cannot both chain from the same row and fork the chain. The hash uses
+`extract(epoch from decided_at)` rather than `decided_at::text`, so it is
+independent of the session time zone. Both were real defects found and fixed in
+the security acceptance (see `docs/VSHARES_PHASE10_9A_SECURITY_ACCEPTANCE.md`);
+without them an entirely honest ledger could validate as *invalid*.
+
 **Honest limitations — this is tamper-*evident*, not tamper-*proof*:**
 
 1. **A database superuser (or the table owner) can still rewrite history.** They
@@ -131,6 +140,15 @@ monotonic `seq`, not by the timestamp (several decisions in one transaction shar
    held off the database, and no periodic external digest. Those are the real
    defences against a privileged insider and are deliberately **out of scope** for
    this phase.
+
+   **TRUNCATE.** The append-only trigger blocks UPDATE and DELETE, but a role with
+   TRUNCATE privilege (service_role, or the owner) can still `TRUNCATE` the table
+   and wipe the ledger wholesale. A TRUNCATE trigger was considered and rejected
+   because it cannot distinguish a direct truncate from a legitimate cascade
+   through `content_items`, so it would break legitimate operations. This is the
+   same privileged-operator residual as the superuser case, and the same posture
+   the other audit tables take; the server's own code never truncates the ledger.
+   Wholesale deletion is also far more visible than a silent row edit.
 3. **No cross-content global chain.** Each content item has its own chain, so the
    *relative order of decisions across different content* is not cryptographically
    fixed (only `seq` and `decided_at` order them).

@@ -31,6 +31,39 @@
 
 ## Log
 
+### 2026-11-18 — Phase 10.9A (editorial governance security acceptance)
+
+Independently red-teamed migration 10 against real PostgreSQL 16 before any remote
+apply. Found five issues; fixed four additively in the (still-unapplied) migration
+and accepted one documented residual. **Nothing applied remotely; nothing
+activated.**
+
+- **F1 (High)** concurrency chain fork — two concurrent reviewers chained from the
+  same row, so an honest ledger validated as invalid. Fixed with a per-content
+  `pg_advisory_xact_lock`. Proven multi-session: no-lock **5/5 trials forked**,
+  with-lock **3/3 clean linear chains** (READ COMMITTED, 20-way hammer).
+- **F2 (Medium)** `decided_at::text` made the hash timezone-dependent (valid under
+  UTC, invalid under other zones). Fixed with `extract(epoch …)`; re-verified
+  valid under UTC/New York/Kolkata/Kiritimati.
+- **F4 (High)** `ON DELETE CASCADE` into the append-only ledger broke
+  `delete_my_account` (GDPR erasure) — the exact erasure DELETE raised. Fixed with
+  a cascade-aware SECURITY DEFINER trigger (allows a delete only when the parent
+  content is already gone; still blocks direct deletes).
+- **F3 (Low)** default PUBLIC EXECUTE on the three functions. Fixed with
+  `revoke … from public`; anon now gets permission denied.
+- **F5 (Medium, accepted residual)** TRUNCATE by service_role/owner bypasses
+  append-only; a TRUNCATE trigger can't distinguish a cascade and would break the
+  harness, so documented as a privileged-operator residual (as the other audit
+  tables are). **F6** superuser tamper unchanged/documented.
+- Verified and held: SECURITY DEFINER/search_path, the full authorisation matrix,
+  revision integrity/invalidation, append-only UPDATE/DELETE, forced-tamper
+  detection, RLS.
+- DB test `280` → **15 assertions** (added timezone-independence, direct-delete
+  blocked, cascade-delete allowed). Full gate green: typecheck, lint, **28 DB
+  files / 472 assertions**, 319 unit, 94 e2e, build, hygiene (391), audit 0.
+- Verdict **CONDITIONAL GO** with a read-only preflight. Evidence + preflight:
+  `docs/VSHARES_PHASE10_9A_SECURITY_ACCEPTANCE.md`. Decision D-112.
+
 ### 2026-11-18 — Phase 10.9 (editorial governance, identity & audit)
 
 Prepared the Editorial Review Workbench for authenticated human decisions,

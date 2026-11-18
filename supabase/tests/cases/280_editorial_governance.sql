@@ -86,6 +86,12 @@ begin
   perform test.become(v_mod1);
   perform test.ok(public.editorial_ledger_valid(v_hi), 'the ledger hash chain is valid');
 
+  -- The hash must not depend on the session time zone: an honest ledger has to
+  -- validate the same in every zone (regression for the decided_at::text bug).
+  perform set_config('TimeZone', 'Asia/Kolkata', true);
+  perform test.ok(public.editorial_ledger_valid(v_hi), 'the hash chain validates regardless of session time zone');
+  perform set_config('TimeZone', 'UTC', true);
+
   -- Tamper detection: forcibly mutate a row (superuser, trigger disabled) and
   -- confirm the hash chain no longer validates.
   execute 'reset role';
@@ -112,5 +118,20 @@ begin
     format('insert into public.editorial_decisions(content_id, content_version_id, reviewer_id, decision, rationale, row_hash) values (%L, %L, %L, %L, %L, %L)',
       v_hi, v_hi_v2, v_mod1, 'approve', 'A direct client insert that should be refused.', 'deadbeef'),
     'a client cannot insert into the ledger directly');
+
+  -- A direct delete is blocked by the trigger even for a privileged role while
+  -- the parent content still exists (not merely by lack of privilege).
+  perform test.become_service();
+  perform test.refuses(
+    format('delete from public.editorial_decisions where content_id = %L', v_hi),
+    'a direct delete is blocked while the parent content exists');
+
+  -- But deleting the parent content cascades to its decisions without tripping
+  -- the guard, so an authorised content deletion (account erasure of an
+  -- unpublished submission) is not blocked by the audit trail.
+  delete from public.content_items where id = v_lo;
+  perform test.ok(
+    not exists (select 1 from public.editorial_decisions where content_id = v_lo),
+    'deleting the parent content cascades its decisions (erasure path works)');
 end;
 $$;
