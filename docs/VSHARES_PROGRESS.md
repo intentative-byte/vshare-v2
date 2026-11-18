@@ -258,6 +258,24 @@ Not done / limitations:
 - Existing Supabase / Render connections could not be verified (no credentials or references available).
 - One moderate, dev-only dependency advisory remains (see security doc §7).
 
+### 2026-11-18 — Phase 10.6 (first Originals collection & media readiness)
+
+- DB-verified baseline (fresh apply of 9 migrations + seeds): 10 cards, all
+  draft, 0 published, 0 link-checked, 0 content_media — zero-published confirmed.
+- Prepared ten Originals (VSHARES_ORIGINALS_BATCH_1.md): six reuse/improve the
+  seed drafts, four are new and host the five candidate videos (every video has a
+  legitimate same-topic parent). Each card has a hook, objective, explanation,
+  claims, source, takeaway, category/difficulty, quality and freshness.
+- Real evidence (docs/samples/originals-evidence.json): robots-aware retrieval of
+  all ten sources — 8/10 with passages, MoneyHelper robots-blocked, NHS/Khan
+  JS-rendered, one claim verified against a NASA passage, rest honestly
+  unsupported. Nothing fabricated.
+- Review inventory: 7 ready for human approval, 3 revision, high-impact (budget,
+  sleep) need a second reviewer (not self-approved). Development-only publication
+  procedure (card then hosted media, RLS/editorial gates, rollback) documented;
+  not executed. Full suite green (306 unit / 4 live skipped, 27 DB / 457, 92 e2e,
+  build, hygiene 374). Report: VSHARES_PHASE10_6_REPORT.md.
+
 ### 2026-11-18 — Phase 10.5B-2 Gate 2 (multimedia editorial verification)
 
 - Migration 9 confirmed applied to the dev project by the owner. Re-confirmed all
