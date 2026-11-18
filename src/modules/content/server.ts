@@ -21,4 +21,5 @@ export {
   listTopicsForAdmin,
   getCardForAdmin,
   listAuditLog,
+  listMySubmissions,
 } from "./repository";

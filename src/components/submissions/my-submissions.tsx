@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
-import { EmptyState, ErrorState, LoadingRegion, Skeleton } from "@/components/ui/states";
-import { getMySubmissions, resubmitResource, type CardSummary } from "@/modules/content";
+import { EmptyState } from "@/components/ui/states";
+import { resubmitResource, type CardSummary } from "@/modules/content";
 
 const statusLabels: Record<string, { label: string; tone: string }> = {
   draft: { label: "Draft", tone: "text-silver-dim" },
@@ -21,49 +22,9 @@ const statusLabels: Record<string, { label: string; tone: string }> = {
  * The query runs as them and row-level security does the filtering, so this
  * cannot show anyone else's work even if the query were wrong.
  */
-export function MySubmissions() {
-  const [items, setItems] = useState<CardSummary[] | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [attempt, setAttempt] = useState(0);
+export function MySubmissions({ items }: { items: CardSummary[] }) {
+  const router = useRouter();
   const [correcting, setCorrecting] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void (async () => {
-      const result = await getMySubmissions({});
-
-      if (cancelled) {
-        return;
-      }
-
-      if (result.ok) {
-        setItems(result.data);
-      } else {
-        setFailed(true);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
-
-  if (failed) {
-    return (
-      <ErrorState title="These did not load" body="Trying again often fixes it.">
-        <Button onClick={() => setAttempt((value) => value + 1)}>Try again</Button>
-      </ErrorState>
-    );
-  }
-
-  if (!items) {
-    return (
-      <LoadingRegion label="Loading your submissions">
-        <Skeleton className="h-24 w-full" />
-      </LoadingRegion>
-    );
-  }
 
   if (items.length === 0) {
     return (
@@ -116,7 +77,8 @@ export function MySubmissions() {
                   contentId={item.id}
                   onDone={() => {
                     setCorrecting(null);
-                    setAttempt((value) => value + 1);
+                    // A correction is a write; reload the server-rendered list.
+                    router.refresh();
                   }}
                   onCancel={() => setCorrecting(null)}
                 />

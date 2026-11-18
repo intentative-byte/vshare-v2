@@ -69,6 +69,14 @@ test.describe("submissions and data rights (read-only)", () => {
 
     const body = (await page.textContent("body")) ?? "";
     expect(/not submitted anything|With a moderator|Published/.test(body)).toBe(true);
+
+    // Regression guard (Phase 9.2D): the list is read on the server, so there
+    // is no on-mount client fetch — no persistent loading skeleton, and (via
+    // enforceReadOnly above) no server-action request. A signed-out visitor
+    // reaches the empty state, not an error. If this page regresses to a
+    // client-side read action, enforceReadOnly fails it as a mutating request.
+    await expect(page.getByText("Loading your submissions")).toHaveCount(0);
+    await expect(page.getByText("These did not load")).toHaveCount(0);
   });
 
   test("a card can be shared by its public address", async ({ page, context }) => {
