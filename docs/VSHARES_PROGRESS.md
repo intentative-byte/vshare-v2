@@ -31,6 +31,29 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.16 (first content release preparation, read-only)
+
+Prepared the ten batch-1 Originals for a controlled release without bypassing
+governance. No hosted write, no publication, no approval.
+
+- **Hosted inventory:** unverifiable here (no anon key → 401); provided owner
+  read-only SQL (counts by status, link-checked, decisions, per-slug). Flagged
+  that the Originals are a seed not a migration, so they may be absent on dev.
+- **Release audit (real, read-only live retrieval + T4b classifier):** extracted
+  the 10 cards' authoritative data from the seeded DB
+  (`docs/samples/originals-batch-1-cards.json`) and ran the pipeline. Honest result:
+  **8/10 sources retrieved** (card 1 robots-disallowed, card 4 HTTP error), **0
+  cards have any machine-supported claim** (all insufficient — faithful paraphrases
+  of reputable sources, not verbatim), 0 contradictions, **0 publishable now**. A
+  reachable link is not treated as a verified claim. Data:
+  `docs/samples/originals-batch-1-release-readiness.json`.
+- **Ten-card release-readiness matrix** + auth-confirm Windows steps + controlled
+  release plan (confirm inventory → import-if-absent → link-check → human evidence
+  review → 2nd high-impact reviewer → publish → verify feed), every hosted write
+  held for separate approval: `docs/VSHARES_PHASE10_16_FIRST_RELEASE.md`.
+- Gates: typecheck, lint, **383 unit (6 skip)**, **31 DB files / 497 assertions**,
+  build, hygiene 426. Committed locally; **not pushed**. D-124.
+
 ### 2026-11-21 — Phase 10.15 (content visibility & feed readiness, read-only)
 
 Diagnosed why the feed shows no content. **No code defect; no publication, no
