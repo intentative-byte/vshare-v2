@@ -53,6 +53,10 @@ export {
   type EditorialDecisionInput,
 } from "./schemas";
 
+// Factory → catalogue bridge: a pure conversion that produces a draft-only
+// createCardInput. It never publishes or approves.
+export { toCreateCardInput, type BridgeResult, type CreateCardInput } from "./factory-bridge";
+
 export type {
   Card,
   CardSummary,

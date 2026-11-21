@@ -7,7 +7,24 @@
  */
 export * from "./types";
 export { verifySource, classifyHost, credibilityWeight } from "./sources";
-export { normalizeUrl, titleSimilarity, detectDuplicate, NEAR_DUPLICATE_THRESHOLD } from "./dedup";
+export {
+  normalizeUrl,
+  titleSimilarity,
+  detectDuplicate,
+  NEAR_DUPLICATE_THRESHOLD,
+  normalizeTitle,
+  toCatalogueEntry,
+  classifyDuplicate,
+} from "./dedup";
+export type {
+  DuplicateResult,
+  CatalogueEntry,
+  DuplicateVerdict,
+  DuplicateSignal,
+  DuplicateMatch,
+  DuplicateAssessment,
+  ClassifyOptions,
+} from "./dedup";
 export { buildEvidence, checkClaims } from "./evidence";
 export { classifySafety, HIGH_IMPACT_CATEGORIES, HIGH_IMPACT_TOPICS } from "./safety";
 export { grade, FIELD_LIMITS } from "./rubric";

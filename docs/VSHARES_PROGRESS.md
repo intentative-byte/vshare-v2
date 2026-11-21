@@ -31,6 +31,33 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.13 T1+T2 (dedup baseline + factory→catalogue bridge)
+
+Implemented the first two Phase 10.13 tasks (plan: `VSHARES_PHASE10_13_PLAN.md`).
+Local only; no hosted write, no publication, no RLS/role/quorum change.
+
+- **T1 — dedup baseline:** added `classifyDuplicate` (+ `normalizeTitle`,
+  `toCatalogueEntry`) to `src/factory/dedup.ts`. Distinguishes a CERTAIN exact-URL
+  collision (safe to skip; the DB's `source_url` UNIQUE would reject it anyway)
+  from an UNCERTAIN near-match (identical normalised title or high title
+  similarity on a different URL) which is **flagged for human review, never
+  auto-discarded**. Pure/deterministic; exported via the factory index.
+- **T2 — factory→catalogue bridge:** `src/modules/content/factory-bridge.ts`
+  `toCreateCardInput(card, topicId)` — a pure, typed `FactoryCard → createCardInput`
+  conversion validated against the **same Zod schema** the moderator-only
+  `create_card` uses. It **cannot** set a publication status, link-check or
+  approval (no such field exists on the input), so a factory card can only ever
+  enter as a draft. Preserves provenance, evidence status, objective, high-impact
+  flag and quality on the result; blocks on a rubric "reject" / invalid-or-missing
+  fields / unresolved topic UUID; warns (non-blocking) on unverified evidence or a
+  "revise" verdict. Placed in the content module (lint boundary: cross-module
+  imports go through index.ts) with a type-only `@/factory/types` import.
+- Tests: `tests/unit/factory/dedup-classify.test.ts` (10) +
+  `tests/unit/content/factory-bridge.test.ts` (12) — valid/invalid/incomplete,
+  advisory warnings, provenance, and "never sets publication". Full gate green:
+  typecheck, lint, **357 unit (4 skip)**, **29 DB files / 478 assertions**, build,
+  hygiene. Committed locally; **not pushed** (awaits separate approval). D-117.
+
 ### 2026-11-21 — Phase 10.12 (editorial dashboard hardening)
 
 Hardened the authenticated editorial dashboard; governance/security/quality rules
