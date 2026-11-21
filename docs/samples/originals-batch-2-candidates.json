@@ -1,0 +1,462 @@
+{
+  "total": 20,
+  "candidates": [
+    {
+      "slug": "prompting-patterns-for-everyday-work",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "objective": "Write clearer prompts that get useful answers from a chat assistant.",
+      "provenance": {
+        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+        "publisher": "OpenAI"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "how-large-language-models-predict-text",
+      "category": "technology-and-ai",
+      "topic": "ai-foundations",
+      "objective": "Understand, at a high level, how a language model generates text.",
+      "provenance": {
+        "url": "https://developers.google.com/machine-learning/resources/intro-llms",
+        "publisher": "Google for Developers"
+      },
+      "evidenceStatus": "cited_pending_verification",
+      "qualityComposite": 80,
+      "qualityVerdict": "queue",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2,
+        "matches": []
+      },
+      "bridgeReady": true
+    },
+    {
+      "slug": "version-control-with-git-basics",
+      "category": "technology-and-ai",
+      "topic": "software-and-building",
+      "objective": "Use Git to track changes and recover earlier versions of your work.",
+      "provenance": {
+        "url": "https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control",
+        "publisher": "Pro Git (git-scm.com)"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 60,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.07692307692307693,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "understanding-cookies-and-tracking",
+      "category": "technology-and-ai",
+      "topic": "data-and-privacy",
+      "objective": "Recognise how websites track you and adjust your browser settings.",
+      "provenance": {
+        "url": "https://www.mozilla.org/en-US/firefox/features/tracking-protection/",
+        "publisher": "Mozilla"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "choosing-strong-passphrases",
+      "category": "technology-and-ai",
+      "topic": "security-basics",
+      "objective": "Create and manage passwords that are hard to guess and easy to keep.",
+      "provenance": {
+        "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online/use-a-strong-and-separate-password-for-email",
+        "publisher": "NCSC"
+      },
+      "evidenceStatus": "cited_pending_verification",
+      "qualityComposite": 90,
+      "qualityVerdict": "queue",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.08333333333333333,
+        "matches": []
+      },
+      "bridgeReady": true
+    },
+    {
+      "slug": "writing-a-cv-that-gets-read",
+      "category": "career-development",
+      "topic": "job-search",
+      "objective": "Write a CV that clearly shows your relevant experience.",
+      "provenance": {
+        "url": "https://nationalcareers.service.gov.uk/careers-advice/cv-sections",
+        "publisher": "National Careers Service"
+      },
+      "evidenceStatus": "cited_pending_verification",
+      "qualityComposite": 90,
+      "qualityVerdict": "queue",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.18181818181818182,
+        "matches": []
+      },
+      "bridgeReady": true
+    },
+    {
+      "slug": "salary-negotiation-first-principles",
+      "category": "career-development",
+      "topic": "negotiation",
+      "objective": "Prepare for a salary conversation with research and a clear range.",
+      "provenance": {
+        "url": "https://www.themuse.com/advice/how-to-negotiate-salary",
+        "publisher": "The Muse"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 60,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "answering-behavioural-interview-questions",
+      "category": "career-development",
+      "topic": "interviews",
+      "objective": "Structure interview answers so they are concrete and easy to follow.",
+      "provenance": {
+        "url": "https://www.indeed.com/career-advice/interviewing/how-to-use-the-star-interview-response-technique",
+        "publisher": "Indeed Career Guide"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.125,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "talking-to-customers-before-you-build",
+      "category": "entrepreneurship",
+      "topic": "talking-to-customers",
+      "objective": "Run customer conversations that produce honest, useful signal.",
+      "provenance": {
+        "url": "http://momtestbook.com/",
+        "publisher": "The Mom Test (Rob Fitzpatrick)"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 60,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.07142857142857142,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "finding-a-problem-worth-solving",
+      "category": "entrepreneurship",
+      "topic": "finding-an-idea",
+      "objective": "Evaluate a business idea against a real, felt problem.",
+      "provenance": {
+        "url": "https://www.paulgraham.com/startupideas.html",
+        "publisher": "Paul Graham"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.09090909090909091,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "pricing-your-first-product",
+      "category": "entrepreneurship",
+      "topic": "pricing-and-revenue",
+      "objective": "Choose a first price based on value and costs, not guesswork.",
+      "provenance": {
+        "url": "https://www.priceintelligently.com/blog/bid/163986/the-anatomy-of-saas-pricing-strategy",
+        "publisher": "ProfitWell / Price Intelligently"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2222222222222222,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "clearing-debt-with-a-repayment-order",
+      "category": "personal-finance",
+      "topic": "debt-and-credit",
+      "objective": "Understand common strategies for paying down multiple debts.",
+      "provenance": {
+        "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/how-to-prioritise-your-debts",
+        "publisher": "MoneyHelper"
+      },
+      "evidenceStatus": "cited_pending_verification",
+      "qualityComposite": 88,
+      "qualityVerdict": "queue",
+      "isHighImpact": true,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.08333333333333333,
+        "matches": []
+      },
+      "bridgeReady": true
+    },
+    {
+      "slug": "what-a-stocks-and-shares-isa-is",
+      "category": "personal-finance",
+      "topic": "saving-and-investing-basics",
+      "objective": "Understand what an ISA is and how the tax wrapper works.",
+      "provenance": {
+        "url": "https://www.gov.uk/individual-savings-accounts",
+        "publisher": "GOV.UK"
+      },
+      "evidenceStatus": "cited_pending_verification",
+      "qualityComposite": 88,
+      "qualityVerdict": "queue",
+      "isHighImpact": true,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1,
+        "matches": []
+      },
+      "bridgeReady": true
+    },
+    {
+      "slug": "spotting-investment-scams",
+      "category": "personal-finance",
+      "topic": "avoiding-scams",
+      "objective": "Recognise the warning signs of an investment scam.",
+      "provenance": {
+        "url": "https://www.fca.org.uk/scamsmart",
+        "publisher": "Financial Conduct Authority"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 53,
+      "qualityVerdict": "reject",
+      "isHighImpact": true,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.09090909090909091,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "deep-work-and-protecting-attention",
+      "category": "productivity",
+      "topic": "attention-and-focus",
+      "objective": "Protect blocks of focused time from constant interruption.",
+      "provenance": {
+        "url": "https://www.apa.org/topics/research/multitasking",
+        "publisher": "American Psychological Association"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 60,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "weekly-planning-that-sticks",
+      "category": "productivity",
+      "topic": "planning-and-prioritising",
+      "objective": "Plan a week around a few outcomes rather than a long task list.",
+      "provenance": {
+        "url": "https://hbr.org/2020/01/to-achieve-big-goals-start-with-small-habits",
+        "publisher": "Harvard Business Review"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2222222222222222,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "building-a-habit-that-lasts",
+      "category": "productivity",
+      "topic": "habits",
+      "objective": "Design a small habit that survives busy days.",
+      "provenance": {
+        "url": "https://jamesclear.com/atomic-habits",
+        "publisher": "James Clear"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "writing-a-clear-first-draft",
+      "category": "communication",
+      "topic": "clear-writing",
+      "objective": "Cut clutter so your writing says what you mean.",
+      "provenance": {
+        "url": "https://www.gutenberg.org/ebooks/37134",
+        "publisher": "The Elements of Style (public domain)"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 60,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.125,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "structuring-a-short-talk",
+      "category": "communication",
+      "topic": "speaking-and-presenting",
+      "objective": "Structure a short talk around one idea the audience remembers.",
+      "provenance": {
+        "url": "https://www.ted.com/participate/organize-a-local-tedx-event/tedx-organizer-guide/speakers-program/prepare-your-speaker",
+        "publisher": "TED"
+      },
+      "evidenceStatus": "not_verified",
+      "qualityComposite": 70,
+      "qualityVerdict": "reject",
+      "isHighImpact": false,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.07692307692307693,
+        "matches": []
+      },
+      "bridgeReady": false
+    },
+    {
+      "slug": "reviewing-your-credit-report",
+      "category": "personal-finance",
+      "topic": "debt-and-credit",
+      "objective": "Check your credit report and understand what affects it.",
+      "provenance": {
+        "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit-and-purchases/how-to-check-your-credit-report",
+        "publisher": "MoneyHelper"
+      },
+      "evidenceStatus": "cited_pending_verification",
+      "qualityComposite": 78,
+      "qualityVerdict": "queue",
+      "isHighImpact": true,
+      "requiresFactCheck": true,
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.08333333333333333,
+        "matches": []
+      },
+      "bridgeReady": true
+    }
+  ],
+  "summary": {
+    "verified": 0,
+    "byEvidenceStatus": {
+      "not_verified": 14,
+      "cited_pending_verification": 6
+    },
+    "byQualityVerdict": {
+      "reject": 14,
+      "queue": 6
+    },
+    "byDuplicateVerdict": {
+      "unique": 20
+    },
+    "exactDuplicates": 0,
+    "nearDuplicatesForReview": 0,
+    "bridgeReady": 6
+  }
+}

@@ -44,3 +44,5 @@ export {
 export type { TaiOptions, TaiReport, ClassifyRule } from "./tai";
 export { planCurriculum } from "./planner";
 export type { PlanOptions } from "./planner";
+export { prepareBatch2, BATCH2_CANDIDATES, EXISTING_CATALOGUE } from "./originals/batch2";
+export type { Batch2Report, Batch2CandidateReport } from "./originals/batch2";
