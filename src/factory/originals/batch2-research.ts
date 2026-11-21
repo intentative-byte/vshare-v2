@@ -12,6 +12,7 @@
 import type { CatalogueEntry, DuplicateAssessment } from "../dedup";
 import type { DraftInput, VerificationStatus } from "../types";
 import type { ResearchedCard } from "../live";
+import { classifyClaimSupport, type SupportClass, type SupportResult } from "../live/verify-support";
 import { EXISTING_CATALOGUE } from "./batch2";
 
 export interface ReviewPackClaim {
@@ -21,6 +22,8 @@ export interface ReviewPackClaim {
   excerpt?: string;
   overlap: number;
   note: string;
+  /** The improved 5-way textual-support classification (T4b). Never approval. */
+  support: SupportResult;
 }
 
 export interface ReviewPack {
@@ -48,6 +51,8 @@ export interface ReviewPack {
   };
   highImpact: { isHighImpact: boolean; requiresSecondReviewer: boolean };
   duplicate: DuplicateAssessment;
+  /** Counts of the improved per-claim support classes. */
+  supportSummary: Record<SupportClass, number>;
   reviewerQuestions: string[];
   /** A recommended next editorial action. NOT an approval. */
   recommendedAction: string;
@@ -96,14 +101,23 @@ function reviewerQuestions(pack: Omit<ReviewPack, "reviewerQuestions" | "recomme
 
 function recommendedAction(pack: Omit<ReviewPack, "recommendedAction">): string {
   const suffix = " (Not an approval — a human editorial decision is still required.)";
+  const s = pack.supportSummary;
+  const hasRealSupport = s.exact_support + s.semantic_support > 0;
   if (pack.provenance.retrievalStatus !== "ok") {
     return "Find an accessible canonical source; do not take this further until it can be retrieved." + suffix;
   }
   if (pack.duplicate.verdict === "exact_duplicate") {
     return "Drop or merge: the source already exists in the catalogue." + suffix;
   }
+  if (s.contradiction > 0) {
+    return "A source passage appears to contradict a claim — a human must resolve this before anything else." + suffix;
+  }
   if (pack.rubric.updated.verdict === "reject") {
-    return "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported." + suffix;
+    return hasRealSupport
+      ? "Some claims have textual support; a human should rewrite the unsupported claims to match what the source actually says, then re-grade." +
+          suffix
+      : "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading." +
+          suffix;
   }
   if (pack.rubric.updated.verdict === "revise") {
     return "Revise to close the evidence gaps, then re-grade and re-review." + suffix;
@@ -117,10 +131,12 @@ function recommendedAction(pack: Omit<ReviewPack, "recommendedAction">): string 
 export function buildReviewPack(args: {
   candidate: DraftInput;
   researched: ResearchedCard;
+  /** The actual retrieved passages, for the improved support classification. */
+  passages: string[];
   original: { composite: number; verdict: string };
   duplicate: DuplicateAssessment;
 }): ReviewPack {
-  const { candidate, researched, original, duplicate } = args;
+  const { candidate, researched, passages, original, duplicate } = args;
 
   const claims: ReviewPackClaim[] = researched.verifications.map((v) => ({
     claim: v.claim,
@@ -128,7 +144,17 @@ export function buildReviewPack(args: {
     excerpt: v.verdict === "verified" ? v.passage : undefined,
     overlap: v.overlap,
     note: v.note,
+    support: classifyClaimSupport(v.claim, passages),
   }));
+
+  const supportSummary: Record<SupportClass, number> = {
+    exact_support: 0,
+    semantic_support: 0,
+    partial_support: 0,
+    contradiction: 0,
+    insufficient_evidence: 0,
+  };
+  for (const c of claims) supportSummary[c.support.supportClass] += 1;
 
   const evidenceGaps: string[] = [];
   for (const c of claims) {
@@ -175,6 +201,7 @@ export function buildReviewPack(args: {
       requiresSecondReviewer: researched.safety.requiresSecondReviewer,
     },
     duplicate,
+    supportSummary,
   };
 
   const reviewerQuestionsList = reviewerQuestions(base);

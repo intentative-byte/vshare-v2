@@ -73,6 +73,7 @@ describe("buildReviewPack (pure, no network)", () => {
   const pack = buildReviewPack({
     candidate: BATCH2_CANDIDATES.find((c) => c.topic === "habits") ?? BATCH2_CANDIDATES[0]!,
     researched: researched(),
+    passages: ["A real passage from the page about a supported claim.", "Unrelated filler text."],
     original: { composite: 30, verdict: "reject" },
     duplicate: classifyDuplicate({ url: "https://example.com/a", title: "A sample card" }, []),
   });
@@ -96,6 +97,14 @@ describe("buildReviewPack (pure, no network)", () => {
 
   it("recommends an action that is explicitly not an approval", () => {
     expect(pack.recommendedAction).toMatch(/Not an approval/);
+  });
+
+  it("classifies every claim's support, summing to the claim count", () => {
+    const total = Object.values(pack.supportSummary).reduce((a, b) => a + b, 0);
+    expect(total).toBe(pack.claims.length);
+    for (const c of pack.claims) {
+      expect(c.support.confersApproval).toBe(false);
+    }
   });
 });
 
@@ -127,6 +136,7 @@ describe("batch-2 live evidence gathering", () => {
           buildReviewPack({
             candidate,
             researched: card,
+            passages: retrieval.passages,
             original: originals.get(candidate.slug) ?? { composite: 0, verdict: "reject" },
             duplicate,
           }),
@@ -140,14 +150,22 @@ describe("batch-2 live evidence gathering", () => {
         }
       }
 
+      const supportTotals = packs
+        .flatMap((p) => p.claims.map((c) => c.support.supportClass))
+        .reduce<Record<string, number>>((acc, k) => ({ ...acc, [k]: (acc[k] ?? 0) + 1 }), {});
       const summary = {
         generatedAt: NOW,
         total: packs.length,
         retrieved: packs.filter((p) => p.provenance.retrievalStatus === "ok").length,
         anyClaimVerified: packs.filter((p) => p.counts.verified > 0).length,
         fullyVerified: packs.filter((p) => p.evidenceOverall === "verified").length,
+        anySupportOrPartial: packs.filter(
+          (p) => p.supportSummary.exact_support + p.supportSummary.semantic_support + p.supportSummary.partial_support > 0,
+        ).length,
+        contradictionsFound: packs.filter((p) => p.supportSummary.contradiction > 0).length,
         updatedQueue: packs.filter((p) => p.rubric.updated.verdict === "queue").length,
         highImpact: packs.filter((p) => p.highImpact.isHighImpact).length,
+        claimSupportTotals: supportTotals,
         packs,
       };
       const dir = resolve(process.cwd(), "docs/samples");

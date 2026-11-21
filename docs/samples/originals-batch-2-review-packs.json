@@ -4,8 +4,15 @@
   "retrieved": 11,
   "anyClaimVerified": 1,
   "fullyVerified": 0,
+  "anySupportOrPartial": 2,
+  "contradictionsFound": 0,
   "updatedQueue": 0,
   "highImpact": 4,
+  "claimSupportTotals": {
+    "insufficient_evidence": 38,
+    "partial_support": 1,
+    "exact_support": 1
+  },
   "packs": [
     {
       "slug": "prompting-patterns-for-everyday-work",
@@ -19,7 +26,7 @@
         "retrievalStatus": "ok",
         "httpStatus": 200,
         "retrievedAt": "2026-11-21T00:00:00Z",
-        "sourceDate": "2026-11-21T07:50:58.000Z",
+        "sourceDate": "2026-11-21T15:07:12.000Z",
         "missingTimestamp": false
       },
       "claims": [
@@ -27,13 +34,45 @@
           "claim": "State the goal, the audience and the format you want.",
           "verdict": "unsupported",
           "overlap": 0.2,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "In addition to plain text, you can also have the model return structured data in JSON format - this feature is called Structured Outputs .",
+            "rawOverlap": 0.2,
+            "lemmatisedOverlap": 0.2,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.2). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Give an example of a good answer when you can.",
           "verdict": "unsupported",
           "overlap": 0.2,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Here’s an example using the Responses API .",
+            "rawOverlap": 0.2,
+            "lemmatisedOverlap": 0.2,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.2). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -71,12 +110,19 @@
         "nearest": 0.1111111111111111,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"State the goal, the audience and the format you want.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Give an example of a good answer when you can.\"",
         "What primary source grounds the claims the retrieval did not confirm?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "how-large-language-models-predict-text",
@@ -90,21 +136,53 @@
         "retrievalStatus": "ok",
         "httpStatus": 200,
         "retrievedAt": "2026-11-21T00:00:00Z",
-        "sourceDate": "2026-01-09T16:02:52.000Z",
+        "sourceDate": "2026-01-09T15:54:17.000Z",
         "missingTimestamp": false
       },
       "claims": [
         {
           "claim": "A language model predicts likely text; it does not look facts up.",
           "verdict": "unsupported",
-          "overlap": 0.14,
-          "note": "no passage strongly supports the claim"
+          "overlap": 0.43,
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Most modern language models tokenize by subwords, that is, by chunks of text containing semantic meaning.",
+            "rawOverlap": 0.29,
+            "lemmatisedOverlap": 0.43,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.43). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Confidence is not the same as correctness.",
           "verdict": "unsupported",
-          "overlap": 0,
-          "note": "no passage strongly supports the claim"
+          "overlap": 0.33,
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Given that same phrase, the resulting 3-grams are: you are very are very nice Given two words as input, a language model based on 3-grams can predict the likelihood of the third word.",
+            "rawOverlap": 0.33,
+            "lemmatisedOverlap": 0.33,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.33). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -141,12 +219,19 @@
         "nearest": 0.2,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"A language model predicts likely text; it does not look facts up.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Confidence is not the same as correctness.\"",
         "What primary source grounds the claims the retrieval did not confirm?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "version-control-with-git-basics",
@@ -168,13 +253,45 @@
           "claim": "A commit is a save point you can return to.",
           "verdict": "unsupported",
           "overlap": 0.25,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Git Basics 2.1 Getting a Git Repository 2.2 Recording Changes to the Repository 2.3 Viewing the Commit History 2.4 Undoing Things 2.5 Working with Remotes 2.6 Tagging 2.7 Git Aliases 2.8 Summary 3.",
+            "rawOverlap": 0.25,
+            "lemmatisedOverlap": 0.25,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.25). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Branches let you try a change without risking the main line.",
           "verdict": "unsupported",
           "overlap": 0.2,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Git - About Version Control About Trademark Learn Book Cheat Sheet Videos External Links Tools Command Line GUIs Hosting Reference Install Community This book is available in English .",
+            "rawOverlap": 0.14,
+            "lemmatisedOverlap": 0.14,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.14). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -212,12 +329,19 @@
         "nearest": 0.1,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"A commit is a save point you can return to.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Branches let you try a change without risking the main line.\"",
         "What primary source grounds the claims the retrieval did not confirm?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "understanding-cookies-and-tracking",
@@ -237,13 +361,43 @@
           "claim": "Third-party cookies follow you across sites, not just the one you visit.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Blocking trackers mostly trades a little convenience for more privacy.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -283,6 +437,13 @@
         "nearest": 0.2,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Third-party cookies follow you across sites, not just the one you visit.\"",
@@ -312,13 +473,45 @@
           "claim": "Three random words make a password long and memorable.",
           "verdict": "unsupported",
           "overlap": 0.14,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Top tips for staying secure online | Use a strong and separate password for your email | National Cyber Security Centre icons/chevron/16px/black Skip to main content Please enable JavaScript in your web browser to get the best experience.",
+            "rawOverlap": 0.14,
+            "lemmatisedOverlap": 0.14,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.14). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "A password manager means you only remember one.",
           "verdict": "unsupported",
           "overlap": 0.4,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "partial_support",
+            "passage": "The NCSC encourages people to use password managers , which can create strong passwords for you (and remember them).",
+            "rawOverlap": 0.4,
+            "lemmatisedOverlap": 0.6,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": true,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "on-topic, but a number in the claim is not confirmed by the passage. Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -355,12 +548,19 @@
         "nearest": 0.1111111111111111,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 1,
+        "contradiction": 0,
+        "insufficient_evidence": 1
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Three random words make a password long and memorable.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"A password manager means you only remember one.\"",
         "What primary source grounds the claims the retrieval did not confirm?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "writing-a-cv-that-gets-read",
@@ -381,14 +581,46 @@
           "claim": "Lead each role with what you achieved, not only what you did.",
           "verdict": "unsupported",
           "overlap": 0.29,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "If the job you're applying for does not have a job description, you can look at our job profiles to see what skills you’ll need and the typical things you’ll do in that job.",
+            "rawOverlap": 0.29,
+            "lemmatisedOverlap": 0.29,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.29). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Match the CV to the job you are applying for.",
           "verdict": "verified",
           "excerpt": "You should write your CV to match the job and company you're applying for.",
           "overlap": 1,
-          "note": "a retrieved passage supports the claim"
+          "note": "a retrieved passage supports the claim",
+          "support": {
+            "supportClass": "exact_support",
+            "passage": "You should write your CV to match the job and company you're applying for.",
+            "rawOverlap": 1,
+            "lemmatisedOverlap": 1,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "the passage closely matches the claim's wording. Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -425,12 +657,19 @@
         "nearest": 0.18181818181818182,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 1,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 1
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Lead each role with what you achieved, not only what you did.\"",
         "What primary source grounds the claims the retrieval did not confirm?",
         "The source had no publication/retrieval timestamp — is it current enough to rely on?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "Some claims have textual support; a human should rewrite the unsupported claims to match what the source actually says, then re-grade. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "salary-negotiation-first-principles",
@@ -450,13 +689,43 @@
           "claim": "Decide your range before the conversation, not during it.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "A number backed by market research is easier to hold.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -496,6 +765,13 @@
         "nearest": 0,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Decide your range before the conversation, not during it.\"",
@@ -523,13 +799,43 @@
           "claim": "Name the result so the story has a point.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "One concrete example beats three vague claims.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -569,6 +875,13 @@
         "nearest": 0.125,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Name the result so the story has a point.\"",
@@ -595,13 +908,43 @@
           "claim": "Ask about what people already do, not whether they like your idea.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (robots_unavailable)"
+          "note": "source could not be retrieved (robots_unavailable)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Compliments are not commitments.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (robots_unavailable)"
+          "note": "source could not be retrieved (robots_unavailable)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -641,6 +984,13 @@
         "nearest": 0.09090909090909091,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: robots_unavailable). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Ask about what people already do, not whether they like your idea.\"",
@@ -669,13 +1019,45 @@
           "claim": "A problem you have felt is easier to judge than one you imagine.",
           "verdict": "unsupported",
           "overlap": 0.2,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "It's to look for problems, preferably problems you have yourself.",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0.2,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.2). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Few people wanting something a lot beats many wanting it a little.",
           "verdict": "unsupported",
           "overlap": 0.43,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "The very best startup ideas tend to have three things in common: they're something the founders themselves want, that they themselves can build, and that few others realize are worth doing.",
+            "rawOverlap": 0.22,
+            "lemmatisedOverlap": 0.44,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.44). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -714,13 +1096,20 @@
         "nearest": 0.1111111111111111,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"A problem you have felt is easier to judge than one you imagine.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Few people wanting something a lot beats many wanting it a little.\"",
         "What primary source grounds the claims the retrieval did not confirm?",
         "The source had no publication/retrieval timestamp — is it current enough to rely on?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "pricing-your-first-product",
@@ -740,13 +1129,43 @@
           "claim": "Price on the value to the customer, then check it covers costs.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Too cheap signals low value as often as it wins sales.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (http_error)"
+          "note": "source could not be retrieved (http_error)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -786,6 +1205,13 @@
         "nearest": 0.2222222222222222,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Price on the value to the customer, then check it covers costs.\"",
@@ -812,13 +1238,43 @@
           "claim": "Paying the highest-interest debt first costs the least overall.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Free, impartial debt advice exists and is worth using.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -857,6 +1313,13 @@
         "nearest": 0.09090909090909091,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Paying the highest-interest debt first costs the least overall.\"",
@@ -886,13 +1349,45 @@
           "claim": "An ISA is a wrapper around savings or investments, not a product itself.",
           "verdict": "unsupported",
           "overlap": 0.17,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Individual Savings Accounts (ISAs): Overview - GOV.UK Cookies on GOV.UK We use some essential cookies to make this website work.",
+            "rawOverlap": 0.14,
+            "lemmatisedOverlap": 0.29,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.29). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "The allowance resets each tax year and does not roll over.",
           "verdict": "unsupported",
           "overlap": 0.17,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "In the 2026 to 2027 tax year, the maximum you can save in ISAs is £20,000 There are 4 types of ISA : cash ISA stocks and shares ISA innovative finance ISA Lifetime ISA This guide is also available in Welsh (Cymraeg) .",
+            "rawOverlap": 0.33,
+            "lemmatisedOverlap": 0.33,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.33). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -930,6 +1425,13 @@
         "nearest": 0.1,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"An ISA is a wrapper around savings or investments, not a product itself.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"The allowance resets each tax year and does not roll over.\"",
@@ -937,7 +1439,7 @@
         "High-impact: has a second, independent authorised reviewer verified this before any approval?",
         "The source had no publication/retrieval timestamp — is it current enough to rely on?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "spotting-investment-scams",
@@ -956,13 +1458,43 @@
           "claim": "Guaranteed high returns with no risk is the clearest red flag.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Check the firm on the regulator's register before you pay.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1002,6 +1534,13 @@
         "nearest": 0.1111111111111111,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Guaranteed high returns with no risk is the clearest red flag.\"",
@@ -1031,13 +1570,43 @@
           "claim": "Every switch has a hidden restart cost.",
           "verdict": "unsupported",
           "overlap": 0,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Protecting one focused block beats many fragmented ones.",
           "verdict": "unsupported",
           "overlap": 0,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1076,13 +1645,20 @@
         "nearest": 0.1111111111111111,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Every switch has a hidden restart cost.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Protecting one focused block beats many fragmented ones.\"",
         "What primary source grounds the claims the retrieval did not confirm?",
         "The source had no publication/retrieval timestamp — is it current enough to rely on?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "weekly-planning-that-sticks",
@@ -1104,13 +1680,43 @@
           "claim": "Pick the three outcomes that matter before filling the calendar.",
           "verdict": "unsupported",
           "overlap": 0,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "A plan with everything in it is not a plan.",
           "verdict": "unsupported",
           "overlap": 0,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1148,12 +1754,19 @@
         "nearest": 0.2222222222222222,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Pick the three outcomes that matter before filling the calendar.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"A plan with everything in it is not a plan.\"",
         "What primary source grounds the claims the retrieval did not confirm?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "building-a-habit-that-lasts",
@@ -1175,13 +1788,45 @@
           "claim": "A habit small enough to never skip compounds over time.",
           "verdict": "unsupported",
           "overlap": 0.14,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "(It also offers a sneak peek inside the Habit Journal ) Why habits are the compound interest of self-improvement 10 Things This Book Will Teach You Learn how to… Build a system for getting 1% better every day.",
+            "rawOverlap": 0.17,
+            "lemmatisedOverlap": 0.33,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.33). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Anchor a new habit to something you already do.",
           "verdict": "unsupported",
           "overlap": 0.25,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Make time for new habits (even when life gets crazy).",
+            "rawOverlap": 0.2,
+            "lemmatisedOverlap": 0.4,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.4). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1219,12 +1864,19 @@
         "nearest": 0.1111111111111111,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"A habit small enough to never skip compounds over time.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Anchor a new habit to something you already do.\"",
         "What primary source grounds the claims the retrieval did not confirm?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "writing-a-clear-first-draft",
@@ -1243,13 +1895,43 @@
           "claim": "Most first drafts get stronger when you cut a fifth of the words.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Concrete words beat abstract ones.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1289,6 +1971,13 @@
         "nearest": 0.125,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
         "Does the source actually substantiate this claim (verdict: unavailable)? — \"Most first drafts get stronger when you cut a fifth of the words.\"",
@@ -1317,13 +2006,45 @@
           "claim": "One idea the audience keeps beats five they forget.",
           "verdict": "unsupported",
           "overlap": 0.33,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Content guidelines and fact-checking These content guidelines and our fact-checking guide aim to provide a practical set of standards to ensure, as much as possible, that audience members can trust the ideas they hear.",
+            "rawOverlap": 0.17,
+            "lemmatisedOverlap": 0.33,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.33). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Tell them the point, then show why it is true.",
           "verdict": "unsupported",
           "overlap": 0.2,
-          "note": "no passage strongly supports the claim"
+          "note": "no passage strongly supports the claim",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "passage": "Make sure these points will be understood by the audience, and there’s a clear explanation as to why they matter.",
+            "rawOverlap": 0.2,
+            "lemmatisedOverlap": 0.4,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no passage overlaps the claim enough (best 0.4). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm.",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1362,13 +2083,20 @@
         "nearest": 0.1,
         "matches": []
       },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
       "reviewerQuestions": [
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"One idea the audience keeps beats five they forget.\"",
         "Does the source actually substantiate this claim (verdict: unsupported)? — \"Tell them the point, then show why it is true.\"",
         "What primary source grounds the claims the retrieval did not confirm?",
         "The source had no publication/retrieval timestamp — is it current enough to rely on?"
       ],
-      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+      "recommendedAction": "No claim is supported by the retrieved source — gather evidence or rewrite from a real source before re-grading. (Not an approval — a human editorial decision is still required.)"
     },
     {
       "slug": "reviewing-your-credit-report",
@@ -1387,13 +2115,43 @@
           "claim": "You can check your credit report for free.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         },
         {
           "claim": "Errors on a report can be challenged and fixed.",
           "verdict": "unavailable",
           "overlap": 0,
-          "note": "source could not be retrieved (disallowed)"
+          "note": "source could not be retrieved (disallowed)",
+          "support": {
+            "supportClass": "insufficient_evidence",
+            "rawOverlap": 0,
+            "lemmatisedOverlap": 0,
+            "flags": {
+              "negationMismatch": false,
+              "numericConflict": false,
+              "numericUnconfirmed": false,
+              "dateConflict": false,
+              "dateUnconfirmed": false
+            },
+            "note": "no source passages were available to compare against",
+            "textualOnly": true,
+            "confersApproval": false
+          }
         }
       ],
       "evidenceGaps": [
@@ -1431,6 +2189,13 @@
         "reason": "no duplicate found",
         "nearest": 0.1,
         "matches": []
+      },
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
       },
       "reviewerQuestions": [
         "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",

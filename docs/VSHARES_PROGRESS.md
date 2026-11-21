@@ -31,6 +31,31 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.13 T4b (evidence recovery & improved verification)
+
+Improved claim verification and re-assessed batch-2 on real sources. No hosted
+write, no publication, no approval, no fabricated evidence, no rewriting-to-pass.
+
+- **Improved verifier** (`src/factory/live/verify-support.ts`, additive —
+  `verifyClaims` untouched): `classifyClaimSupport` returns five honest classes
+  (exact / semantic / partial / contradiction / insufficient) with a traceable
+  passage, raw+lemmatised overlap, numeric/date/negation flags, and
+  `confersApproval: false` always. It does **not** equate similarity with truth.
+  11 regression tests (paraphrase, misleading paraphrase, negation, numeric, date,
+  unsupported).
+- **Re-ran live evidence** with the classifier (read-only, proxy, robots
+  respected): 11/20 retrieved; of 40 claims, **1 exact + 1 partial + 38
+  insufficient, 0 contradiction**; **0 candidates re-grade to queue**. The nuanced
+  classifier confirms the takeaways are not grounded in their sources — it cannot
+  manufacture support. No rewriting-to-threshold was done (forbidden).
+- Packs updated with per-claim support + a support summary; recommended actions
+  reflect it, still "Not an approval". Report: `docs/VSHARES_ORIGINALS_BATCH_2_T4B.md`.
+- **Recommendation: NOT ready for T6/T7 on batch-2** (0 review-eligible); needs a
+  human-led evidence/rewriting pass (T4c) or proceed to T6/T7 on batch-1 infra by
+  owner decision.
+- Verified local: typecheck, lint, **382 unit (5 skip)**, **30 DB files / 488
+  assertions**, build, hygiene 416. Committed locally; **not pushed**. D-120.
+
 ### 2026-11-21 — Phase 10.13 T4 (evidence verification & review packs)
 
 Gathered REAL evidence for the 20 batch-2 candidates and re-graded. Live retrieval
