@@ -31,6 +31,29 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.14 (editorial acceptance readiness, read-only)
+
+Diagnostics + owner instructions for real authenticated acceptance on hosted dev.
+No hosted write, no migration, no publication, no role/RLS change.
+
+- **Env readiness:** mapped the auth flow — the app is gated by
+  `isDatabaseConfigured()` (URL + anon key). Anon key is **empty in the Claude env**
+  (so `/admin/editorial` 404s here by configuration, not a bug); the owner machine
+  must have it. Callback `src/app/auth/callback/route.ts` → `exchangeCodeForSession`;
+  magic-link redirect = `${NEXT_PUBLIC_SITE_URL}/auth/callback` (= http://localhost:3000).
+- **404 diagnosis:** the admin layout returns 404 (never 403) for any of: (A)
+  missing anon key [Claude env], (B) no session, (C) **missing staff role** [most
+  likely on owner machine], (D) redirect-URL mismatch, (E) magic-link 429 rate
+  limit. App routing (F) is ruled out — route + gate are correct. Fix is always
+  config or a role grant, never weakening the gate.
+- Delivered: exact Windows Git Bash steps (set anon key, fix Supabase redirect
+  URLs, sign in, bootstrap admin + a distinct moderator), a **read-only hosted
+  acceptance checklist**, local T7 setup, and an acceptance-readiness matrix —
+  `docs/VSHARES_PHASE10_14_ACCEPTANCE_READINESS.md`. Hosted writes (decisions/
+  quorum) explicitly held for separate approval.
+- Gates: typecheck, lint, **382 unit (5 skip)**, **31 DB files / 497 assertions**,
+  build, hygiene 424. Committed locally; **not pushed**. D-122.
+
 ### 2026-11-21 — Phase 10.13 T6+T7 (batch-1 workbench integration + authenticated E2E)
 
 Local only; no hosted write, no publication, governance/RLS preserved.
