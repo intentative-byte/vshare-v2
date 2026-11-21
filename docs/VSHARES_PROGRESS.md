@@ -31,6 +31,31 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.13 T6+T7 (batch-1 workbench integration + authenticated E2E)
+
+Local only; no hosted write, no publication, governance/RLS preserved.
+
+- **T6:** inspected batch-1 against a local scratch DB (all 11 migrations + both
+  seeds). Honest contract: all 10 cards are `draft`, each with an immutable
+  revision, all link-unchecked (not verified), eligibility false, 0 decisions; 3
+  high-impact. None treated as fact-checked or publication-ready; all are suitable
+  to *enter* human review. New committed DB case `310_editorial_board_contract.sql`
+  (9 assertions) proves the `/admin/editorial` read contract: staff see drafts
+  with revisions, a recorded decision appears in the ledger, and a non-staff
+  account sees neither the board nor the ledger (RLS).
+- **T7:** `tests/e2e/editorial-authenticated.spec.ts` (+ support helper) — a gated,
+  repeatable Playwright suite covering all 9 scenarios (admin/moderator access,
+  non-staff 404, revision binding, record decision + audit persistence, two-
+  distinct-reviewer quorum, duplicate rejection, stale revision, session expiry).
+  Labelled local-only identities; never touches hosted; never bypasses app auth.
+  **Skips cleanly here** — no Docker/Supabase CLI/PostgREST/GoTrue in this
+  container — so no false pass. Setup + per-scenario → DB-test mapping in
+  `docs/VSHARES_T7_LOCAL_EDITORIAL_E2E.md`.
+- Gates: typecheck, lint, **382 unit (5 skip)**, **31 DB files / 497 assertions**,
+  **94 e2e (90 skipped incl. the 9 gated auth tests)**, build, hygiene 419, axe 0.
+  Committed locally; **not pushed**. Report: `docs/VSHARES_PHASE10_13_T6_T7_REPORT.md`.
+  D-121.
+
 ### 2026-11-21 — Phase 10.13 T4b (evidence recovery & improved verification)
 
 Improved claim verification and re-assessed batch-2 on real sources. No hosted
