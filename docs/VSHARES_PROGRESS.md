@@ -31,6 +31,29 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.15 (content visibility & feed readiness, read-only)
+
+Diagnosed why the feed shows no content. **No code defect; no publication, no
+approval, no hosted write.**
+
+- **Root cause:** nothing is published. The full path — content_items (all draft)
+  → RLS `content_items_select_published` → feed query `.eq('status','published')`
+  → `buildSession` returns an empty session (not an error) → FeedClient renders a
+  graceful empty state — is all correct. Published content has no auth barrier, so
+  the emptiness is purely "nothing published," not an access problem.
+- **Inventory:** local scratch (migrations + seeds) = 10 draft, **0 published, 0
+  link-checked**. Hosted unknown (no anon key → 401); the Originals are a **seed,
+  not a migration**, so they may not even exist on dev — must be checked read-only.
+- **Publishable now: none** (0 link-checked, 0 approved; 3 high-impact need 2
+  reviewers). `moderate_content` refuses an unchecked-link or self-approved
+  high-impact publish.
+- **Code fix: none required** — did not flip any draft to published. Produced a
+  first-release plan (per-card link-check / evidence / review / 2nd-reviewer /
+  publish requirements) and the owner-gated steps:
+  `docs/VSHARES_PHASE10_15_CONTENT_VISIBILITY.md`.
+- Gates: typecheck, lint, **382 unit (5 skip)**, **31 DB files / 497 assertions**,
+  build, hygiene 425. Committed locally; **not pushed**. D-123.
+
 ### 2026-11-21 — Phase 10.14 (editorial acceptance readiness, read-only)
 
 Diagnostics + owner instructions for real authenticated acceptance on hosted dev.
