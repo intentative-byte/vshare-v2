@@ -7,23 +7,34 @@ import { TextArea } from "@/components/ui/text-area";
 import { TextField } from "@/components/ui/text-field";
 import { SelectField } from "@/components/ui/select-field";
 import { recordEditorialDecision } from "@/modules/content";
+import {
+  DECISION_GUIDANCE,
+  DEFAULT_FILTERS,
+  deriveReviewState,
+  matchesFilters,
+  reviewerExplanation,
+  type Decision,
+  type ReviewFilters,
+  type ReviewStateKey,
+  type ReviewTone,
+} from "./review-state";
 
 /**
  * The AUTHENTICATED editorial workbench.
  *
- * Unlike the /dev simulation, this writes real editorial decisions through the
- * authenticated server action (content.recordEditorialDecision → the append-only
- * ledger). Identity and timestamps come from the database, never from this page;
- * final publication eligibility is read from the server, never computed here; and
- * nothing here publishes. It renders only real persisted content and the real
- * audit ledger — no fixtures, no localStorage.
+ * Writes real editorial decisions through the authenticated server action
+ * (content.recordEditorialDecision → the append-only ledger). Identity and
+ * timestamps come from the database, never from this page; final publication
+ * eligibility is read from the server, never computed here; and nothing here
+ * publishes. It renders only real persisted content and the real audit ledger —
+ * no fixtures, no localStorage.
  */
 
 export type BoardDecision = {
   id: string;
   contentVersionId: string;
   reviewerId: string;
-  decision: "approve" | "request_revision" | "reject" | "escalate";
+  decision: Decision;
   rationale: string;
   evidenceRef: string | null;
   publicationEligible: boolean;
@@ -65,6 +76,23 @@ const DECISION_OPTIONS = [
   { value: "escalate", label: "Escalate for independent review" },
 ];
 
+const STATUS_OPTIONS: Array<{ value: ReviewStateKey | "all"; label: string }> = [
+  { value: "all", label: "Any review status" },
+  { value: "pending_review", label: "Pending review" },
+  { value: "pending_second_review", label: "Pending second review" },
+  { value: "revision_requested", label: "Revision requested" },
+  { value: "rejected", label: "Rejected" },
+  { value: "approved_eligible", label: "Approved — eligible" },
+  { value: "no_revision", label: "No revision" },
+];
+
+const toneClass: Record<ReviewTone, string> = {
+  neutral: "#555",
+  good: "#1a7f37",
+  warn: "#9a6700",
+  bad: "#b42318",
+};
+
 function shortId(id: string): string {
   return id.slice(0, 8);
 }
@@ -72,6 +100,28 @@ function shortId(id: string): string {
 function when(value: string): string {
   const d = new Date(value);
   return Number.isNaN(d.getTime()) ? value : d.toLocaleString("en-GB", { timeZone: "UTC" }) + " UTC";
+}
+
+type ActionError = { code: string; message: string; fields?: Record<string, string>; retryAfterSeconds?: number };
+
+/** Turn a result error (or a thrown network error) into reviewer-facing text. */
+function describeError(err: ActionError): string {
+  switch (err.code) {
+    case "UNAUTHENTICATED":
+      return "Your session has expired. Sign in again, then retry — nothing was recorded.";
+    case "FORBIDDEN":
+      return "You no longer have reviewer access, so nothing was recorded.";
+    case "RATE_LIMITED":
+      return `Too many attempts. Try again${err.retryAfterSeconds ? ` in ${err.retryAfterSeconds}s` : " shortly"}.`;
+    case "CONFLICT":
+      return err.message; // e.g. already approved this revision
+    case "NOT_FOUND":
+      return "That content or revision no longer exists. Refresh and try again — nothing was recorded.";
+    case "VALIDATION":
+      return err.fields?.rationale ?? err.message;
+    default:
+      return "Could not reach the server, so nothing was recorded. Check your connection and try again.";
+  }
 }
 
 export function AuthenticatedEditorialWorkbench({
@@ -83,6 +133,14 @@ export function AuthenticatedEditorialWorkbench({
   reviewer: Reviewer;
   mode?: "live" | "preview";
 }) {
+  const [filters, setFilters] = useState<ReviewFilters>(DEFAULT_FILTERS);
+
+  const topics = useMemo(
+    () => Array.from(new Set(items.map((i) => i.topicName).filter(Boolean))).sort(),
+    [items],
+  );
+  const visible = useMemo(() => items.filter((i) => matchesFilters(i, filters)), [items, filters]);
+
   return (
     <section aria-label="Authenticated editorial review">
       <div className="rounded-[var(--radius-control)] border border-border bg-raised p-3 text-sm text-silver">
@@ -104,14 +162,24 @@ export function AuthenticatedEditorialWorkbench({
         </p>
       </div>
 
+      <FilterBar filters={filters} topics={topics} onChange={setFilters} count={visible.length} total={items.length} />
+
       {items.length === 0 ? (
         <p className="mt-6 rounded-[var(--radius-card)] border border-border bg-surface p-4 text-sm text-silver">
           No content is currently awaiting review in this database. When draft Originals (or submissions) exist and
           carry an immutable revision, they appear here. Nothing is fabricated.
         </p>
+      ) : visible.length === 0 ? (
+        <p className="mt-6 rounded-[var(--radius-card)] border border-border bg-surface p-4 text-sm text-silver">
+          No items match the current filters.{" "}
+          <button type="button" className="text-blue underline" onClick={() => setFilters(DEFAULT_FILTERS)}>
+            Clear filters
+          </button>
+          .
+        </p>
       ) : (
         <ul className="mt-6 grid gap-3">
-          {items.map((item) => (
+          {visible.map((item) => (
             <li key={item.id}>
               <ItemPanel item={item} reviewer={reviewer} mode={mode} />
             </li>
@@ -122,16 +190,77 @@ export function AuthenticatedEditorialWorkbench({
   );
 }
 
-function Badge({ tone, children }: { tone: "neutral" | "good" | "warn" | "bad"; children: React.ReactNode }) {
-  const bg = { neutral: "#555", good: "#1a7f37", warn: "#9a6700", bad: "#b42318" }[tone];
+function FilterBar({
+  filters,
+  topics,
+  onChange,
+  count,
+  total,
+}: {
+  filters: ReviewFilters;
+  topics: string[];
+  onChange: (f: ReviewFilters) => void;
+  count: number;
+  total: number;
+}) {
   return (
-    <span style={{ background: bg }} className="mr-1 rounded-full px-2 py-0.5 text-xs font-semibold text-white">
+    <div className="mt-4 grid gap-3 rounded-[var(--radius-control)] border border-border p-3 sm:grid-cols-2 lg:grid-cols-4">
+      <SelectField
+        id="filter-status"
+        label="Review status"
+        options={STATUS_OPTIONS}
+        value={filters.status}
+        onChange={(e) => onChange({ ...filters, status: e.target.value as ReviewFilters["status"] })}
+      />
+      <SelectField
+        id="filter-impact"
+        label="Impact level"
+        options={[
+          { value: "all", label: "Any impact" },
+          { value: "high", label: "High-impact only" },
+          { value: "standard", label: "Standard only" },
+        ]}
+        value={filters.impact}
+        onChange={(e) => onChange({ ...filters, impact: e.target.value as ReviewFilters["impact"] })}
+      />
+      <SelectField
+        id="filter-topic"
+        label="Category / topic"
+        options={[{ value: "all", label: "Any topic" }, ...topics.map((t) => ({ value: t, label: t }))]}
+        value={filters.topic}
+        onChange={(e) => onChange({ ...filters, topic: e.target.value })}
+      />
+      <SelectField
+        id="filter-eligibility"
+        label="Reviewer eligibility"
+        hint="‘Awaiting my review’ hides items you have already acted on or that are already decided."
+        options={[
+          { value: "all", label: "All items" },
+          { value: "awaiting_me", label: "Awaiting my review" },
+        ]}
+        value={filters.eligibility}
+        onChange={(e) => onChange({ ...filters, eligibility: e.target.value as ReviewFilters["eligibility"] })}
+      />
+      <p className="text-xs text-silver-dim sm:col-span-2 lg:col-span-4" aria-live="polite">
+        Showing {count} of {total}.
+      </p>
+    </div>
+  );
+}
+
+function Badge({ tone, children }: { tone: ReviewTone; children: React.ReactNode }) {
+  return (
+    <span
+      style={{ background: toneClass[tone] }}
+      className="mr-1 rounded-full px-2 py-0.5 text-xs font-semibold text-white"
+    >
       {children}
     </span>
   );
 }
 
 function ItemPanel({ item, reviewer, mode }: { item: BoardItem; reviewer: Reviewer; mode: "live" | "preview" }) {
+  const state = deriveReviewState(item);
   const supersededApprovals = item.decisions.some((d) => d.decision === "approve" && !d.onCurrentRevision);
 
   return (
@@ -140,11 +269,7 @@ function ItemPanel({ item, reviewer, mode }: { item: BoardItem; reviewer: Review
         <span className="font-display text-base font-bold text-white">{item.version?.title ?? item.slug}</span>{" "}
         <Badge tone="neutral">{item.status}</Badge>
         {item.isHighImpact ? <Badge tone="bad">high-impact</Badge> : null}
-        {item.publicationEligible ? (
-          <Badge tone="good">eligible</Badge>
-        ) : (
-          <Badge tone="warn">not yet eligible</Badge>
-        )}
+        <Badge tone={state.tone}>{state.label}</Badge>
         {!item.ledgerValid ? <Badge tone="bad">ledger invalid</Badge> : null}
       </summary>
 
@@ -154,6 +279,7 @@ function ItemPanel({ item, reviewer, mode }: { item: BoardItem; reviewer: Review
           <code className="text-white">{item.currentVersionId ? shortId(item.currentVersionId) : "none"}</code> (the
           exact revision under review)
         </p>
+        <p className="mt-1 text-xs text-silver">{state.explanation}</p>
 
         {item.version ? (
           <>
@@ -187,7 +313,6 @@ function ItemPanel({ item, reviewer, mode }: { item: BoardItem; reviewer: Review
           )}
         </p>
 
-        {/* Review status — authoritative values from the server. */}
         <div className="mt-3 rounded-[var(--radius-control)] border border-border p-2 text-xs">
           <p className="text-white">
             Review status{" "}
@@ -247,24 +372,29 @@ function DecisionLedger({
     <div className="mt-3">
       <h3 className="text-sm font-bold text-white">Audit ledger (from the database)</h3>
       <ol className="mt-2 grid gap-2">
-        {decisions.map((d) => (
-          <li key={d.id} className="rounded-[var(--radius-control)] border border-border p-2 text-xs">
-            <p>
-              <strong className="text-white">{d.decision}</strong> · reviewer{" "}
-              <code className="text-white">{shortId(d.reviewerId)}</code>
-              {d.reviewerId === reviewer.userId ? " (you)" : ""} · {when(d.decidedAt)}
-            </p>
-            <p className="text-silver">
-              revision <code>{shortId(d.contentVersionId)}</code>{" "}
-              {currentVersionId && d.contentVersionId === currentVersionId ? (
-                <span className="text-success">(current)</span>
-              ) : (
-                <span className="text-danger">(superseded)</span>
-              )}
-            </p>
-            <p className="mt-1 text-silver">{d.rationale}</p>
-          </li>
-        ))}
+        {decisions.map((d) => {
+          const onCurrent = currentVersionId !== null && d.contentVersionId === currentVersionId;
+          return (
+            <li key={d.id} className="rounded-[var(--radius-control)] border border-border p-2 text-xs">
+              <p>
+                <strong className="text-white">
+                  reviewer <code>{shortId(d.reviewerId)}</code>
+                  {d.reviewerId === reviewer.userId ? " (you)" : ""}
+                </strong>{" "}
+                {reviewerExplanation(d.decision, onCurrent)} · {when(d.decidedAt)}
+              </p>
+              <p className="text-silver">
+                revision <code>{shortId(d.contentVersionId)}</code>{" "}
+                {onCurrent ? (
+                  <span className="text-success">(current)</span>
+                ) : (
+                  <span className="text-danger">(superseded)</span>
+                )}
+              </p>
+              <p className="mt-1 text-silver">{d.rationale}</p>
+            </li>
+          );
+        })}
       </ol>
     </div>
   );
@@ -272,25 +402,19 @@ function DecisionLedger({
 
 function DecisionForm({ item, mode }: { item: BoardItem; mode: "live" | "preview" }) {
   const router = useRouter();
-  const [decision, setDecision] = useState<BoardDecision["decision"]>("request_revision");
+  const [decision, setDecision] = useState<Decision>("request_revision");
   const [rationale, setRationale] = useState("");
   const [evidenceRef, setEvidenceRef] = useState("");
   const [error, setError] = useState("");
+  const [fieldError, setFieldError] = useState("");
   const [done, setDone] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const alreadyApproved = item.viewerApprovedCurrent;
   const noRevision = item.currentVersionId === null;
-
-  const hint = useMemo(() => {
-    if (noRevision) return "This content has no current revision and cannot receive a decision.";
-    if (decision === "approve" && alreadyApproved)
-      return "You have already approved this revision; the database will refuse a second approval from the same reviewer.";
-    return "A clear rationale is required (at least 10 characters). Your identity and the time are set by the server.";
-  }, [decision, alreadyApproved, noRevision]);
 
   function submit() {
     setError("");
+    setFieldError("");
     setDone("");
     if (mode === "preview") {
       setError("Preview only — this form does not record a decision here.");
@@ -302,25 +426,35 @@ function DecisionForm({ item, mode }: { item: BoardItem; mode: "live" | "preview
     }
     const versionId = item.currentVersionId;
     startTransition(async () => {
-      const result = await recordEditorialDecision({
-        contentId: item.id,
-        contentVersionId: versionId,
-        decision,
-        rationale: rationale.trim(),
-        ...(evidenceRef.trim() ? { evidenceRef: evidenceRef.trim() } : {}),
-      });
-      if (!result.ok) {
-        setError(result.error.fields?.rationale ?? result.error.message);
-        return;
+      try {
+        const result = await recordEditorialDecision({
+          contentId: item.id,
+          contentVersionId: versionId,
+          decision,
+          rationale: rationale.trim(),
+          ...(evidenceRef.trim() ? { evidenceRef: evidenceRef.trim() } : {}),
+        });
+        if (!result.ok) {
+          const message = describeError(result.error);
+          if (result.error.code === "VALIDATION") {
+            setFieldError(message);
+          }
+          setError(message);
+          return;
+        }
+        setRationale("");
+        setEvidenceRef("");
+        setDone(
+          result.data.publicationEligible
+            ? "Decision recorded. The server reports this revision now meets the approval quorum (this does not publish it)."
+            : "Decision recorded in the audit ledger.",
+        );
+        router.refresh();
+      } catch {
+        // A thrown error means the request never completed (e.g. the network
+        // dropped). Nothing was recorded.
+        setError("Could not reach the server, so nothing was recorded. Check your connection and try again.");
       }
-      setRationale("");
-      setEvidenceRef("");
-      setDone(
-        result.data.publicationEligible
-          ? "Decision recorded. The server reports this revision now meets the approval quorum (this does not publish it)."
-          : "Decision recorded in the audit ledger.",
-      );
-      router.refresh();
     });
   }
 
@@ -335,18 +469,19 @@ function DecisionForm({ item, mode }: { item: BoardItem; mode: "live" | "preview
         <SelectField
           id={`decision-${item.id}`}
           label="Decision"
+          hint={DECISION_GUIDANCE[decision]}
           options={DECISION_OPTIONS}
           value={decision}
-          onChange={(e) => setDecision(e.target.value as BoardDecision["decision"])}
+          onChange={(e) => setDecision(e.target.value as Decision)}
         />
         <TextArea
           id={`rationale-${item.id}`}
           label="Rationale"
-          hint={hint}
+          hint="A clear rationale is required (at least 10 characters). Your identity and the time are set by the server."
           rows={3}
           value={rationale}
           onChange={(e) => setRationale(e.target.value)}
-          error={error || undefined}
+          error={fieldError || undefined}
         />
         <TextField
           id={`evidence-${item.id}`}
@@ -359,6 +494,9 @@ function DecisionForm({ item, mode }: { item: BoardItem; mode: "live" | "preview
           <Button disabled={isPending || noRevision} onClick={submit}>
             {isPending ? "Recording…" : "Record decision"}
           </Button>
+        </div>
+        <div role="alert" aria-live="assertive">
+          {error ? <p className="text-xs font-semibold text-danger">{error}</p> : null}
         </div>
         <div role="status" aria-live="polite">
           {done ? <p className="text-xs font-semibold text-success">{done}</p> : null}

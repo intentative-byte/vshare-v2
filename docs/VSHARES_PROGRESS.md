@@ -31,6 +31,31 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.12 (editorial dashboard hardening)
+
+Hardened the authenticated editorial dashboard; governance/security/quality rules
+preserved. **No publication, no RLS change, no hosted writes, committed locally but
+not pushed (awaits owner approval).**
+
+- New pure module `src/components/editorial/review-state.ts` — `deriveReviewState`,
+  `reviewerExplanation`, `DECISION_GUIDANCE`, `matchesFilters` (no React/DB/I/O),
+  with 16 unit tests.
+- `/admin/editorial` workbench now shows an explicit review-state badge + reason
+  per item, a filter bar (review status / impact / category / "awaiting my
+  review"), per-decision guidance, plain-language reviewer explanations in the
+  audit ledger, and a `role="alert"` error region with code-based messages
+  (session expired, forbidden, rate-limited, duplicate/conflict, not-found,
+  network) plus a loading state — never claiming a write that did not happen.
+- `/dev/editorial-auth` preview expanded to two items (high-impact pending-second-
+  review + standard pending-review) so filters/states render; axe 0 at 412/1280.
+- Unchanged: the three-layer access gate, the server action, the governance SQL,
+  RLS, append-only audit, and the two-reviewer quorum. Publication still disabled.
+- Verified local: typecheck, lint, **335 unit (4 skip)**, **29 DB files / 478
+  assertions**, 94 e2e (72 skip), build, hygiene 400, axe 0. **Hosted acceptance
+  NOT claimed** — this session has no anon key (REST 401); admin browser session
+  still blocked on the magic-link rate limit. Report:
+  `docs/VSHARES_PHASE10_12_REPORT.md`; decision D-116.
+
 ### 2026-11-18 — Phase 10.11A (hosted readiness & acceptance preflight, read-only)
 
 Read-only preflight for the first authenticated editorial acceptance test on hosted
