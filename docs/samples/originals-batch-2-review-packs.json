@@ -1,0 +1,1446 @@
+{
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "total": 20,
+  "retrieved": 11,
+  "anyClaimVerified": 1,
+  "fullyVerified": 0,
+  "updatedQueue": 0,
+  "highImpact": 4,
+  "packs": [
+    {
+      "slug": "prompting-patterns-for-everyday-work",
+      "objective": "Write clearer prompts that get useful answers from a chat assistant.",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+        "publisher": "OpenAI",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "sourceDate": "2026-11-21T07:50:58.000Z",
+        "missingTimestamp": false
+      },
+      "claims": [
+        {
+          "claim": "State the goal, the audience and the format you want.",
+          "verdict": "unsupported",
+          "overlap": 0.2,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Give an example of a good answer when you can.",
+          "verdict": "unsupported",
+          "overlap": 0.2,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"State the goal, the audience and the format you want.\"",
+        "Unsupported: \"Give an example of a good answer when you can.\""
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 75,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"State the goal, the audience and the format you want.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Give an example of a good answer when you can.\"",
+        "What primary source grounds the claims the retrieval did not confirm?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "how-large-language-models-predict-text",
+      "objective": "Understand, at a high level, how a language model generates text.",
+      "category": "technology-and-ai",
+      "topic": "ai-foundations",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://developers.google.com/machine-learning/resources/intro-llms",
+        "publisher": "Google for Developers",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "sourceDate": "2026-01-09T16:02:52.000Z",
+        "missingTimestamp": false
+      },
+      "claims": [
+        {
+          "claim": "A language model predicts likely text; it does not look facts up.",
+          "verdict": "unsupported",
+          "overlap": 0.14,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Confidence is not the same as correctness.",
+          "verdict": "unsupported",
+          "overlap": 0,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"A language model predicts likely text; it does not look facts up.\"",
+        "Unsupported: \"Confidence is not the same as correctness.\""
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 80,
+          "verdict": "queue"
+        },
+        "updated": {
+          "composite": 78,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"A language model predicts likely text; it does not look facts up.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Confidence is not the same as correctness.\"",
+        "What primary source grounds the claims the retrieval did not confirm?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "version-control-with-git-basics",
+      "objective": "Use Git to track changes and recover earlier versions of your work.",
+      "category": "technology-and-ai",
+      "topic": "software-and-building",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control",
+        "publisher": "Pro Git (git-scm.com)",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "sourceDate": "2026-11-12T04:34:49.000Z",
+        "missingTimestamp": false
+      },
+      "claims": [
+        {
+          "claim": "A commit is a save point you can return to.",
+          "verdict": "unsupported",
+          "overlap": 0.25,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Branches let you try a change without risking the main line.",
+          "verdict": "unsupported",
+          "overlap": 0.2,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"A commit is a save point you can return to.\"",
+        "Unsupported: \"Branches let you try a change without risking the main line.\""
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 60,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 65,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"A commit is a save point you can return to.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Branches let you try a change without risking the main line.\"",
+        "What primary source grounds the claims the retrieval did not confirm?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "understanding-cookies-and-tracking",
+      "objective": "Recognise how websites track you and adjust your browser settings.",
+      "category": "technology-and-ai",
+      "topic": "data-and-privacy",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.mozilla.org/en-US/firefox/features/tracking-protection/",
+        "publisher": "Mozilla",
+        "retrievalStatus": "http_error",
+        "httpStatus": 404,
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Third-party cookies follow you across sites, not just the one you visit.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        },
+        {
+          "claim": "Blocking trackers mostly trades a little convenience for more privacy.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Third-party cookies follow you across sites, not just the one you visit.\"",
+        "Source unavailable for: \"Blocking trackers mostly trades a little convenience for more privacy.\"",
+        "Retrieval status: http_error",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 70,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Third-party cookies follow you across sites, not just the one you visit.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Blocking trackers mostly trades a little convenience for more privacy.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "choosing-strong-passphrases",
+      "objective": "Create and manage passwords that are hard to guess and easy to keep.",
+      "category": "technology-and-ai",
+      "topic": "security-basics",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online/use-a-strong-and-separate-password-for-email",
+        "publisher": "NCSC",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "sourceDate": "2026-11-20T15:08:01.000Z",
+        "missingTimestamp": false
+      },
+      "claims": [
+        {
+          "claim": "Three random words make a password long and memorable.",
+          "verdict": "unsupported",
+          "overlap": 0.14,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "A password manager means you only remember one.",
+          "verdict": "unsupported",
+          "overlap": 0.4,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"Three random words make a password long and memorable.\"",
+        "Unsupported: \"A password manager means you only remember one.\""
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 90,
+          "verdict": "queue"
+        },
+        "updated": {
+          "composite": 88,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Three random words make a password long and memorable.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"A password manager means you only remember one.\"",
+        "What primary source grounds the claims the retrieval did not confirm?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "writing-a-cv-that-gets-read",
+      "objective": "Write a CV that clearly shows your relevant experience.",
+      "category": "career-development",
+      "topic": "job-search",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://nationalcareers.service.gov.uk/careers-advice/cv-sections",
+        "publisher": "National Careers Service",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Lead each role with what you achieved, not only what you did.",
+          "verdict": "unsupported",
+          "overlap": 0.29,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Match the CV to the job you are applying for.",
+          "verdict": "verified",
+          "excerpt": "You should write your CV to match the job and company you're applying for.",
+          "overlap": 1,
+          "note": "a retrieved passage supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"Lead each role with what you achieved, not only what you did.\"",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 1,
+        "unsupported": 1,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 90,
+          "verdict": "queue"
+        },
+        "updated": {
+          "composite": 83,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.18181818181818182,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Lead each role with what you achieved, not only what you did.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "salary-negotiation-first-principles",
+      "objective": "Prepare for a salary conversation with research and a clear range.",
+      "category": "career-development",
+      "topic": "negotiation",
+      "level": "intermediate",
+      "provenance": {
+        "url": "https://www.themuse.com/advice/how-to-negotiate-salary",
+        "publisher": "The Muse",
+        "retrievalStatus": "http_error",
+        "httpStatus": 403,
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Decide your range before the conversation, not during it.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        },
+        {
+          "claim": "A number backed by market research is easier to hold.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Decide your range before the conversation, not during it.\"",
+        "Source unavailable for: \"A number backed by market research is easier to hold.\"",
+        "Retrieval status: http_error",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 60,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 60,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Decide your range before the conversation, not during it.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"A number backed by market research is easier to hold.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "answering-behavioural-interview-questions",
+      "objective": "Structure interview answers so they are concrete and easy to follow.",
+      "category": "career-development",
+      "topic": "interviews",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.indeed.com/career-advice/interviewing/how-to-use-the-star-interview-response-technique",
+        "publisher": "Indeed Career Guide",
+        "retrievalStatus": "http_error",
+        "httpStatus": 403,
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Name the result so the story has a point.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        },
+        {
+          "claim": "One concrete example beats three vague claims.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Name the result so the story has a point.\"",
+        "Source unavailable for: \"One concrete example beats three vague claims.\"",
+        "Retrieval status: http_error",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 70,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.125,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Name the result so the story has a point.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"One concrete example beats three vague claims.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "talking-to-customers-before-you-build",
+      "objective": "Run customer conversations that produce honest, useful signal.",
+      "category": "entrepreneurship",
+      "topic": "talking-to-customers",
+      "level": "beginner",
+      "provenance": {
+        "url": "http://momtestbook.com/",
+        "publisher": "The Mom Test (Rob Fitzpatrick)",
+        "retrievalStatus": "robots_unavailable",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Ask about what people already do, not whether they like your idea.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (robots_unavailable)"
+        },
+        {
+          "claim": "Compliments are not commitments.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (robots_unavailable)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Ask about what people already do, not whether they like your idea.\"",
+        "Source unavailable for: \"Compliments are not commitments.\"",
+        "Retrieval status: robots_unavailable",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 60,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 60,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.09090909090909091,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: robots_unavailable). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Ask about what people already do, not whether they like your idea.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Compliments are not commitments.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "finding-a-problem-worth-solving",
+      "objective": "Evaluate a business idea against a real, felt problem.",
+      "category": "entrepreneurship",
+      "topic": "finding-an-idea",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.paulgraham.com/startupideas.html",
+        "publisher": "Paul Graham",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "A problem you have felt is easier to judge than one you imagine.",
+          "verdict": "unsupported",
+          "overlap": 0.2,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Few people wanting something a lot beats many wanting it a little.",
+          "verdict": "unsupported",
+          "overlap": 0.43,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"A problem you have felt is easier to judge than one you imagine.\"",
+        "Unsupported: \"Few people wanting something a lot beats many wanting it a little.\"",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 70,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"A problem you have felt is easier to judge than one you imagine.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Few people wanting something a lot beats many wanting it a little.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "pricing-your-first-product",
+      "objective": "Choose a first price based on value and costs, not guesswork.",
+      "category": "entrepreneurship",
+      "topic": "pricing-and-revenue",
+      "level": "intermediate",
+      "provenance": {
+        "url": "https://www.priceintelligently.com/blog/bid/163986/the-anatomy-of-saas-pricing-strategy",
+        "publisher": "ProfitWell / Price Intelligently",
+        "retrievalStatus": "http_error",
+        "httpStatus": 404,
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Price on the value to the customer, then check it covers costs.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        },
+        {
+          "claim": "Too cheap signals low value as often as it wins sales.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (http_error)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Price on the value to the customer, then check it covers costs.\"",
+        "Source unavailable for: \"Too cheap signals low value as often as it wins sales.\"",
+        "Retrieval status: http_error",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 70,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2222222222222222,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: http_error). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Price on the value to the customer, then check it covers costs.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Too cheap signals low value as often as it wins sales.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "clearing-debt-with-a-repayment-order",
+      "objective": "Understand common strategies for paying down multiple debts.",
+      "category": "personal-finance",
+      "topic": "debt-and-credit",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/how-to-prioritise-your-debts",
+        "publisher": "MoneyHelper",
+        "retrievalStatus": "disallowed",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Paying the highest-interest debt first costs the least overall.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        },
+        {
+          "claim": "Free, impartial debt advice exists and is worth using.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Paying the highest-interest debt first costs the least overall.\"",
+        "Source unavailable for: \"Free, impartial debt advice exists and is worth using.\"",
+        "Retrieval status: disallowed",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 88,
+          "verdict": "queue"
+        },
+        "updated": {
+          "composite": 80,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": true,
+        "requiresSecondReviewer": true
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.09090909090909091,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Paying the highest-interest debt first costs the least overall.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Free, impartial debt advice exists and is worth using.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "High-impact: has a second, independent authorised reviewer verified this before any approval?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "what-a-stocks-and-shares-isa-is",
+      "objective": "Understand what an ISA is and how the tax wrapper works.",
+      "category": "personal-finance",
+      "topic": "saving-and-investing-basics",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.gov.uk/individual-savings-accounts",
+        "publisher": "GOV.UK",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "An ISA is a wrapper around savings or investments, not a product itself.",
+          "verdict": "unsupported",
+          "overlap": 0.17,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "The allowance resets each tax year and does not roll over.",
+          "verdict": "unsupported",
+          "overlap": 0.17,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"An ISA is a wrapper around savings or investments, not a product itself.\"",
+        "Unsupported: \"The allowance resets each tax year and does not roll over.\"",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 88,
+          "verdict": "queue"
+        },
+        "updated": {
+          "composite": 80,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": true,
+        "requiresSecondReviewer": true
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"An ISA is a wrapper around savings or investments, not a product itself.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"The allowance resets each tax year and does not roll over.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "High-impact: has a second, independent authorised reviewer verified this before any approval?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "spotting-investment-scams",
+      "objective": "Recognise the warning signs of an investment scam.",
+      "category": "personal-finance",
+      "topic": "avoiding-scams",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.fca.org.uk/scamsmart",
+        "publisher": "Financial Conduct Authority",
+        "retrievalStatus": "disallowed",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Guaranteed high returns with no risk is the clearest red flag.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        },
+        {
+          "claim": "Check the firm on the regulator's register before you pay.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Guaranteed high returns with no risk is the clearest red flag.\"",
+        "Source unavailable for: \"Check the firm on the regulator's register before you pay.\"",
+        "Retrieval status: disallowed",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 53,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 53,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": true,
+        "requiresSecondReviewer": true
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Guaranteed high returns with no risk is the clearest red flag.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Check the firm on the regulator's register before you pay.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "High-impact: has a second, independent authorised reviewer verified this before any approval?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "deep-work-and-protecting-attention",
+      "objective": "Protect blocks of focused time from constant interruption.",
+      "category": "productivity",
+      "topic": "attention-and-focus",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.apa.org/topics/research/multitasking",
+        "publisher": "American Psychological Association",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Every switch has a hidden restart cost.",
+          "verdict": "unsupported",
+          "overlap": 0,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Protecting one focused block beats many fragmented ones.",
+          "verdict": "unsupported",
+          "overlap": 0,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"Every switch has a hidden restart cost.\"",
+        "Unsupported: \"Protecting one focused block beats many fragmented ones.\"",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 60,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 60,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Every switch has a hidden restart cost.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Protecting one focused block beats many fragmented ones.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "weekly-planning-that-sticks",
+      "objective": "Plan a week around a few outcomes rather than a long task list.",
+      "category": "productivity",
+      "topic": "planning-and-prioritising",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://hbr.org/2020/01/to-achieve-big-goals-start-with-small-habits",
+        "publisher": "Harvard Business Review",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "sourceDate": "2020-01-20T13:25:10.000Z",
+        "missingTimestamp": false
+      },
+      "claims": [
+        {
+          "claim": "Pick the three outcomes that matter before filling the calendar.",
+          "verdict": "unsupported",
+          "overlap": 0,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "A plan with everything in it is not a plan.",
+          "verdict": "unsupported",
+          "overlap": 0,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"Pick the three outcomes that matter before filling the calendar.\"",
+        "Unsupported: \"A plan with everything in it is not a plan.\""
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 68,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.2222222222222222,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Pick the three outcomes that matter before filling the calendar.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"A plan with everything in it is not a plan.\"",
+        "What primary source grounds the claims the retrieval did not confirm?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "building-a-habit-that-lasts",
+      "objective": "Design a small habit that survives busy days.",
+      "category": "productivity",
+      "topic": "habits",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://jamesclear.com/atomic-habits",
+        "publisher": "James Clear",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "sourceDate": "2026-11-21T12:29:52.000Z",
+        "missingTimestamp": false
+      },
+      "claims": [
+        {
+          "claim": "A habit small enough to never skip compounds over time.",
+          "verdict": "unsupported",
+          "overlap": 0.14,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Anchor a new habit to something you already do.",
+          "verdict": "unsupported",
+          "overlap": 0.25,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"A habit small enough to never skip compounds over time.\"",
+        "Unsupported: \"Anchor a new habit to something you already do.\""
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 75,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1111111111111111,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"A habit small enough to never skip compounds over time.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Anchor a new habit to something you already do.\"",
+        "What primary source grounds the claims the retrieval did not confirm?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "writing-a-clear-first-draft",
+      "objective": "Cut clutter so your writing says what you mean.",
+      "category": "communication",
+      "topic": "clear-writing",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.gutenberg.org/ebooks/37134",
+        "publisher": "The Elements of Style (public domain)",
+        "retrievalStatus": "disallowed",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "Most first drafts get stronger when you cut a fifth of the words.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        },
+        {
+          "claim": "Concrete words beat abstract ones.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"Most first drafts get stronger when you cut a fifth of the words.\"",
+        "Source unavailable for: \"Concrete words beat abstract ones.\"",
+        "Retrieval status: disallowed",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 60,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 60,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.125,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Most first drafts get stronger when you cut a fifth of the words.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Concrete words beat abstract ones.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "structuring-a-short-talk",
+      "objective": "Structure a short talk around one idea the audience remembers.",
+      "category": "communication",
+      "topic": "speaking-and-presenting",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.ted.com/participate/organize-a-local-tedx-event/tedx-organizer-guide/speakers-program/prepare-your-speaker",
+        "publisher": "TED",
+        "retrievalStatus": "ok",
+        "httpStatus": 200,
+        "retrievedAt": "2026-11-21T00:00:00Z",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "One idea the audience keeps beats five they forget.",
+          "verdict": "unsupported",
+          "overlap": 0.33,
+          "note": "no passage strongly supports the claim"
+        },
+        {
+          "claim": "Tell them the point, then show why it is true.",
+          "verdict": "unsupported",
+          "overlap": 0.2,
+          "note": "no passage strongly supports the claim"
+        }
+      ],
+      "evidenceGaps": [
+        "Unsupported: \"One idea the audience keeps beats five they forget.\"",
+        "Unsupported: \"Tell them the point, then show why it is true.\"",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 2,
+        "contradictory": 0,
+        "unavailable": 0
+      },
+      "rubric": {
+        "original": {
+          "composite": 70,
+          "verdict": "reject"
+        },
+        "updated": {
+          "composite": 70,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims",
+            "sourceReliability: unverifiable publisher"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"One idea the audience keeps beats five they forget.\"",
+        "Does the source actually substantiate this claim (verdict: unsupported)? — \"Tell them the point, then show why it is true.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Gather supporting evidence (or revise the claims) — the rubric rejects it as unsupported. (Not an approval — a human editorial decision is still required.)"
+    },
+    {
+      "slug": "reviewing-your-credit-report",
+      "objective": "Check your credit report and understand what affects it.",
+      "category": "personal-finance",
+      "topic": "debt-and-credit",
+      "level": "beginner",
+      "provenance": {
+        "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit-and-purchases/how-to-check-your-credit-report",
+        "publisher": "MoneyHelper",
+        "retrievalStatus": "disallowed",
+        "missingTimestamp": true
+      },
+      "claims": [
+        {
+          "claim": "You can check your credit report for free.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        },
+        {
+          "claim": "Errors on a report can be challenged and fixed.",
+          "verdict": "unavailable",
+          "overlap": 0,
+          "note": "source could not be retrieved (disallowed)"
+        }
+      ],
+      "evidenceGaps": [
+        "Source unavailable for: \"You can check your credit report for free.\"",
+        "Source unavailable for: \"Errors on a report can be challenged and fixed.\"",
+        "Retrieval status: disallowed",
+        "No publication/retrieval timestamp on the source."
+      ],
+      "evidenceOverall": "not_verified",
+      "counts": {
+        "verified": 0,
+        "unsupported": 0,
+        "contradictory": 0,
+        "unavailable": 2
+      },
+      "rubric": {
+        "original": {
+          "composite": 78,
+          "verdict": "queue"
+        },
+        "updated": {
+          "composite": 70,
+          "verdict": "reject",
+          "floorBreaches": [
+            "accuracy: no credible, verifiable source for the claims"
+          ]
+        }
+      },
+      "highImpact": {
+        "isHighImpact": true,
+        "requiresSecondReviewer": true
+      },
+      "duplicate": {
+        "verdict": "unique",
+        "reason": "no duplicate found",
+        "nearest": 0.1,
+        "matches": []
+      },
+      "reviewerQuestions": [
+        "The source could not be retrieved cleanly (status: disallowed). Is there an accessible, canonical source for this?",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"You can check your credit report for free.\"",
+        "Does the source actually substantiate this claim (verdict: unavailable)? — \"Errors on a report can be challenged and fixed.\"",
+        "What primary source grounds the claims the retrieval did not confirm?",
+        "High-impact: has a second, independent authorised reviewer verified this before any approval?",
+        "The source had no publication/retrieval timestamp — is it current enough to rely on?"
+      ],
+      "recommendedAction": "Find an accessible canonical source; do not take this further until it can be retrieved. (Not an approval — a human editorial decision is still required.)"
+    }
+  ]
+}

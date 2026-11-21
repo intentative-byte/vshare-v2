@@ -31,6 +31,34 @@
 
 ## Log
 
+### 2026-11-21 — Phase 10.13 T4 (evidence verification & review packs)
+
+Gathered REAL evidence for the 20 batch-2 candidates and re-graded. Live retrieval
+ran read-only through the approved proxy (FACTORY_LIVE=1), robots.txt respected.
+No hosted write, no publication, no fabricated evidence.
+
+- Pipeline per candidate: `retrieveSource` (robots-respecting, 1.5s delay) →
+  `researchDraft` (`verifyClaims` vs retrieved passages) → `buildReviewPack`
+  (`src/factory/originals/batch2-research.ts`, pure). A claim is "verified" only
+  when a real page passage overlaps it ≥ threshold; the passage is the excerpt.
+- **Honest live results (2026-11-21):** 20 candidates; **11 retrieved OK**, 5 HTTP
+  error, 3 robots-disallowed (respected, not fetched), 1 robots-unavailable; **1
+  candidate had any claim verified** (CV card, 1 real excerpt), **0 fully
+  verified**; evidence re-grade dropped **all 20 to `reject`** (original 6 queue /
+  14 reject preserved separately). 4 high-impact (Personal Finance) need a second
+  reviewer; 3 of those are not even retrievable yet.
+- Review packs (9 sections each: objective/topic, claim-by-claim evidence,
+  provenance, gaps/contradictions, original+updated rubric, high-impact, duplicate
+  screening vs batch 1 **and** 2, reviewer questions, recommended action labelled
+  "Not an approval"): `docs/samples/originals-batch-2-review-packs.json` +
+  `docs/VSHARES_ORIGINALS_BATCH_2_REVIEW_PACKS.md`.
+- Gating: the live test is `FACTORY_LIVE=1`-gated (skipped in CI); a non-live
+  purity test covers `buildReviewPack`. Verified local: typecheck, lint, **370
+  unit (5 skip)**, **30 DB files / 488 assertions**, build, hygiene.
+  Committed locally; **not pushed** (awaits separate approval). D-119.
+- Central principle upheld: value must be evidence-supported — checking the real
+  sources honestly left nothing approvable.
+
 ### 2026-11-21 — Phase 10.13 T3+T5 (batch-2 generation + local DB bridge verification)
 
 Local only; no hosted write, no publication, no RLS/role change. Honesty kept
