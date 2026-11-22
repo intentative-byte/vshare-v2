@@ -31,6 +31,32 @@
 
 ## Log
 
+### 2026-11-22 — Phase 10.18 (first Original release preparation)
+
+Prepared Card 7 for first publication; verified claims; prepared Card-7-only
+link-check + Card 4 correction. No hosted write, no content modified, no approval.
+
+- **Card 7 verification (live, read-only, cross-structure):** claim 1 (tax +
+  liability) **verified** by GOV.UK; **claim 2 is INACCURATE** — GOV.UK says a
+  limited company must register **before** trading, contradicting "deadlines start
+  from trading, not incorporation." Proposed smallest accurate revision (sole trader
+  vs limited company). Not marked verified; not ready for approval until corrected.
+- **Card-7-only link-check:** `check:links` hits all cards, so prepared the precise
+  `select public.record_link_check('<card7-id>', true)` (service-role; sets
+  `link_checked_at` for one card; audit row; rollback = `record_link_check(..,false)`).
+  Not executed.
+- **Editorial readiness:** seeded cards have `submitted_by` NULL (no author → any
+  moderator is not the author); card 7 standard-impact = 1 reviewer. Read-only state
+  query + human review checklist prepared; no decision recorded.
+- **Card 4 correction:** proposed revision (GOV.UK source, keep claim 1, replace
+  claim 2 with a qualified one-month statement including the complex-request
+  exception). Not executed.
+- **Acceptance plan:** staged, with DB invariants per stage, every write gated.
+  Deliverable: `docs/VSHARES_PHASE10_18_FIRST_RELEASE_PREP.md`.
+- Gates: typecheck, lint, **389 unit (10 skip)**, **31 DB / 497 assertions**, build,
+  hygiene 439. Committed locally; **not pushed**. D-128. Safest next action: apply
+  the Card 7 claim-2 correction as a new revision.
+
 ### 2026-11-22 — Phase 10.17 (Card 4 source + nine-card prioritisation)
 
 Investigated Card 4's source (owner option A) and prioritised the batch for review.
