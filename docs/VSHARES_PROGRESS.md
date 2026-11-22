@@ -31,6 +31,29 @@
 
 ## Log
 
+### 2026-11-22 — Phase 10.17 (Card 4 source + nine-card prioritisation)
+
+Investigated Card 4's source (owner option A) and prioritised the batch for review.
+No hosted write, no content modified, no approval, no publication.
+
+- **Card 4:** found the canonical URLs via search (first guesses 404'd); live-verified
+  that GOV.UK "Find out what data an organisation has about you" and the ICO SAR
+  service page are both **accessible (200)**. Claim 1 ("ask an organisation for a
+  copy of your data") is **supported** by real GOV.UK/ICO passages; claim 2 ("no
+  particular wording/form") is **not** supported (pages cover timing/DPO) → proposed
+  (not executed) revision: switch to the GOV.UK page, keep claim 1, correct claim 2.
+- **Prioritisation:** Tier 1 (strong, standard-impact) = card 7 (business, claim 1
+  ov 0.57) and card 9 (security, claim 2 ov 0.57); cards 2 & 10 need rewriting;
+  high-impact cards need two reviewers.
+- **Strongest first-publication candidate: card 7** (standard-impact, GOV.UK, claim 1
+  strongly supported, no source fix/rewrite). Remaining to make it eligible:
+  link-check → human review (confirm claim 2) → publish (non-author moderator) →
+  verify feed — each owner-gated. Deliverable:
+  `docs/VSHARES_PHASE10_17_CARD4_REVISION.md`.
+- Added a Card-4 source probe test. Gates: typecheck, lint, **388 unit (9 skip)**,
+  **31 DB / 497 assertions**, build, hygiene 439. Committed locally; **not pushed**.
+  D-127.
+
 ### 2026-11-22 — Phase 10.17 owner decision (editorial evidence checklist)
 
 Acted on the owner's source decisions; produced claim-by-claim evidence sheets.
