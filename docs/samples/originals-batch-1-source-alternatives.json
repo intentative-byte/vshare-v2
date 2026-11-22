@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "results": [
+    {
+      "slug": "building-a-first-monthly-budget",
+      "originalSource": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner (robots-disallowed)",
+      "candidates": [
+        {
+          "url": "https://www.citizensadvice.org.uk/debt-and-money/budgeting/budgeting/work-out-your-budget/",
+          "publisher": "Citizens Advice",
+          "retrievalStatus": "ok",
+          "httpStatus": 200,
+          "passageCount": 21,
+          "claims": [
+            {
+              "claim": "Writing fixed costs down is what makes them negotiable.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0.29
+            },
+            {
+              "claim": "A budget is a plan for money you have, not a prediction of money you might get.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0.33
+            }
+          ]
+        },
+        {
+          "url": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/how-to-budget",
+          "publisher": "MoneyHelper",
+          "retrievalStatus": "disallowed",
+          "passageCount": 0,
+          "claims": [
+            {
+              "claim": "Writing fixed costs down is what makes them negotiable.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0
+            },
+            {
+              "claim": "A budget is a plan for money you have, not a prediction of money you might get.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "asking-for-your-own-data",
+      "originalSource": "https://ico.org.uk/for-the-public/your-right-to-get-copies-of-your-data/ (http_error)",
+      "candidates": [
+        {
+          "url": "https://www.gov.uk/data-protection",
+          "publisher": "GOV.UK",
+          "retrievalStatus": "ok",
+          "httpStatus": 200,
+          "passageCount": 13,
+          "claims": [
+            {
+              "claim": "You can ask any organisation for a copy of the personal data it holds about you.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0.43
+            },
+            {
+              "claim": "A request does not have to use any particular wording or form.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0.17
+            }
+          ]
+        },
+        {
+          "url": "https://ico.org.uk/for-the-public/data-protection-and-you/your-right-of-access/",
+          "publisher": "Information Commissioner's Office",
+          "retrievalStatus": "http_error",
+          "httpStatus": 404,
+          "passageCount": 0,
+          "claims": [
+            {
+              "claim": "You can ask any organisation for a copy of the personal data it holds about you.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0
+            },
+            {
+              "claim": "A request does not have to use any particular wording or form.",
+              "supportClass": "insufficient_evidence",
+              "overlap": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

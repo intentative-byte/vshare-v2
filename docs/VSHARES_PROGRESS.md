@@ -31,6 +31,29 @@
 
 ## Log
 
+### 2026-11-22 — Phase 10.17 (hosted Originals verification, read-only)
+
+Owner confirmed hosted dev holds exactly 10 draft cards (seed present; no
+re-import). Prepared them for first editorial review. No hosted write, no publish.
+
+- Matched the 10 hosted drafts to the batch-1 matrix (same slugs); provided a
+  read-only per-slug confirm query.
+- **Investigated the 2 inaccessible sources (live, read-only, robots-respected):**
+  found accessible reputable alternatives — Citizens Advice for card 1 (budget;
+  MoneyHelper robots-disallowed to bots) and GOV.UK /data-protection for card 4
+  (the ICO URL 404'd on two paths → likely a broken link). Neither alternative
+  textually confirms the paraphrased claims, so a swap fixes accessibility, not
+  grounding. Data: `docs/samples/originals-batch-1-source-alternatives.json`.
+- **Claim-by-claim packs for all 10:** every claim machine-`insufficient` (faithful
+  paraphrases of reputable sources, not verbatim), **0 contradictions** — so a human
+  must ground each claim; none is machine-verified or approvable.
+- **Assessment:** all 10 can ENTER human review; cards 1 & 4 need a source decision
+  first; 3 high-impact need 2 distinct reviewers. Delivered the exact owner-gated
+  workflow (source fix → link-check → review → 2nd reviewer → publish → verify),
+  each a separate approval, nothing executed: `docs/VSHARES_PHASE10_17_HOSTED_VERIFICATION.md`.
+- Gates: typecheck, lint, **384 unit (7 skip)**, **31 DB / 497 assertions**, build,
+  hygiene 430. Committed locally; **not pushed**. D-125.
+
 ### 2026-11-21 — Phase 10.16 (first content release preparation, read-only)
 
 Prepared the ten batch-1 Originals for a controlled release without bypassing
