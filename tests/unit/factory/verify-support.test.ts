@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classifyClaimSupport } from "@/factory/live/verify-support";
+import { classifyClaimSupport, topPassages } from "@/factory/live/verify-support";
 
 describe("classifyClaimSupport — honesty invariants", () => {
   it("never confers approval and is always textual-only", () => {
@@ -90,5 +90,23 @@ describe("classifyClaimSupport — misleading paraphrase is not treated as truth
     ]);
     expect(["partial_support", "insufficient_evidence"]).toContain(r.supportClass);
     expect(r.supportClass).not.toBe("exact_support");
+  });
+});
+
+describe("topPassages", () => {
+  const passages = [
+    "A budget is a plan for the money you have.",
+    "Completely unrelated text about gardening.",
+    "Writing fixed costs down helps you plan.",
+  ];
+  it("returns real excerpts ranked by overlap, highest first", () => {
+    const top = topPassages("A budget is a plan for money you have.", passages, 2);
+    expect(top.length).toBeGreaterThan(0);
+    expect(top[0]!.passage).toContain("budget");
+    expect(top[0]!.overlap).toBeGreaterThanOrEqual(top[top.length - 1]!.overlap);
+  });
+  it("never invents a passage (only returns ones that overlap)", () => {
+    const top = topPassages("quantum chromodynamics lattice gauge theory", passages, 2);
+    expect(top).toHaveLength(0);
   });
 });

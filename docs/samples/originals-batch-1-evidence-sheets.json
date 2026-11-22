@@ -1,0 +1,397 @@
+{
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "sheets": [
+    {
+      "slug": "building-a-first-monthly-budget",
+      "title": "A budget planner that does the arithmetic for you",
+      "category": "personal-finance",
+      "isHighImpact": true,
+      "sourceUrl": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner",
+      "sourceNote": "MoneyHelper retained provisionally; blocks automated fetch (robots) — verify the human-facing link manually",
+      "retrievalStatus": "disallowed",
+      "claims": [
+        {
+          "claim": "Writing fixed costs down is what makes them negotiable.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [],
+          "evidenceGap": "source not retrievable here (disallowed) — manual verification required",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported; two distinct reviewers required."
+        },
+        {
+          "claim": "A budget is a plan for money you have, not a prediction of money you might get.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [],
+          "evidenceGap": "source not retrievable here (disallowed) — manual verification required",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported; two distinct reviewers required."
+        }
+      ]
+    },
+    {
+      "slug": "getting-to-sleep-nhs-guidance",
+      "title": "What actually helps when you cannot sleep",
+      "category": "health-and-wellbeing",
+      "isHighImpact": true,
+      "sourceUrl": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "A consistent wake time does more for sleep than a consistent bedtime.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [],
+          "evidenceGap": "no passage on the retrieved page overlaps this claim — human must confirm against the source",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported; two distinct reviewers required."
+        },
+        {
+          "claim": "Persistent sleep problems are worth raising with a doctor rather than managing alone.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [],
+          "evidenceGap": "no passage on the retrieved page overlaps this claim — human must confirm against the source",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported; two distinct reviewers required."
+        }
+      ]
+    },
+    {
+      "slug": "spotting-financial-scams",
+      "title": "The pause that stops most financial scams",
+      "category": "personal-finance",
+      "isHighImpact": true,
+      "sourceUrl": "https://www.takefive-stopfraud.org.uk/",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "Urgency is the common thread in almost every scam.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Find out more about common types of scams and how you can protect yourself.",
+              "overlap": 0.33
+            },
+            {
+              "passage": "Scam warning: Criminals may try to impersonate Take Five.",
+              "overlap": 0.17
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported; two distinct reviewers required."
+        },
+        {
+          "claim": "No legitimate organisation asks you to move money to a \"safe account\".",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "We will never text or call you and ask you to share your information or transfer money.",
+              "overlap": 0.29
+            },
+            {
+              "passage": "So, when someone is asking for your money or personal information, being “rude” might be the safest thing you can do.",
+              "overlap": 0.29
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported; two distinct reviewers required."
+        }
+      ]
+    },
+    {
+      "slug": "asking-for-your-own-data",
+      "title": "How to ask an organisation what it knows about you",
+      "category": "technology-and-ai",
+      "isHighImpact": false,
+      "sourceUrl": "https://www.gov.uk/data-protection",
+      "sourceNote": "original ICO link returned 404; evaluating GOV.UK as replacement",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "You can ask any organisation for a copy of the personal data it holds about you.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Next : Find out what data an organisation has about you View a printable version of the whole guide Related content Personal data an employer can keep about an employee Request CCTV footage of yourself Explore the topic Your rights and legal support Is this page useful?",
+              "overlap": 0.43
+            },
+            {
+              "passage": "Everyone responsible for using personal data has to follow strict rules called ‘data protection principles’ unless an exemption applies.",
+              "overlap": 0.29
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "A request does not have to use any particular wording or form.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Data protection: The UK's data protection legislation - GOV.UK Cookies on GOV.UK We use some essential cookies to make this website work.",
+              "overlap": 0.17
+            },
+            {
+              "passage": "We’d like to set additional cookies to understand how you use GOV.UK, remember your settings and improve government services.",
+              "overlap": 0.17
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    },
+    {
+      "slug": "machine-learning-crash-course",
+      "title": "A structured first course in machine learning",
+      "category": "technology-and-ai",
+      "isHighImpact": false,
+      "sourceUrl": "https://developers.google.com/machine-learning/crash-course",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "Training a model means adjusting it until its predictions match known answers closely enough.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Working with Numerical Data Learn how to analyze and transform numerical data to help train ML models more effectively.",
+              "overlap": 0.18
+            },
+            {
+              "passage": "Datasets, Generalization, and Overfitting An introduction to the characteristics of machine learning datasets, and how to prepare your data to ensure high-quality results when training and evaluating your model.",
+              "overlap": 0.18
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "Most of the work in practice is preparing data, not choosing an algorithm.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Data These modules cover fundamental techniques and best practices for working with machine learning data.",
+              "overlap": 0.33
+            },
+            {
+              "passage": "Working with Numerical Data Learn how to analyze and transform numerical data to help train ML models more effectively.",
+              "overlap": 0.33
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    },
+    {
+      "slug": "preparing-for-an-interview",
+      "title": "Preparing for an interview without guessing",
+      "category": "career-development",
+      "isHighImpact": false,
+      "sourceUrl": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "A structured answer about a real situation beats a general claim about yourself.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Look through some example answers using this method.",
+              "overlap": 0.13
+            },
+            {
+              "passage": "Common interview questions and answers Practise your answers to some interview questions often asked.",
+              "overlap": 0.13
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "The questions you ask are part of what is being assessed.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Common interview questions and answers Practise your answers to some interview questions often asked.",
+              "overlap": 0.4
+            },
+            {
+              "passage": "You’ll usually have some time towards the end of the interview to ask some of your own questions.",
+              "overlap": 0.4
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    },
+    {
+      "slug": "setting-up-a-business-uk",
+      "title": "The actual steps to set up a business in the UK",
+      "category": "entrepreneurship",
+      "isHighImpact": false,
+      "sourceUrl": "https://www.gov.uk/set-up-business",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "The legal structure you choose changes your tax and your personal liability.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "The business structure you choose can affect the way you pay tax and your legal responsibilities.",
+              "overlap": 0.57
+            },
+            {
+              "passage": "Sole trader Limited company Legal risks or ‘liability’ You are personally responsible for all of the debts of the business.",
+              "overlap": 0.43
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "Registration deadlines start from when you begin trading, not when you incorporate.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Keeping records and accounts When you start trading you must keep records .",
+              "overlap": 0.5
+            },
+            {
+              "passage": "There are a number of responsibilities and things to consider when running a limited company.",
+              "overlap": 0.25
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    },
+    {
+      "slug": "spaced-repetition-for-memory",
+      "title": "Why reviewing at increasing intervals works",
+      "category": "learning-how-to-learn",
+      "isHighImpact": false,
+      "sourceUrl": "https://augmentingcognition.com/ltm.html",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "Reviewing just before you would have forgotten is what strengthens memory.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "These are just a few of the many attempts to use computers to augment human memory.",
+              "overlap": 0.29
+            },
+            {
+              "passage": "Shereshevsky's boss at the newspaper had noticed that Shereshevsky never needed to take any notes, but somehow still remembered all he was told, and had suggested he get his memory checked by an expert.",
+              "overlap": 0.14
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "A prompt that can be answered without understanding teaches you nothing.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "I'll discuss how to use Anki to understand research papers, books, and much else.",
+              "overlap": 0.2
+            },
+            {
+              "passage": "While Anki is an extremely simple program, it's possible to develop virtuoso skill using Anki, a skill aimed at understanding complex material in depth, not just memorizing simple facts.",
+              "overlap": 0.2
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    },
+    {
+      "slug": "staying-secure-online-basics",
+      "title": "The handful of security steps that matter most",
+      "category": "technology-and-ai",
+      "isHighImpact": false,
+      "sourceUrl": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "Protecting the email account that can reset every other password matters most.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Turn on 2-step verification (2SV) 2-step verification is recommended to help protect your online accounts.",
+              "overlap": 0.25
+            },
+            {
+              "passage": "Install the latest software and app updates Software and app updates contain vital security updates to help protect your devices from cyber criminals.",
+              "overlap": 0.13
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "A password manager removes the need to remember or reuse passwords.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Password managers: how they help you secure passwords Using a password manager can help you create and remember passwords.",
+              "overlap": 0.57
+            },
+            {
+              "passage": "Three random words Use three random words to create a password that's difficult to crack.",
+              "overlap": 0.29
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "Two-factor authentication blocks most attacks that start with a stolen password.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Password managers: how they help you secure passwords Using a password manager can help you create and remember passwords.",
+              "overlap": 0.13
+            },
+            {
+              "passage": "Three random words Use three random words to create a password that's difficult to crack.",
+              "overlap": 0.13
+            }
+          ],
+          "evidenceGap": "nearest passages are only loosely related — human must confirm the paraphrase is faithful",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    },
+    {
+      "slug": "writing-people-understand",
+      "title": "Writing that people understand the first time",
+      "category": "communication",
+      "isHighImpact": false,
+      "sourceUrl": "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+      "sourceNote": "",
+      "retrievalStatus": "ok",
+      "claims": [
+        {
+          "claim": "Write for the person with the least time and the most to lose.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [],
+          "evidenceGap": "no passage on the retrieved page overlaps this claim — human must confirm against the source",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        },
+        {
+          "claim": "Shorter sentences are not simpler ideas, only clearer ones.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [],
+          "evidenceGap": "no passage on the retrieved page overlaps this claim — human must confirm against the source",
+          "reviewerAction": "Read the source; confirm the claim is faithfully supported."
+        }
+      ]
+    }
+  ]
+}

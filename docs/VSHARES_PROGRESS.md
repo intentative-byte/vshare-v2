@@ -31,6 +31,28 @@
 
 ## Log
 
+### 2026-11-22 — Phase 10.17 owner decision (editorial evidence checklist)
+
+Acted on the owner's source decisions; produced claim-by-claim evidence sheets.
+No hosted write, no approval, no content modified.
+
+- Added `topPassages()` to the classifier (real top excerpts, never invented;
+  +2 unit tests) + a FACTORY_LIVE-gated evidence-sheet generator.
+- **Card 1 (budget):** MoneyHelper retained provisionally; robots blocks only the
+  fetcher → flagged for manual browser verification.
+- **Card 4 (your own data):** confirmed the proposed GOV.UK /data-protection
+  **overview does NOT support the SAR claims** (nav/cookie boilerplate; detail is
+  on a deeper subpage) and the original ICO link 404s → swap **not** recommended
+  as-is; owner must pick a specific SAR source. No content changed.
+- **Cards 2,3,5–10:** real claim-by-claim passages captured. 21 claims total, 0
+  auto-verified, 0 contradictions → all need human grounding. Strong candidate
+  evidence for card 7 (business structure) and card 9 (password managers); card 2
+  claim 1 and card 10 likely need rewriting to the source.
+- Deliverables: `docs/VSHARES_PHASE10_17_EVIDENCE_CHECKLIST.md` +
+  `docs/samples/originals-batch-1-evidence-sheets.json`. Gates: typecheck, lint,
+  **387 unit (8 skip)**, **31 DB / 497 assertions**, build, hygiene 436.
+  Committed locally; **not pushed**. D-126. Next owner decision: card 4's source.
+
 ### 2026-11-22 — Phase 10.17 (hosted Originals verification, read-only)
 
 Owner confirmed hosted dev holds exactly 10 draft cards (seed present; no

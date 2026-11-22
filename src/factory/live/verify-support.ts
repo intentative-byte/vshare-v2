@@ -120,6 +120,20 @@ function round(n: number): number {
 }
 
 /**
+ * The top passages from the source, ranked by lemmatised overlap with the claim.
+ * Returns REAL excerpts (never invented) so a human reviewer can read the actual
+ * evidence for themselves. Pure and deterministic.
+ */
+export function topPassages(claim: string, passages: string[], limit = 2): Array<{ passage: string; overlap: number }> {
+  const lemClaim = contentTokens(claim, true);
+  return passages
+    .map((p) => ({ passage: p, overlap: round(overlap(lemClaim, new Set(contentTokens(p, true)))) }))
+    .filter((r) => r.overlap > 0)
+    .sort((a, b) => b.overlap - a.overlap)
+    .slice(0, limit);
+}
+
+/**
  * Classify how the retrieved passages support a claim. Pure and deterministic.
  * `passages` are the ACTUAL passages from the retrieved source.
  */
