@@ -1,0 +1,193 @@
+[
+  {
+    "slug": "building-a-first-monthly-budget",
+    "category": "personal-finance",
+    "topic": "budgeting",
+    "level": "beginner",
+    "format": "tool",
+    "estimatedMinutes": 20,
+    "qualityScore": 85,
+    "isHighImpact": true,
+    "sourceUrl": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner",
+    "sourceName": "MoneyHelper",
+    "title": "A budget planner that does the arithmetic for you",
+    "summary": "A free budgeting tool from the UK government-backed money guidance service. It walks through income, fixed costs and spending, then shows what is left and where it goes. It is general information rather than advice about your own circumstances.",
+    "takeaways": [
+      "Writing fixed costs down is what makes them negotiable.",
+      "A budget is a plan for money you have, not a prediction of money you might get."
+    ],
+    "nextStep": "List every fixed monthly cost you have before the end of this week."
+  },
+  {
+    "slug": "getting-to-sleep-nhs-guidance",
+    "category": "health-and-wellbeing",
+    "topic": "sleep",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 7,
+    "qualityScore": 90,
+    "isHighImpact": true,
+    "sourceUrl": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+    "sourceName": "NHS",
+    "title": "What actually helps when you cannot sleep",
+    "summary": "NHS guidance on sleep: regular timing, winding down, and when poor sleep is worth seeing a doctor about. It is short, free of supplements and gadgets, and clear about the point at which self-help is not the answer. General information, not medical advice.",
+    "takeaways": [
+      "A consistent wake time does more for sleep than a consistent bedtime.",
+      "Persistent sleep problems are worth raising with a doctor rather than managing alone."
+    ],
+    "nextStep": "Set one alarm for the same wake time every day this week, including the weekend."
+  },
+  {
+    "slug": "spotting-financial-scams",
+    "category": "personal-finance",
+    "topic": "avoiding-scams",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 8,
+    "qualityScore": 85,
+    "isHighImpact": true,
+    "sourceUrl": "https://www.takefive-stopfraud.org.uk/",
+    "sourceName": "Take Five to Stop Fraud",
+    "title": "The pause that stops most financial scams",
+    "summary": "A UK campaign backed by banks and the government built around one idea: stop, challenge, protect. Most scams depend on urgency, so the advice is about creating a moment to think rather than memorising every variety of fraud.",
+    "takeaways": [
+      "Urgency is the common thread in almost every scam.",
+      "No legitimate organisation asks you to move money to a \"safe account\"."
+    ],
+    "nextStep": "Agree a rule with one family member: no money moves without a phone call first."
+  },
+  {
+    "slug": "asking-for-your-own-data",
+    "category": "technology-and-ai",
+    "topic": "data-and-privacy",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 8,
+    "qualityScore": 85,
+    "isHighImpact": false,
+    "sourceUrl": "https://ico.org.uk/for-the-public/your-right-to-get-copies-of-your-data/",
+    "sourceName": "Information Commissioner's Office",
+    "title": "How to ask an organisation what it knows about you",
+    "summary": "The UK data protection regulator's explanation of the right of access: what you can ask for, how to ask, and what an organisation has to do in response. Useful whether you are exercising the right yourself or building a product that has to honour it.",
+    "takeaways": [
+      "You can ask any organisation for a copy of the personal data it holds about you.",
+      "A request does not have to use any particular wording or form."
+    ],
+    "nextStep": "Pick one service you use and find its route for making a data request."
+  },
+  {
+    "slug": "machine-learning-crash-course",
+    "category": "technology-and-ai",
+    "topic": "ai-foundations",
+    "level": "beginner",
+    "format": "course",
+    "estimatedMinutes": 25,
+    "qualityScore": 85,
+    "isHighImpact": false,
+    "sourceUrl": "https://developers.google.com/machine-learning/crash-course",
+    "sourceName": "Google",
+    "title": "A structured first course in machine learning",
+    "summary": "A free, self-paced course that introduces how machine learning models are trained and evaluated, with short videos and exercises rather than mathematics for its own sake. It is aimed at people who write software or work alongside those who do.",
+    "takeaways": [
+      "Training a model means adjusting it until its predictions match known answers closely enough.",
+      "Most of the work in practice is preparing data, not choosing an algorithm."
+    ],
+    "nextStep": "Work through the first module and write down one term you had not met before."
+  },
+  {
+    "slug": "preparing-for-an-interview",
+    "category": "career-development",
+    "topic": "interviews",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 12,
+    "qualityScore": 80,
+    "isHighImpact": false,
+    "sourceUrl": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+    "sourceName": "National Careers Service",
+    "title": "Preparing for an interview without guessing",
+    "summary": "Free UK careers service guidance on preparing for interviews: what to research, how to structure answers about your experience, and what to ask at the end. It is practical and free of the confidence-as-a-substitute-for-preparation advice common elsewhere.",
+    "takeaways": [
+      "A structured answer about a real situation beats a general claim about yourself.",
+      "The questions you ask are part of what is being assessed."
+    ],
+    "nextStep": "Write out one example of your work using situation, task, action and result."
+  },
+  {
+    "slug": "setting-up-a-business-uk",
+    "category": "entrepreneurship",
+    "topic": "running-a-small-business",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 15,
+    "qualityScore": 80,
+    "isHighImpact": false,
+    "sourceUrl": "https://www.gov.uk/set-up-business",
+    "sourceName": "GOV.UK",
+    "title": "The actual steps to set up a business in the UK",
+    "summary": "The official starting point for setting up in the UK: choosing a structure, registering, and the records you have to keep. It answers the administrative questions that are easy to get wrong and expensive to fix later.",
+    "takeaways": [
+      "The legal structure you choose changes your tax and your personal liability.",
+      "Registration deadlines start from when you begin trading, not when you incorporate."
+    ],
+    "nextStep": "Decide whether you would be a sole trader or a limited company, and write down why."
+  },
+  {
+    "slug": "spaced-repetition-for-memory",
+    "category": "learning-how-to-learn",
+    "topic": "spaced-repetition",
+    "level": "intermediate",
+    "format": "article",
+    "estimatedMinutes": 35,
+    "qualityScore": 85,
+    "isHighImpact": false,
+    "sourceUrl": "https://augmentingcognition.com/ltm.html",
+    "sourceName": "Michael Nielsen",
+    "title": "Why reviewing at increasing intervals works",
+    "summary": "A long essay on using spaced repetition seriously: how review schedules affect what is retained, what makes a good prompt, and where the method stops helping. It is considerably more thoughtful than the usual flashcard advice, and honest about the effort involved.",
+    "takeaways": [
+      "Reviewing just before you would have forgotten is what strengthens memory.",
+      "A prompt that can be answered without understanding teaches you nothing."
+    ],
+    "nextStep": "Write five prompts for something you learned this month and review them tomorrow."
+  },
+  {
+    "slug": "staying-secure-online-basics",
+    "category": "technology-and-ai",
+    "topic": "security-basics",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 10,
+    "qualityScore": 90,
+    "isHighImpact": false,
+    "sourceUrl": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+    "sourceName": "National Cyber Security Centre",
+    "title": "The handful of security steps that matter most",
+    "summary": "The UK National Cyber Security Centre's short guidance on protecting everyday accounts. It is deliberately a small number of steps, chosen because they prevent the majority of ordinary attacks, rather than an exhaustive list nobody follows.",
+    "takeaways": [
+      "Protecting the email account that can reset every other password matters most.",
+      "A password manager removes the need to remember or reuse passwords.",
+      "Two-factor authentication blocks most attacks that start with a stolen password."
+    ],
+    "nextStep": "Turn on two-factor authentication for your main email account today."
+  },
+  {
+    "slug": "writing-people-understand",
+    "category": "communication",
+    "topic": "clear-writing",
+    "level": "beginner",
+    "format": "article",
+    "estimatedMinutes": 12,
+    "qualityScore": 85,
+    "isHighImpact": false,
+    "sourceUrl": "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+    "sourceName": "Government Digital Service",
+    "title": "Writing that people understand the first time",
+    "summary": "The style guidance behind GOV.UK, written for people producing information the public has to act on. It covers plain words, short sentences and structure, and is unusually direct about the cost of jargon.",
+    "takeaways": [
+      "Write for the person with the least time and the most to lose.",
+      "Shorter sentences are not simpler ideas, only clearer ones."
+    ],
+    "nextStep": "Rewrite one paragraph you sent this week, cutting it by a third."
+  }
+]

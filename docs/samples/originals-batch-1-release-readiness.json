@@ -1,0 +1,409 @@
+{
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "total": 10,
+  "retrieved": 8,
+  "anySupport": 0,
+  "highImpact": 3,
+  "publishableNow": 0,
+  "records": [
+    {
+      "slug": "building-a-first-monthly-budget",
+      "title": "A budget planner that does the arithmetic for you",
+      "category": "personal-finance",
+      "sourceUrl": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner",
+      "publisher": "MoneyHelper",
+      "qualityScore": 85,
+      "isHighImpact": true,
+      "requiredReviewers": 2,
+      "linkChecked": false,
+      "retrievalStatus": "disallowed",
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "Writing fixed costs down is what makes them negotiable.",
+          "supportClass": "insufficient_evidence",
+          "note": "no source passages were available to compare against"
+        },
+        {
+          "claim": "A budget is a plan for money you have, not a prediction of money you might get.",
+          "supportClass": "insufficient_evidence",
+          "note": "no source passages were available to compare against"
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "source not cleanly retrievable (disallowed)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "high-impact: requires two distinct independent reviewers",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Find an accessible canonical source or confirm access; then link-check and review. (Not an approval.)"
+    },
+    {
+      "slug": "getting-to-sleep-nhs-guidance",
+      "title": "What actually helps when you cannot sleep",
+      "category": "health-and-wellbeing",
+      "sourceUrl": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+      "publisher": "NHS",
+      "qualityScore": 90,
+      "isHighImpact": true,
+      "requiredReviewers": 2,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "A consistent wake time does more for sleep than a consistent bedtime.",
+          "supportClass": "insufficient_evidence",
+          "note": "no source passages were available to compare against"
+        },
+        {
+          "claim": "Persistent sleep problems are worth raising with a doctor rather than managing alone.",
+          "supportClass": "insufficient_evidence",
+          "note": "no source passages were available to compare against"
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "high-impact: requires two distinct independent reviewers",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "spotting-financial-scams",
+      "title": "The pause that stops most financial scams",
+      "category": "personal-finance",
+      "sourceUrl": "https://www.takefive-stopfraud.org.uk/",
+      "publisher": "Take Five to Stop Fraud",
+      "qualityScore": 85,
+      "isHighImpact": true,
+      "requiredReviewers": 2,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "Urgency is the common thread in almost every scam.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.33). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "No legitimate organisation asks you to move money to a \"safe account\".",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.29). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "high-impact: requires two distinct independent reviewers",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "asking-for-your-own-data",
+      "title": "How to ask an organisation what it knows about you",
+      "category": "technology-and-ai",
+      "sourceUrl": "https://ico.org.uk/for-the-public/your-right-to-get-copies-of-your-data/",
+      "publisher": "Information Commissioner's Office",
+      "qualityScore": 85,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "http_error",
+      "httpStatus": 404,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "You can ask any organisation for a copy of the personal data it holds about you.",
+          "supportClass": "insufficient_evidence",
+          "note": "no source passages were available to compare against"
+        },
+        {
+          "claim": "A request does not have to use any particular wording or form.",
+          "supportClass": "insufficient_evidence",
+          "note": "no source passages were available to compare against"
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "source not cleanly retrievable (http_error)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Find an accessible canonical source or confirm access; then link-check and review. (Not an approval.)"
+    },
+    {
+      "slug": "machine-learning-crash-course",
+      "title": "A structured first course in machine learning",
+      "category": "technology-and-ai",
+      "sourceUrl": "https://developers.google.com/machine-learning/crash-course",
+      "publisher": "Google",
+      "qualityScore": 85,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "Training a model means adjusting it until its predictions match known answers closely enough.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.09). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "Most of the work in practice is preparing data, not choosing an algorithm.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "preparing-for-an-interview",
+      "title": "Preparing for an interview without guessing",
+      "category": "career-development",
+      "sourceUrl": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+      "publisher": "National Careers Service",
+      "qualityScore": 80,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "A structured answer about a real situation beats a general claim about yourself.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.13). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "The questions you ask are part of what is being assessed.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.4). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "setting-up-a-business-uk",
+      "title": "The actual steps to set up a business in the UK",
+      "category": "entrepreneurship",
+      "sourceUrl": "https://www.gov.uk/set-up-business",
+      "publisher": "GOV.UK",
+      "qualityScore": 80,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "The legal structure you choose changes your tax and your personal liability.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.57). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "Registration deadlines start from when you begin trading, not when you incorporate.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.5). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "spaced-repetition-for-memory",
+      "title": "Why reviewing at increasing intervals works",
+      "category": "learning-how-to-learn",
+      "sourceUrl": "https://augmentingcognition.com/ltm.html",
+      "publisher": "Michael Nielsen",
+      "qualityScore": 85,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "Reviewing just before you would have forgotten is what strengthens memory.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.29). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "A prompt that can be answered without understanding teaches you nothing.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.2). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "staying-secure-online-basics",
+      "title": "The handful of security steps that matter most",
+      "category": "technology-and-ai",
+      "sourceUrl": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+      "publisher": "National Cyber Security Centre",
+      "qualityScore": 90,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "Protecting the email account that can reset every other password matters most.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.25). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "A password manager removes the need to remember or reuse passwords.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.57). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "Two-factor authentication blocks most attacks that start with a stolen password.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0.13). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 3
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    },
+    {
+      "slug": "writing-people-understand",
+      "title": "Writing that people understand the first time",
+      "category": "communication",
+      "sourceUrl": "https://www.gov.uk/guidance/content-design/writing-for-gov-uk",
+      "publisher": "Government Digital Service",
+      "qualityScore": 85,
+      "isHighImpact": false,
+      "requiredReviewers": 1,
+      "linkChecked": false,
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "evidenceOverall": "not_verified",
+      "claims": [
+        {
+          "claim": "Write for the person with the least time and the most to lose.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        },
+        {
+          "claim": "Shorter sentences are not simpler ideas, only clearer ones.",
+          "supportClass": "insufficient_evidence",
+          "note": "no passage overlaps the claim enough (best 0). Textual support only — not a judgment of factual truth, and it confers no editorial approval. A human must confirm."
+        }
+      ],
+      "supportSummary": {
+        "exact_support": 0,
+        "semantic_support": 0,
+        "partial_support": 0,
+        "contradiction": 0,
+        "insufficient_evidence": 2
+      },
+      "blockers": [
+        "source link not yet checked (link_checked_at is null)",
+        "no claim is textually supported by the retrieved source — needs human evidence grounding",
+        "no editorial approval recorded"
+      ],
+      "recommendedNextAction": "Human editorial review: ground each claim against the source, link-check, then (for high-impact) obtain a second independent reviewer. (Not an approval.)"
+    }
+  ]
+}

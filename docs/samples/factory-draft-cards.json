@@ -1,0 +1,669 @@
+{
+  "cards": [
+    {
+      "slug": "building-a-first-monthly-budget",
+      "category": "personal-finance",
+      "topic": "budgeting",
+      "level": "beginner",
+      "format": "tool",
+      "objective": "Build a first monthly budget from real income and fixed costs.",
+      "title": "A budget planner that does the arithmetic for you",
+      "summary": "A free budgeting tool from the UK government-backed money guidance service. It walks through income, fixed costs and spending, then shows what is left and where it goes. It is general information rather than advice about your own circumstances.",
+      "takeaways": [
+        "Writing fixed costs down is what makes them negotiable.",
+        "A budget is a plan for money you have, not a prediction of money you might get."
+      ],
+      "nextStep": "List every fixed monthly cost you have before the end of this week.",
+      "estimatedMinutes": 20,
+      "source": {
+        "url": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner",
+        "publisher": "MoneyHelper"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://www.moneyhelper.org.uk/en/everyday-money/budgeting/budget-planner",
+          "publisher": "MoneyHelper"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "Writing fixed costs down is what makes them negotiable.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "A budget is a plan for money you have, not a prediction of money you might get.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 4,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "high-impact; second reviewer required",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 88,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": true,
+        "requiresSecondReviewer": true,
+        "disclaimers": [
+          "Educational, not advice.",
+          "General information, not financial advice about your circumstances."
+        ],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 6
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "machine-learning-crash-course",
+      "category": "technology-and-ai",
+      "topic": "ai-foundations",
+      "level": "beginner",
+      "format": "course",
+      "objective": "Understand how machine-learning models are trained and evaluated.",
+      "title": "A structured first course in machine learning",
+      "summary": "A free, self-paced course that introduces how machine learning models are trained and evaluated, with short videos and exercises rather than mathematics for its own sake. It is aimed at people who write software or work alongside those who do.",
+      "takeaways": [
+        "Training a model means adjusting it until its predictions match known answers closely enough.",
+        "Most of the work in practice is preparing data, not choosing an algorithm."
+      ],
+      "nextStep": "Work through the first module and write down one term you had not met before.",
+      "estimatedMinutes": 25,
+      "source": {
+        "url": "https://developers.google.com/machine-learning/crash-course",
+        "publisher": "Google"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://developers.google.com/machine-learning/crash-course",
+          "publisher": "Google"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "Training a model means adjusting it until its predictions match known answers closely enough.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "Most of the work in practice is preparing data, not choosing an algorithm.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 5,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "no safety concerns",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 90,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false,
+        "disclaimers": [],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 6
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "staying-secure-online-basics",
+      "category": "technology-and-ai",
+      "topic": "security-basics",
+      "level": "beginner",
+      "format": "article",
+      "objective": "Take the few security steps that prevent most ordinary attacks.",
+      "title": "The handful of security steps that matter most",
+      "summary": "The UK National Cyber Security Centre's short guidance on protecting everyday accounts. It is deliberately a small number of steps, chosen because they prevent the majority of ordinary attacks, rather than an exhaustive list nobody follows.",
+      "takeaways": [
+        "Protecting the email account that can reset every other password matters most.",
+        "Two-factor authentication blocks most attacks that start with a stolen password."
+      ],
+      "nextStep": "Turn on two-factor authentication for your main email account today.",
+      "estimatedMinutes": 10,
+      "source": {
+        "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+        "publisher": "National Cyber Security Centre"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://www.ncsc.gov.uk/collection/top-tips-for-staying-secure-online",
+          "publisher": "National Cyber Security Centre"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "Protecting the email account that can reset every other password matters most.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "Two-factor authentication blocks most attacks that start with a stolen password.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 5,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "no safety concerns",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 90,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false,
+        "disclaimers": [],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 6
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "getting-to-sleep-nhs-guidance",
+      "category": "health-and-wellbeing",
+      "topic": "sleep",
+      "level": "beginner",
+      "format": "article",
+      "objective": "Apply evidence-led basics that help with getting to sleep.",
+      "title": "What actually helps when you cannot sleep",
+      "summary": "NHS guidance on sleep: regular timing, winding down, and when poor sleep is worth seeing a doctor about. It is short, free of supplements and gadgets, and clear about the point at which self-help is not the answer. General information, not medical advice.",
+      "takeaways": [
+        "A consistent wake time does more for sleep than a consistent bedtime.",
+        "Persistent sleep problems are worth raising with a doctor rather than managing alone."
+      ],
+      "nextStep": "Set one alarm for the same wake time every day this week, including the weekend.",
+      "estimatedMinutes": 7,
+      "source": {
+        "url": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+        "publisher": "NHS"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://www.nhs.uk/live-well/sleep-and-tiredness/how-to-get-to-sleep/",
+          "publisher": "NHS"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "A consistent wake time does more for sleep than a consistent bedtime.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "Persistent sleep problems are worth raising with a doctor rather than managing alone.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 4,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "high-impact; second reviewer required",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 88,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": true,
+        "requiresSecondReviewer": true,
+        "disclaimers": [
+          "Educational, not advice.",
+          "Not medical advice; speak to a qualified professional about your situation."
+        ],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 12
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "preparing-for-an-interview",
+      "category": "career-development",
+      "topic": "interviews",
+      "level": "beginner",
+      "format": "article",
+      "objective": "Prepare structured interview answers from real experience.",
+      "title": "Preparing for an interview without guessing",
+      "summary": "Free UK careers service guidance on preparing for interviews: what to research, how to structure answers about your experience, and what to ask at the end. It is practical and free of the confidence-as-a-substitute-for-preparation advice common elsewhere.",
+      "takeaways": [
+        "A structured answer about a real situation beats a general claim about yourself.",
+        "The questions you ask are part of what is being assessed."
+      ],
+      "nextStep": "Write out one example of your work using situation, task, action and result.",
+      "estimatedMinutes": 12,
+      "source": {
+        "url": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+        "publisher": "National Careers Service"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://nationalcareers.service.gov.uk/careers-advice/interview-advice",
+          "publisher": "National Careers Service"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "A structured answer about a real situation beats a general claim about yourself.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "The questions you ask are part of what is being assessed.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 5,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "no safety concerns",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 90,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false,
+        "disclaimers": [],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 18
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "setting-up-a-business-uk",
+      "category": "entrepreneurship",
+      "topic": "running-a-small-business",
+      "level": "beginner",
+      "format": "article",
+      "objective": "Know the real first steps to set up a business in the UK.",
+      "title": "The actual steps to set up a business in the UK",
+      "summary": "The official starting point for setting up in the UK: choosing a structure, registering, and the records you have to keep. It answers the administrative questions that are easy to get wrong and expensive to fix later.",
+      "takeaways": [
+        "The legal structure you choose changes your tax and your personal liability.",
+        "Registration deadlines start from when you begin trading, not when you incorporate."
+      ],
+      "nextStep": "Decide whether you would be a sole trader or a limited company, and write down why.",
+      "estimatedMinutes": 15,
+      "source": {
+        "url": "https://www.gov.uk/set-up-business",
+        "publisher": "GOV.UK"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://www.gov.uk/set-up-business",
+          "publisher": "GOV.UK"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "The legal structure you choose changes your tax and your personal liability.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "Registration deadlines start from when you begin trading, not when you incorporate.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 5,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "no safety concerns",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 90,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false,
+        "disclaimers": [],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 18
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "spaced-repetition-for-memory",
+      "category": "learning-how-to-learn",
+      "topic": "spaced-repetition",
+      "level": "intermediate",
+      "format": "article",
+      "objective": "Use spaced review to remember what you learn for longer.",
+      "title": "Why reviewing at increasing intervals works",
+      "summary": "A long essay on using spaced repetition seriously: how review schedules affect what is retained, what makes a good prompt, and where the method stops helping. It is considerably more thoughtful than the usual flashcard advice, and honest about the effort involved.",
+      "takeaways": [
+        "Reviewing just before you would have forgotten is what strengthens memory.",
+        "A good prompt asks for one specific thing, not a whole topic at once."
+      ],
+      "nextStep": "Turn one thing you learned this week into a single question and answer.",
+      "estimatedMinutes": 30,
+      "source": {
+        "url": "https://augmentingcognition.com/ltm.html",
+        "publisher": "Michael Nielsen",
+        "author": "Michael Nielsen"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://augmentingcognition.com/ltm.html",
+          "publisher": "Michael Nielsen",
+          "author": "Michael Nielsen"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "named_expert"
+        },
+        "claims": [
+          {
+            "claim": "Reviewing just before you would have forgotten is what strengthens memory.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "A good prompt asks for one specific thing, not a whole topic at once.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 3,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 5,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 3/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "no safety concerns",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 85,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false,
+        "disclaimers": [],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 18
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    },
+    {
+      "slug": "reading-the-evidence-on-climate",
+      "category": "science-and-nature",
+      "topic": "climate-and-weather-basics",
+      "level": "beginner",
+      "format": "article",
+      "objective": "Read the primary evidence behind a warming climate.",
+      "title": "The evidence for a changing climate, from the primary source",
+      "summary": "NASA's plain summary of the physical evidence for climate change: temperature records, sea level, ice and the measurements behind them. It links to the underlying datasets, so a reader can check the claims rather than take them on trust.",
+      "takeaways": [
+        "The clearest evidence is a long record of measurements, not any single hot year.",
+        "Primary datasets are published, so the headline claims can be checked directly."
+      ],
+      "nextStep": "Open one of the linked datasets and read what it actually measures.",
+      "estimatedMinutes": 12,
+      "source": {
+        "url": "https://climate.nasa.gov/evidence/",
+        "publisher": "NASA"
+      },
+      "isAiAssisted": true,
+      "evidence": {
+        "source": {
+          "url": "https://climate.nasa.gov/evidence/",
+          "publisher": "NASA"
+        },
+        "sourceVerdict": {
+          "ok": true,
+          "reasons": [],
+          "sourceClass": "official"
+        },
+        "claims": [
+          {
+            "claim": "The clearest evidence is a long record of measurements, not any single hot year.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          },
+          {
+            "claim": "Primary datasets are published, so the headline claims can be checked directly.",
+            "verdict": "cited_pending_verification",
+            "note": "a reputable source is cited but no supporting quote was supplied; needs human fact-check"
+          }
+        ],
+        "overall": "cited_pending_verification"
+      },
+      "quality": {
+        "scores": {
+          "accuracy": 3,
+          "sourceReliability": 5,
+          "usefulness": 5,
+          "clarity": 5,
+          "practicalApplication": 5,
+          "originality": 5,
+          "safety": 5,
+          "freshness": 3
+        },
+        "reasons": {
+          "accuracy": "reputable source cited; claims await human fact-check",
+          "sourceReliability": "publisher class score 5/5",
+          "usefulness": "clear takeaways and an actionable step",
+          "clarity": "within field limits",
+          "practicalApplication": "imperative, concrete next step",
+          "originality": "distinct from catalogue (nearest similarity 0.00)",
+          "safety": "no safety concerns",
+          "freshness": "source date unknown; needs a freshness check"
+        },
+        "composite": 90,
+        "floorBreaches": [],
+        "verdict": "queue"
+      },
+      "safety": {
+        "isHighImpact": false,
+        "requiresSecondReviewer": false,
+        "disclaimers": [],
+        "riskNotes": []
+      },
+      "freshness": {
+        "reviewDueMonths": 18
+      },
+      "reviewStatus": "editorial_queue",
+      "requiresFactCheck": true
+    }
+  ],
+  "dryRun": true,
+  "summary": {
+    "total": 8,
+    "queued": 8,
+    "revise": 0,
+    "rejected": 0,
+    "requiringFactCheck": 8,
+    "requiringSecondReviewer": 2
+  }
+}

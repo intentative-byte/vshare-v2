@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "claims": [
+    "You can ask any organisation for a copy of the personal data it holds about you.",
+    "A request does not have to use any particular wording or form."
+  ],
+  "results": [
+    {
+      "url": "https://www.gov.uk/data-protection/find-out-what-data-an-organisation-has-about-you",
+      "publisher": "GOV.UK",
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "passageCount": 13,
+      "claims": [
+        {
+          "claim": "You can ask any organisation for a copy of the personal data it holds about you.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "How long it should take The organisation must give you a copy of the data they hold about you as soon as possible, and within 1 month at most.",
+              "overlap": 0.57
+            },
+            {
+              "passage": "Data protection: Find out what data an organisation has about you - GOV.UK Cookies on GOV.UK We use some essential cookies to make this website work.",
+              "overlap": 0.29
+            },
+            {
+              "passage": "If it’s a public organisation, write to their Data Protection Officer ( DPO ).",
+              "overlap": 0.29
+            }
+          ]
+        },
+        {
+          "claim": "A request does not have to use any particular wording or form.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "In certain circumstances, for example particularly complex or multiple requests, the organisation can take a further 2 months to provide data.",
+              "overlap": 0.33
+            },
+            {
+              "passage": "Data protection: Find out what data an organisation has about you - GOV.UK Cookies on GOV.UK We use some essential cookies to make this website work.",
+              "overlap": 0.17
+            },
+            {
+              "passage": "We’d like to set additional cookies to understand how you use GOV.UK, remember your settings and improve government services.",
+              "overlap": 0.17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://ico.org.uk/for-the-public/make-a-subject-access-request",
+      "publisher": "Information Commissioner's Office",
+      "retrievalStatus": "ok",
+      "httpStatus": 200,
+      "passageCount": 13,
+      "claims": [
+        {
+          "claim": "You can ask any organisation for a copy of the personal data it holds about you.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Use this service to ask an organisation for your personal information or for the information of someone else, eg a child or relative.",
+              "overlap": 0.43
+            },
+            {
+              "passage": "This service will create an email to the organisation you specify with your request for personal information and everything they need to respond.",
+              "overlap": 0.29
+            },
+            {
+              "passage": "Start your request for your information Takes about 10 minutes For information about what we do with your personal data, see our privacy notice .",
+              "overlap": 0.29
+            }
+          ]
+        },
+        {
+          "claim": "A request does not have to use any particular wording or form.",
+          "supportClass": "insufficient_evidence",
+          "topPassages": [
+            {
+              "passage": "Make a subject access request | ICO Skip to main content Home The ICO exists to empower you through information.",
+              "overlap": 0.17
+            },
+            {
+              "passage": "Use this service to ask an organisation for your personal information or for the information of someone else, eg a child or relative.",
+              "overlap": 0.17
+            },
+            {
+              "passage": "This service will create an email to the organisation you specify with your request for personal information and everything they need to respond.",
+              "overlap": 0.17
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

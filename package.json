@@ -1,36 +1,57 @@
 {
-  "name": "vshare-v2",
+  "name": "vshares",
   "version": "2.0.0",
   "private": true,
-  "description": "VShare v2 - a personalised learning and knowledge-sharing platform built with Next.js, TypeScript, Tailwind, and Supabase.",
+  "description": "VSHARES - an AI-powered value discovery, learning and human capability platform.",
+  "engines": {
+    "node": ">=22 <23"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test:smoke": "node scripts/smoke-test.mjs"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test --trace off",
+    "check:hygiene": "node scripts/check-repo-hygiene.mjs",
+    "verify": "npm run check:hygiene && npm run lint && npm run typecheck && npm run test && npm run build",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "test:db": "node scripts/run-db-tests.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "measure:feed": "node scripts/measure-feed-performance.mjs",
+    "measure:analytics": "node scripts/measure-analytics-performance.mjs",
+    "check:gallery-a11y": "node scripts/check-gallery-accessibility.mjs",
+    "drill:backup": "node scripts/backup-restore-drill.mjs",
+    "apply:project": "node scripts/apply-to-project.mjs",
+    "bootstrap:staff": "node scripts/bootstrap-staff.mjs",
+    "test:concurrency": "node scripts/test-review-concurrency.mjs"
   },
   "dependencies": {
-    "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
-    "clsx": "latest",
-    "lucide-react": "latest",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "tailwind-merge": "latest"
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.119.0",
+    "clsx": "2.1.1",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "latest",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "autoprefixer": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "postcss": "latest",
-    "tailwindcss": "latest",
-    "typescript": "latest"
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/postcss": "4.3.5",
+    "@types/node": "22.19.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.4.6",
+    "postcss": "8.5.33",
+    "tailwindcss": "4.3.5",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
   }
 }

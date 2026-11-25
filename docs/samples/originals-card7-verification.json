@@ -1,0 +1,125 @@
+{
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "claim1": "The legal structure you choose changes your tax and your personal liability.",
+  "claim2": "Registration deadlines start from when you begin trading, not when you incorporate.",
+  "sources": [
+    {
+      "url": "https://www.gov.uk/set-up-business",
+      "label": "card source: Set up a business",
+      "status": "ok",
+      "httpStatus": 200,
+      "passageCount": 49,
+      "claim1": {
+        "supportClass": "insufficient_evidence",
+        "top": [
+          {
+            "passage": "The business structure you choose can affect the way you pay tax and your legal responsibilities.",
+            "overlap": 0.57
+          },
+          {
+            "passage": "Sole trader Limited company Legal risks or ‘liability’ You are personally responsible for all of the debts of the business.",
+            "overlap": 0.43
+          },
+          {
+            "passage": "You can move from one business structure to another.",
+            "overlap": 0.14
+          }
+        ]
+      },
+      "claim2": {
+        "supportClass": "insufficient_evidence",
+        "top": [
+          {
+            "passage": "Keeping records and accounts When you start trading you must keep records .",
+            "overlap": 0.5
+          },
+          {
+            "passage": "There are a number of responsibilities and things to consider when running a limited company.",
+            "overlap": 0.25
+          },
+          {
+            "passage": "Directors need to follow rules when taking money out of a limited company (for example, paying yourself a salary, dividends or a directors’ loan).",
+            "overlap": 0.25
+          }
+        ]
+      },
+      "deadlinePassages": [
+        "Keeping records and accounts When you start trading you must keep records .",
+        "Name You can choose a trading name or use your own name.",
+        "Registering You can start trading straight away without registering.",
+        "However, you must register for Self Assessment as a sole trader if you earn more than £1,000 in a tax year (from 6 April to 5 April).",
+        "Company owners need to register the company before they start trading.",
+        "You’ll register when setting up as a limited company .",
+        "You may want to register even if you plan to leave your company dormant .",
+        "You pay this through your Self Assessment tax returns ."
+      ]
+    },
+    {
+      "url": "https://www.gov.uk/set-up-sole-trader",
+      "label": "sole trader",
+      "status": "ok",
+      "httpStatus": 200,
+      "passageCount": 37,
+      "claim1": {
+        "supportClass": "insufficient_evidence",
+        "top": [
+          {
+            "passage": "Legal risks or ‘liability’ Sole trader businesses have ‘unlimited liability’ which means owners are personally responsible for all of the debts of the business.",
+            "overlap": 0.43
+          },
+          {
+            "passage": "It’s the simplest business structure to set up and keep records for.",
+            "overlap": 0.14
+          },
+          {
+            "passage": "Sole trader responsibilities You’ll have some legal, financial and other responsibilities when running a sole trader business.",
+            "overlap": 0.14
+          }
+        ]
+      },
+      "claim2": {
+        "supportClass": "insufficient_evidence",
+        "top": [
+          {
+            "passage": "Keeping records and accounts When you start trading you must keep records .",
+            "overlap": 0.5
+          },
+          {
+            "passage": "Most people set up as a sole trader when first starting out as a business.",
+            "overlap": 0.38
+          },
+          {
+            "passage": "Sole trader responsibilities You’ll have some legal, financial and other responsibilities when running a sole trader business.",
+            "overlap": 0.25
+          }
+        ]
+      },
+      "deadlinePassages": [
+        "Naming your business As soon as you start working for yourself you should choose your business name - you can choose a trading name or use your own name.",
+        "Keeping records and accounts When you start trading you must keep records .",
+        "This will help you work out your profit or loss for your Self Assessment tax return.",
+        "Registering as a sole trader You can start trading straight away without registering.",
+        "However, you must register for Self Assessment as a sole trader if you earn more than £1,000 in a tax year (from 6 April to 5 April).",
+        "After you’ve registered you will need to submit Self Assessment tax returns .",
+        "Taxes When you submit your Self Assessment tax return HM Revenue and Customs ( HMRC ) will work out if you need to pay Income Tax and National Insurance contributions based on your profits.",
+        "You need to register for VAT if you meet the requirements."
+      ]
+    },
+    {
+      "url": "https://www.gov.uk/register-for-corporation-tax",
+      "label": "limited company / corporation tax",
+      "status": "http_error",
+      "httpStatus": 404,
+      "passageCount": 0,
+      "claim1": {
+        "supportClass": "insufficient_evidence",
+        "top": []
+      },
+      "claim2": {
+        "supportClass": "insufficient_evidence",
+        "top": []
+      },
+      "deadlinePassages": []
+    }
+  ]
+}

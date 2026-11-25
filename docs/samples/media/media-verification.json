@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-11-18T03:46:32.525Z",
+  "method": "YouTube oEmbed (public, no API key)",
+  "liveDataConnected": true,
+  "verifiedCount": 5,
+  "reviewSummary": {
+    "total": 5,
+    "validated": 5,
+    "rejected": 0,
+    "requiringSecondReviewer": 0
+  },
+  "note": "A 'verified' status confirms the video exists, is public and exposes embed metadata, and gives the real title/channel. It is NOT a fact-check of the educational content — a human reviews that before approval.",
+  "verification": [
+    {
+      "providerId": "aircAruvnKk",
+      "status": "verified",
+      "title": "But what is a neural network? | Deep learning chapter 1",
+      "author": "3Blue1Brown",
+      "httpStatus": 200
+    },
+    {
+      "providerId": "yWO-cvGETRQ",
+      "status": "verified",
+      "title": "Why Black Holes Could Delete The Universe – The Information Paradox",
+      "author": "Kurzgesagt – In a Nutshell",
+      "httpStatus": 200
+    },
+    {
+      "providerId": "WUvTyaaNkzM",
+      "status": "verified",
+      "title": "The essence of calculus",
+      "author": "3Blue1Brown",
+      "httpStatus": 200
+    },
+    {
+      "providerId": "H14bBuluwB8",
+      "status": "verified",
+      "title": "Grit: The Power of Passion and Perseverance | Angela Lee Duckworth | TED",
+      "author": "TED",
+      "httpStatus": 200
+    },
+    {
+      "providerId": "rfscVS0vtbw",
+      "status": "verified",
+      "title": "Learn Python - Full Course for Beginners [Tutorial]",
+      "author": "freeCodeCamp.org",
+      "httpStatus": 200
+    }
+  ]
+}

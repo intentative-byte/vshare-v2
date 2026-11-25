@@ -1,0 +1,12 @@
+# Secret scanning configuration. See docs/VSHARES_SECURITY.md.
+[extend]
+useDefault = true
+
+# Known incident SEC-2026-001: third-party API credentials were committed in
+# commit 5db2911 inside a file that has since been removed. History has not
+# been rewritten (owner decision), so that one historical file is excluded
+# here to keep the scan useful for everything else. The credentials must be
+# treated as compromised regardless of this entry.
+[allowlist]
+description = "SEC-2026-001: removed file, credentials rotated by owner"
+paths = ['''^DAX_GOLD_PLUS_v7_LEARNING_READY\.py$''']

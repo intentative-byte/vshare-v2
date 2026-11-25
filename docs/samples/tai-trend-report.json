@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-11-18T00:00:00Z",
+  "sources": [
+    {
+      "id": "fixture-official",
+      "sourceClass": "official",
+      "observationCount": 4
+    },
+    {
+      "id": "fixture-institution",
+      "sourceClass": "institution",
+      "observationCount": 3
+    }
+  ],
+  "liveDataConnected": false,
+  "proposals": [
+    {
+      "key": "passkey",
+      "display": "passkeys",
+      "category": "technology-and-ai",
+      "topic": "security-basics",
+      "momentum": {
+        "key": "passkey",
+        "status": "ok",
+        "observationCount": 4,
+        "distinctSources": 2,
+        "momentum": 10.287,
+        "reason": "sufficient multi-source observations"
+      },
+      "credibility": "mixed",
+      "educationalValue": 1,
+      "firstSeen": "2026-11-15T00:00:00.000Z",
+      "lastSeen": "2026-11-17T00:00:00.000Z",
+      "expiresAt": "2026-12-01T00:00:00.000Z",
+      "expired": false,
+      "status": "proposed",
+      "reasons": [
+        "multi-source, classified, credible and current"
+      ]
+    },
+    {
+      "key": "ai study tool",
+      "display": "AI study tools",
+      "category": "technology-and-ai",
+      "topic": "working-with-ai-tools",
+      "momentum": {
+        "key": "ai study tool",
+        "status": "insufficient_data",
+        "observationCount": 2,
+        "distinctSources": 2,
+        "reason": "needs >=4 observations from >=2 sources; have 2 from 2"
+      },
+      "credibility": "mixed",
+      "educationalValue": 0.8,
+      "firstSeen": "2026-11-10T00:00:00.000Z",
+      "lastSeen": "2026-11-12T00:00:00.000Z",
+      "expiresAt": "2026-11-26T00:00:00.000Z",
+      "expired": false,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 2 from 2"
+      ]
+    },
+    {
+      "key": "quantum widget",
+      "display": "quantum widgets",
+      "momentum": {
+        "key": "quantum widget",
+        "status": "insufficient_data",
+        "observationCount": 1,
+        "distinctSources": 1,
+        "reason": "needs >=4 observations from >=2 sources; have 1 from 1"
+      },
+      "credibility": "official",
+      "educationalValue": 0.4,
+      "firstSeen": "2026-10-01T00:00:00.000Z",
+      "lastSeen": "2026-10-01T00:00:00.000Z",
+      "expiresAt": "2026-10-15T00:00:00.000Z",
+      "expired": true,
+      "status": "insufficient_data",
+      "reasons": [
+        "needs >=4 observations from >=2 sources; have 1 from 1",
+        "could not be classified into the taxonomy",
+        "trend has expired (older than TTL)"
+      ]
+    }
+  ],
+  "note": "NO LIVE TREND SOURCE CONNECTED. Observations are illustrative fixtures; momentum is computed from them to demonstrate the algorithm. Real-world momentum is NOT VERIFIED."
+}
